@@ -12,7 +12,7 @@ All libraries will be build and the binary will be ready to launch
 * work   
 
 ### :boom: Known bugs.. I mean features :boom:  
-*   
+* Nothing work.    
   
 
 ### :writing_hand: Change log :writing_hand:  
