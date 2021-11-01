@@ -6,7 +6,7 @@
 /*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/01 09:37:12 by notcampeur       ###   ########.fr       */
+/*   Updated: 2021/11/01 15:35:41 by notcampeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ struct Buffer
 };
 
 
-#define COUNT (MAX_RAM / (int)sizeof(Buffer))
+#define COUNT 500
+// #define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
 #ifndef DIY
 	template<typename T>
@@ -98,6 +99,83 @@ void	getting_started(int argc, char *argv[])
 
 }
 
+void	vector_test(void)
+{
+	ft::vector<std::string> vector_str;
+	ft::vector<int> vector_int;
+	ft::vector<Buffer> vector_buffer;
+
+	for (int i = 0; i < COUNT; i++)
+	{
+		vector_buffer.push_back(Buffer());
+	}
+
+	for (int i = 0; i < COUNT; i++)
+	{
+		const int idx = rand() % COUNT;
+		vector_buffer[idx].idx = 5;
+	}
+	ft::vector<Buffer>().swap(vector_buffer);
+	
+	try
+	{
+		for (int i = 0; i < COUNT; i++)
+		{
+			const int idx = rand() % COUNT;
+			vector_buffer.at(idx);
+			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
+		}
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+		//NORMAL ! :P
+	}
+	#ifndef DIY
+	#endif
+}
+
+void	stack_test(void)
+{
+	#ifndef DIY
+	ft::stack<int> stack_int;
+	ft::stack<Buffer, std::deque<int> > stack_deq_buffer;
+	MutantStack<char> iterable_stack;
+
+	for (char letter = 'a'; letter <= 'z'; letter++)
+		iterable_stack.push(letter);
+	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
+	{
+		std::cout << *it;
+	}
+	std::cout << std::endl;
+	#endif
+}
+
+void	map_test(void)
+{
+	#ifndef DIY
+	ft::map<int, int> map_int;
+	
+	for (int i = 0; i < COUNT; ++i)
+	{
+		map_int.insert(ft::make_pair(rand(), rand()));
+	}
+	
+	int sum = 0;
+	for (int i = 0; i < 10000; i++)
+	{
+		int access = rand();
+		sum += map_int[access];
+	}
+	std::cout << "should be constant with the same seed: " << sum << std::endl;
+
+	{
+		ft::map<int, int> copy = map_int;
+	}
+	#endif
+}
+
 int main(int argc, char** argv)
 {
 	try
@@ -109,64 +187,8 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 	
-	#ifndef DIY
-		ft::vector<std::string> vector_str;
-		ft::vector<int> vector_int;
-		ft::stack<int> stack_int;
-		ft::vector<Buffer> vector_buffer;
-		ft::stack<Buffer, std::deque<int> > stack_deq_buffer;
-		ft::map<int, int> map_int;
-
-		for (int i = 0; i < COUNT; i++)
-		{
-			vector_buffer.push_back(Buffer());
-		}
-
-		for (int i = 0; i < COUNT; i++)
-		{
-			const int idx = rand() % COUNT;
-			vector_buffer[idx].idx = 5;
-		}
-		ft::vector<Buffer>().swap(vector_buffer);
-		
-		try
-		{
-			for (int i = 0; i < COUNT; i++)
-			{
-				const int idx = rand() % COUNT;
-				vector_buffer.at(idx);
-				std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
-			}
-		}
-		catch(const std::exception& e)
-		{
-			//NORMAL ! :P
-		}
-		
-		for (int i = 0; i < COUNT; ++i)
-		{
-			map_int.insert(ft::make_pair(rand(), rand()));
-		}
-		
-		int sum = 0;
-		for (int i = 0; i < 10000; i++)
-		{
-			int access = rand();
-			sum += map_int[access];
-		}
-		std::cout << "should be constant with the same seed: " << sum << std::endl;
-
-		{
-			ft::map<int, int> copy = map_int;
-		}
-		MutantStack<char> iterable_stack;
-		for (char letter = 'a'; letter <= 'z'; letter++)
-			iterable_stack.push(letter);
-		for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
-		{
-			std::cout << *it;
-		}
-		std::cout << std::endl;
-	#endif
+	vector_test();
+	stack_test();
+	map_test();
 	return EXIT_SUCCESS;
 }
