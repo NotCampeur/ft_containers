@@ -9,20 +9,8 @@ All libraries will be build and the binary will be ready to launch
 *      
 
 ### :zzz: TODO :zzz:  
-* work   
+* work on vector   
 
 ### :boom: Known bugs.. I mean features :boom:  
-*   
-  
-
-### :writing_hand: Change log :writing_hand:  
-
-
-	 Updated files :  
-        nouveau fichier : Makefile
-        modifié :         README.md
-        nouveau fichier : includes/Iterator.hpp
-        nouveau fichier : includes/containers.hpp
-        nouveau fichier : includes/containers/Vector.hpp
-        nouveau fichier : srcs/main.cpp
+* None so far      
 
