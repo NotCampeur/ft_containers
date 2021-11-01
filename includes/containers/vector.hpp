@@ -6,7 +6,7 @@
 /*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/01 13:40:50 by notcampeur       ###   ########.fr       */
+/*   Updated: 2021/11/01 20:44:53 by notcampeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define CONTAINERS_VECTOR_HPP
 
 # include <memory>
+# include <sstream>
+# include <exception>
 
 namespace ft
 {
@@ -165,10 +167,26 @@ namespace ft
 			}
 			
 		// Element access
-			reference	operator[] (size_type n) { return _array[n]; }
-			const_reference	operator[] (size_type n) const { return _array[n]; }
-			reference	at(size_type n) { return _array[n]; }
-			const_reference	at(size_type n) const { return _array[n]; }
+			reference	operator[] (size_type n)
+			{
+				_M_range_check(n); 
+				return _array[n];
+			}
+			const_reference	operator[] (size_type n) const
+			{
+				_M_range_check(n); 
+				return _array[n];
+			}
+			reference	at(size_type n)
+			{
+				_M_range_check(n); 
+				return _array[n];
+			}
+			const_reference	at(size_type n) const
+			{
+				_M_range_check(n); 
+				return _array[n];
+			}
 			reference	front() { return _array[0]; }
 			const_reference	front() const { return _array[0]; }
 			reference	back() { return _array[_size - 1]; }
@@ -273,6 +291,26 @@ namespace ft
 		
 		// Allocator
 			allocator_type	get_allocator() const { return _alloc; }
+
+			private:
+				void	_M_range_check(size_type n)
+				{
+					if (n >= _size)
+					{
+						std::ostringstream	s;
+						std::string			str("vector::_M_range_check: n (which is ");
+
+						s << n;
+						str += s.str();
+						str += ") >= this_size() (which is ";
+						s.str("");
+						s.clear();
+						s << _size;
+						str += s.str();
+						str += ")";
+						throw std::out_of_range(str);
+					}
+				}
 	};
 }
 
