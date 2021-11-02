@@ -6,13 +6,14 @@
 /*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/02 12:52:52 by notcampeur       ###   ########.fr       */
+/*   Updated: 2021/11/02 15:21:44 by notcampeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <string>
 #include <deque>
+#include <sys/time.h>
 
 #ifdef DIY
 	# include <map.hpp>
@@ -59,6 +60,15 @@ struct Buffer
 	};
 #endif
 
+long	get_elapsed_time(struct timeval	start_time)
+{
+	struct timeval	act_time;
+
+	gettimeofday(&act_time, NULL);
+	return ((act_time.tv_sec - start_time.tv_sec) * 1000L
+			+ (act_time.tv_usec - start_time.tv_usec) / 1000L);
+}
+
 int	getting_seed(char *argv[])
 {
 	if (atoi(argv[1]) == 0
@@ -104,17 +114,23 @@ void	vector_test(void)
 	ft::vector<int> vector_int;
 	ft::vector<Buffer> vector_buffer;
 
+	struct timeval	start_time;
+	long			elapsed_time;
+	
+	gettimeofday(&start_time, NULL);
 	for (size_t i = 0; i < COUNT; i++)
 	{
 		vector_buffer.push_back(Buffer());
 	}
-	std::cout << vector_buffer.size() << " / " << vector_buffer.capacity() << std::endl;
-
+	elapsed_time = get_elapsed_time(start_time);
+	std::cout << "[Size / Capacity]:[" << vector_buffer.size() << " / " << vector_buffer.capacity()
+	<< "] Elapsed time : " << elapsed_time << std::endl;
 	for (size_t i = 0; i < COUNT; i++)
 	{
 		const int idx = rand() % COUNT;
-		vector_buffer[idx].idx = 5;
+		vector_buffer[i].idx = idx;
 	}
+	std::cout << vector_buffer[rand() % COUNT].idx << std::endl;
 	ft::vector<Buffer>().swap(vector_buffer);
 	
 	try
