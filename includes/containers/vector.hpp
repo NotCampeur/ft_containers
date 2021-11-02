@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/01 20:44:53 by notcampeur       ###   ########.fr       */
+/*   Updated: 2021/11/02 12:27:32 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,12 @@ namespace ft
 			// Fill constructor
 			explicit vector (size_type n, const value_type& val = value_type(),
 				const allocator_type& alloc = allocator_type())
-			: _alloc(alloc), _array(NULL), _size(0), _capacity(n)
+			: _alloc(alloc), _array(NULL), _size(0), _capacity(1)
 			{
+				while (_capacity < n)
+					_capacity << 1;
 				_array = _alloc.allocate(_capacity);
-				for (size_type i = 0; i < _capacity; i++)
+				for (size_type i = 0; i < n; i++)
 					_alloc.construct(&_array[i], val);
 			}
 
@@ -135,8 +137,8 @@ namespace ft
 			size_type	max_size() const { return _alloc.max_size(); }
 			void		resize(size_type n, value_type val = value_type())
 			{
-				if (n > _capacity)
-					reserve(n);
+				while (n > _capacity)
+					reserve(_capacity);
 				if (n > _size)
 				{
 					for (size_type i = _size; i < n; i++)
@@ -169,12 +171,10 @@ namespace ft
 		// Element access
 			reference	operator[] (size_type n)
 			{
-				_M_range_check(n); 
 				return _array[n];
 			}
 			const_reference	operator[] (size_type n) const
 			{
-				_M_range_check(n); 
 				return _array[n];
 			}
 			reference	at(size_type n)
@@ -195,8 +195,8 @@ namespace ft
 		// Modifiers
 			void		assign(size_type n, const value_type& val)
 			{
-				if (n > _capacity)
-					reserve(n);
+				while (n > _capacity)
+					reserve(_capacity * 2);
 				for (size_type i = 0; i < _size; i++)
 					_alloc.destroy(&_array[i]);
 				for (size_type i = 0; i < n; i++)
@@ -207,8 +207,8 @@ namespace ft
 			void		assign(InputIterator first, InputIterator last)
 			{
 				size_type n = last - first;
-				if (n > _capacity)
-					reserve(n);
+				while (n > _capacity)
+					reserve(_capacity * 2);
 				for (size_type i(0); i < _size; i++)
 					_alloc.destroy(&_array[i]);
 				for (size_type i(0); first < last; i++ && first++)
@@ -218,7 +218,7 @@ namespace ft
 			void		push_back(const value_type& val)
 			{
 				if (_size == _capacity)
-					reserve(_size + 1);
+					reserve(_capacity * 2);
 				_alloc.construct(&_array[_size], val);
 				_size++;
 			}
@@ -230,7 +230,7 @@ namespace ft
 			iterator	insert(iterator pos, const value_type& val)
 			{
 				if (_size == _capacity)
-					reserve(_size + 1);
+					reserve(_capacity * 2);
 				for (size_type i = _size; i > pos; i--)
 					_alloc.construct(&_array[i], _array[i - 1]);
 				_alloc.construct(&_array[pos], val);
@@ -240,7 +240,7 @@ namespace ft
 			void		insert(iterator pos, size_type n, const value_type& val)
 			{
 				if (_size + n > _capacity)
-					reserve(_size + n);
+					reserve(_capacity * 2);
 				for (size_type i = _size; i > pos; i--)
 					_alloc.construct(&_array[i], _array[i - 1]);
 				for (size_type i = 0; i < n; i++)
@@ -252,7 +252,7 @@ namespace ft
 			{
 				size_type n = last - first;
 				if (_size + n > _capacity)
-					reserve(_size + n);
+					reserve(_capacity * 2);
 				for (size_type i = _size; i > pos; i--)
 					_alloc.construct(&_array[i], _array[i - 1]);
 				for (size_type i = 0; first < last; i++ && first++)
