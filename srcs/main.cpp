@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/02 12:13:08 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/11/02 12:52:52 by notcampeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,8 @@ struct Buffer
 	char buff[BUFFER_SIZE];
 };
 
-
-#define COUNT 500
-// #define COUNT (MAX_RAM / (int)sizeof(Buffer))
+// #define COUNT 500
+#define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
 #ifndef DIY
 	template<typename T>
@@ -105,13 +104,13 @@ void	vector_test(void)
 	ft::vector<int> vector_int;
 	ft::vector<Buffer> vector_buffer;
 
-	for (int i = 0; i < COUNT; i++)
+	for (size_t i = 0; i < COUNT; i++)
 	{
 		vector_buffer.push_back(Buffer());
-		std::cout << vector_buffer.size() << " / " << vector_buffer.capacity() << std::endl;
 	}
+	std::cout << vector_buffer.size() << " / " << vector_buffer.capacity() << std::endl;
 
-	for (int i = 0; i < COUNT; i++)
+	for (size_t i = 0; i < COUNT; i++)
 	{
 		const int idx = rand() % COUNT;
 		vector_buffer[idx].idx = 5;

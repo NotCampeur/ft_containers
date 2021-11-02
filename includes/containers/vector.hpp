@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/02 12:27:32 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/11/02 12:45:33 by notcampeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ namespace ft
 			: _alloc(alloc), _array(NULL), _size(0), _capacity(1)
 			{
 				while (_capacity < n)
-					_capacity << 1;
+					_capacity = _capacity << 1;
 				_array = _alloc.allocate(_capacity);
 				for (size_type i = 0; i < n; i++)
 					_alloc.construct(&_array[i], val);
@@ -217,7 +217,9 @@ namespace ft
 			}
 			void		push_back(const value_type& val)
 			{
-				if (_size == _capacity)
+				if (_capacity == 0)
+					reserve(1);
+				else if (_size == _capacity)
 					reserve(_capacity * 2);
 				_alloc.construct(&_array[_size], val);
 				_size++;
