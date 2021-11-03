@@ -6,38 +6,11 @@
 /*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/02 15:21:44 by notcampeur       ###   ########.fr       */
+/*   Updated: 2021/11/03 10:50:59 by notcampeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include <string>
-#include <deque>
-#include <sys/time.h>
-
-#ifdef DIY
-	# include <map.hpp>
-	# include <stack.hpp>
-	# include <vector.hpp>
-#else
-	# include <map>
-	# include <stack>
-	# include <vector>
-	namespace ft = std;
-#endif
-
-#include <stdlib.h>
-
-#define MAX_RAM 4294967296
-#define BUFFER_SIZE 4096
-struct Buffer
-{
-	int idx;
-	char buff[BUFFER_SIZE];
-};
-
-// #define COUNT 500
-#define COUNT (MAX_RAM / (int)sizeof(Buffer))
+#include "main.hpp"
 
 #ifndef DIY
 	template<typename T>
@@ -108,8 +81,15 @@ void	getting_started(int argc, char *argv[])
 
 }
 
+void	wait_for_enter()
+{
+	std::cout << "Press enter to continue..." << std::endl;
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
 void	vector_test(void)
 {
+	vector_capacity_test();
 	ft::vector<std::string> vector_str;
 	ft::vector<int> vector_int;
 	ft::vector<Buffer> vector_buffer;

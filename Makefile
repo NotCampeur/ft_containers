@@ -4,13 +4,16 @@ DIY_NAME	=	DIY_containers
 CC 		=		clang++
 
 SRC_DIR = 		$(shell find srcs -type d)
-INC_DIR = 		$(shell find includes -type d)
+INC_DIR = 		$(shell find includes -type d) \
+				$(shell find srcs -type d)
+				
 OBJ_DIR = 		objs
 DIY_OBJ_DIR = 	diy_objs
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
-SRC 	=		main.cpp
+SRC 	=		main.cpp \
+				vector_capacity_test.cpp
 
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 DIY_OBJ		=	$(addprefix $(DIY_OBJ_DIR)/, $(SRC:%.cpp=%.o))

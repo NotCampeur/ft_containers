@@ -6,7 +6,7 @@
 /*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/02 12:45:33 by notcampeur       ###   ########.fr       */
+/*   Updated: 2021/11/03 15:42:48 by notcampeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,19 +101,19 @@ namespace ft
 		// Iterators
 			iterator begin()
 			{
-				return _array;
+				return iterator(_array);
 			}
 			const_iterator begin() const
 			{
-				return _array;
+				return const_iterator(_array);
 			}
 			iterator end()
 			{
-				return _array + _size;
+				return iterator(_array + _size);
 			}
 			const_iterator end() const
 			{
-				return _array + _size;
+				return const_iterator(_array + _size);
 			}
 			reverse_iterator rbegin()
 			{
@@ -257,8 +257,8 @@ namespace ft
 					reserve(_capacity * 2);
 				for (size_type i = _size; i > pos; i--)
 					_alloc.construct(&_array[i], _array[i - 1]);
-				for (size_type i = 0; first < last; i++ && first++)
-					_alloc.construct(&_array[pos + i], *first);
+				for (size_type i = 0; first < last; i++)
+					_alloc.construct(&_array[pos + i], *(first + i));
 				_size += n;
 			}
 			iterator	erase(iterator pos)
