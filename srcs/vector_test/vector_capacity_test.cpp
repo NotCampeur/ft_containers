@@ -6,7 +6,7 @@
 /*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:10:54 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/03 11:15:46 by notcampeur       ###   ########.fr       */
+/*   Updated: 2021/11/04 16:15:35 by notcampeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,136 +14,165 @@
 
 void	vector_size_method_test(void)
 {
-	std::cout << GREEN << "vector_size_method_test" << RESET << std::endl;
+	struct timeval	start_time;
+	
+	Logger() << "__________[vector_size_method_test]__________";
 	ft::vector<int> myints;
-	std::cout << "0. size: " << myints.size() << '\n';
+	
+	gettimeofday(&start_time, NULL);
+	Logger() << "0. size: " << myints.size();
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs\n";
 
 	for (int i=0; i<10; i++) myints.push_back(i);
-	std::cout << "1. size: " << myints.size() << '\n';
+	gettimeofday(&start_time, NULL);
+	Logger() << "1. size: " << myints.size();
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs\n";
 
 	myints.insert (myints.end(),10,100);
-	std::cout << "2. size: " << myints.size() << '\n';
+	gettimeofday(&start_time, NULL);
+	Logger() << "2. size: " << myints.size();
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs\n";
 
 	myints.pop_back();
-	std::cout << "3. size: " << myints.size() << '\n';
+	gettimeofday(&start_time, NULL);
+	Logger() << "3. size: " << myints.size();
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs\n";
 }
 
 void	vector_max_size_method_test(void)
 {
-	std::cout << GREEN << "vector_max_size_test" << RESET << std::endl;
+	struct timeval	start_time;
+	
+	Logger() << "__________[vector_max_size_test]__________";
 	ft::vector<int> myvector;
 
 	for (int i=0; i<100; i++) myvector.push_back(i);
 
-	std::cout << "size: " << myvector.size() << "\n";
-	std::cout << "capacity: " << myvector.capacity() << "\n";
-	std::cout << "max_size: " << myvector.max_size() << "\n";
+	gettimeofday(&start_time, NULL);
+	Logger() << "size: " << myvector.size();
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs\n";
+	gettimeofday(&start_time, NULL);
+	Logger() << "capacity: " << myvector.capacity();
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs\n";
+	gettimeofday(&start_time, NULL);
+	Logger() << "max_size: " << myvector.max_size();
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs\n";
 }
 
 void	vector_resize_method_test(void)
 {
-	std::cout << GREEN << "vector_resize_method_test" << RESET << std::endl;
+	struct timeval	start_time;
+	
+	Logger() << "__________[vector_resize_method_test]__________";
 	ft::vector<int> myvector;
-
 	// set some initial content:
 	for (int i=1;i<10;i++) myvector.push_back(i);
 
+	gettimeofday(&start_time, NULL);
 	myvector.resize(5);
+	Logger() << "vector size : " << myvector.size() 
+	<< "\nTime elapsed : " << get_elapsed_time(start_time) << "µs\n";
+	gettimeofday(&start_time, NULL);
 	myvector.resize(8,100);
+	Logger() << "vector size : " << myvector.size() 
+	<< "\nTime elapsed : " << get_elapsed_time(start_time) << "µs\n";
+	gettimeofday(&start_time, NULL);
 	myvector.resize(12);
+	Logger() << "vector size : " << myvector.size() 
+	<< "\nTime elapsed : " << get_elapsed_time(start_time) << "µs\n";
 
-	std::cout << "myvector contains:";
+	Logger() << "myvector contains:";
 	for (std::size_t i=0;i<myvector.size();i++)
-	std::cout << ' ' << myvector[i];
-	std::cout << '\n';
+		Logger() << myvector[i];
+	Logger();
 }
 
 void	vector_capacity_method_test(void)
 {
-	std::cout << GREEN << "vector_capacity_method_test" << RESET << std::endl;
+	struct timeval	start_time;
+	Logger() << "__________[vector_capacity_method_test]__________";
 	ft::vector<int> myvector;
 
 	// set some content in the vector:
 	for (int i=0; i<100; i++) myvector.push_back(i);
 
-	std::cout << "size: " << (int) myvector.size() << '\n';
-	std::cout << "capacity: " << (int) myvector.capacity() << '\n';
-	std::cout << "max_size: " << (int) myvector.max_size() << '\n';
+	gettimeofday(&start_time, NULL);
+	Logger() << "size: " << (int) myvector.size();
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs\n";
+	gettimeofday(&start_time, NULL);
+	Logger() << "capacity: " << (int) myvector.capacity();
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs\n";
+	gettimeofday(&start_time, NULL);
+	Logger() << "max_size: " << (int) myvector.max_size();
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs\n";
 }
 
 void	vector_empty_method_test(void)
 {
-	std::cout << GREEN << "vector_empty_method_capacity_test" << RESET << std::endl;
+	struct timeval	start_time;
+	Logger() << "__________[vector_empty_method_capacity_test]__________";
 	ft::vector<int> myvector;
 	int sum (0);
 
 	for (int i=1;i<=10;i++) myvector.push_back(i);
 
+	gettimeofday(&start_time, NULL);
+	Logger() << "is empty : " << myvector.empty()
+	<< "\nTime elapsed : " << get_elapsed_time(start_time) << "µs\n";
 	while (!myvector.empty())
 	{
-	sum += myvector.back();
-	myvector.pop_back();
+		sum += myvector.back();
+		myvector.pop_back();
 	}
-
-	std::cout << "total: " << sum << '\n';
+	gettimeofday(&start_time, NULL);
+	Logger() << "is empty : " << myvector.empty()
+	<< "\nTime elapsed : " << get_elapsed_time(start_time) << "µs\n";
+	Logger() << "total: " << sum << '\n';
 }
 
 void	vector_reserve_method_test(void)
 {
-	std::cout << GREEN << "vector_reserve_method_test" << RESET << std::endl;
+	struct timeval	start_time;
+	Logger() << "__________[vector_reserve_method_test]__________";
 	ft::vector<int>::size_type sz;
 
 	ft::vector<int> foo;
 	sz = foo.capacity();
-	std::cout << "making foo grow:\n";
+	Logger() << "making foo grow:";
 	for (int i=0; i<100; ++i)
 	{
 		foo.push_back(i);
 		if (sz!=foo.capacity())
 		{
 			sz = foo.capacity();
-			std::cout << "capacity changed: " << sz << '\n';
+			Logger() << "capacity changed: " << sz;
 		}
 	}
 
 	ft::vector<int> bar;
 	sz = bar.capacity();
+	gettimeofday(&start_time, NULL);
 	bar.reserve(100);   // this is the only difference with foo above
-	std::cout << "making bar grow:\n";
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs\n";
+	Logger() << "making bar grow:";
 	for (int i=0; i<100; ++i)
 	{
 		bar.push_back(i);
 		if (sz!=bar.capacity())
 		{
 			sz = bar.capacity();
-			std::cout << "capacity changed: " << sz << '\n';
+			Logger() << "capacity changed: " << sz;
 		}
 	}
 }
 
 void	vector_capacity_test(void)
 {
-	std::cout << BOLDBLUE << "vector_capacity_test" << RESET << std::endl;
+	Logger() << "\n----------(vector_capacity_test)----------";
 	vector_size_method_test();
-	wait_for_enter();
 	vector_max_size_method_test();
-	wait_for_enter();
 	vector_resize_method_test();
-	wait_for_enter();
 	vector_capacity_method_test();
-	wait_for_enter();
 	vector_empty_method_test();
-	wait_for_enter();
 	vector_reserve_method_test();
-	
-	// ft::vector<int> myvector;
-
-	// myvector.push_back(10);
-	// myvector.push_back(20);
-	// myvector.push_back(30);
-	// ft::vector<int>::iterator it = myvector.begin();
-	// for (ft::vector<int>::size_type i=0; i<myvector.size(); i++)
-	// {
-	// 	std::cout << *(it + i) << ' ';
-	// }
 }

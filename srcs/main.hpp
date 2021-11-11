@@ -6,7 +6,7 @@
 /*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:13:05 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/03 10:47:08 by notcampeur       ###   ########.fr       */
+/*   Updated: 2021/11/11 20:56:24 by notcampeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,25 +19,7 @@
 # include <sys/time.h>
 # include <stdlib.h>
 # include <limits>
-
-// The following are UBUNTU/LINUX, and MacOS ONLY terminal color codes.
-# define RESET			"\033[0m"
-# define BLACK			"\033[30m"
-# define RED			"\033[31m"
-# define GREEN			"\033[32m"
-# define YELLOW			"\033[33m"
-# define BLUE			"\033[34m"
-# define MAGENTA		"\033[35m"
-# define CYAN			"\033[36m"
-# define WHITE			"\033[37m"
-# define BOLDBLACK		"\033[1m\033[30m"
-# define BOLDRED		"\033[1m\033[31m"
-# define BOLDGREEN		"\033[1m\033[32m"
-# define BOLDYELLOW		"\033[1m\033[33m"
-# define BOLDBLUE		"\033[1m\033[34m"
-# define BOLDMAGENTA	"\033[1m\033[35m"
-# define BOLDCYAN		"\033[1m\033[36m"
-# define BOLDWHITE		"\033[1m\033[37m"
+# include "Logger.hpp"
 
 # ifdef DIY
 	#  include <map.hpp>
@@ -60,9 +42,20 @@ struct Buffer
 
 # define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
-// Wait for the user to press enter and ignore other input
-void	wait_for_enter();
-
+void	vector_test(void);
+void	vector_iterators_test(void);
 void	vector_capacity_test(void);
+void	vector_element_access_test(void);
+void	vector_modifiers_test(void);
+void	vector_allocator_test(void);
+
+void	stack_test(void);
+
+void	map_test(void);
+
+long	get_elapsed_time(struct timeval	start_time);
+
+int		getting_seed(char *argv[]);
+void	getting_started(int argc, char *argv[]);
 
 #endif

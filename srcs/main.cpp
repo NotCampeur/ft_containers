@@ -6,7 +6,7 @@
 /*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/03 10:50:59 by notcampeur       ###   ########.fr       */
+/*   Updated: 2021/11/11 21:02:27 by notcampeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ long	get_elapsed_time(struct timeval	start_time)
 	struct timeval	act_time;
 
 	gettimeofday(&act_time, NULL);
-	return ((act_time.tv_sec - start_time.tv_sec) * 1000L
-			+ (act_time.tv_usec - start_time.tv_usec) / 1000L);
+	return ((act_time.tv_sec - start_time.tv_sec) * 1000000L
+		+ (act_time.tv_usec - start_time.tv_usec));
 }
 
 int	getting_seed(char *argv[])
@@ -58,9 +58,9 @@ void	getting_started(int argc, char *argv[])
 
 	if (argc != 2)
 	{
-		std::cerr << "Usage: " << argv[0] << " seed" << std::endl;
-		std::cerr << "Provide a seed please" << std::endl;
-		std::cerr << "Count value:" << COUNT << std::endl;
+		Logger(error_type) << "Usage: " << argv[0] << " seed\n"
+			<< "Provide a seed please\n"
+			<< "Count value:" << COUNT;
 		throw std::exception();
 	}
 	try
@@ -69,66 +69,26 @@ void	getting_started(int argc, char *argv[])
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << "The seed need to be a number." << std::endl;
+		Logger(error_type) << "The seed need to be a number.";
 		throw ;
 	}
 	srand(seed);
 	#ifdef DIY
-		std::cout << "DIY testing with seed : " << seed << std::endl;
+		Logger() << "DIY testing with seed : " << seed << "\n";
 	#else
-		std::cout << "STL testing with seed : " << seed << std::endl;
+		Logger() << "STL testing with seed : " << seed << "\n";
 	#endif
 
-}
-
-void	wait_for_enter()
-{
-	std::cout << "Press enter to continue..." << std::endl;
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 void	vector_test(void)
 {
+	Logger() << "======================={Vector test}=======================";
+	vector_iterators_test();
 	vector_capacity_test();
-	ft::vector<std::string> vector_str;
-	ft::vector<int> vector_int;
-	ft::vector<Buffer> vector_buffer;
-
-	struct timeval	start_time;
-	long			elapsed_time;
-	
-	gettimeofday(&start_time, NULL);
-	for (size_t i = 0; i < COUNT; i++)
-	{
-		vector_buffer.push_back(Buffer());
-	}
-	elapsed_time = get_elapsed_time(start_time);
-	std::cout << "[Size / Capacity]:[" << vector_buffer.size() << " / " << vector_buffer.capacity()
-	<< "] Elapsed time : " << elapsed_time << std::endl;
-	for (size_t i = 0; i < COUNT; i++)
-	{
-		const int idx = rand() % COUNT;
-		vector_buffer[i].idx = idx;
-	}
-	std::cout << vector_buffer[rand() % COUNT].idx << std::endl;
-	ft::vector<Buffer>().swap(vector_buffer);
-	
-	try
-	{
-		for (int i = 0; i < COUNT; i++)
-		{
-			const int idx = rand() % COUNT;
-			vector_buffer.at(idx);
-			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
-		}
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << std::endl;
-		//NORMAL ! :P
-	}
-	#ifndef DIY
-	#endif
+	vector_element_access_test();
+	vector_modifiers_test();
+	vector_allocator_test();
 }
 
 void	stack_test(void)
@@ -142,9 +102,8 @@ void	stack_test(void)
 		iterable_stack.push(letter);
 	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
 	{
-		std::cout << *it;
+		Logger() << *it;
 	}
-	std::cout << std::endl;
 	#endif
 }
 
@@ -164,8 +123,7 @@ void	map_test(void)
 		int access = rand();
 		sum += map_int[access];
 	}
-	std::cout << "should be constant with the same seed: " << sum << std::endl;
-
+	Logger() << "should be constant with the same seed: " << sum;
 	{
 		ft::map<int, int> copy = map_int;
 	}
@@ -174,17 +132,27 @@ void	map_test(void)
 
 int main(int argc, char** argv)
 {
+	std::string	log_name(argv[0]);
+
+	// Only keep the binary name without the path
+	log_name = log_name.substr(log_name.find_last_of("/") + 1);
+	log_name += ".log";
+	Logger::open_log_file(log_name);
+	Logger::enable_time(false);
+	Logger() << "Starting " << argv[0];
 	try
 	{
 		getting_started(argc, argv);
 	}
 	catch(const std::exception& e)
 	{
+		Logger::quit();
 		return EXIT_FAILURE;
 	}
 	
 	vector_test();
 	stack_test();
 	map_test();
+	Logger::quit();
 	return EXIT_SUCCESS;
 }

@@ -6,24 +6,29 @@ CC 		=		clang++
 SRC_DIR = 		$(shell find srcs -type d)
 INC_DIR = 		$(shell find includes -type d) \
 				$(shell find srcs -type d)
-				
+
 OBJ_DIR = 		objs
 DIY_OBJ_DIR = 	diy_objs
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
 SRC 	=		main.cpp \
-				vector_capacity_test.cpp
+				vector_iterators_test.cpp \
+				vector_capacity_test.cpp \
+				vector_element_access_test.cpp \
+				vector_modifiers_test.cpp \
+				vector_allocator_test.cpp \
+				Logger.cpp
 
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 DIY_OBJ		=	$(addprefix $(DIY_OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
 #Compilation flag
-CFLAGS	=		-Wall -Wextra -Werror -std=c++98
+CFLAGS	=		-Wall -Wextra -Werror -std=c++98 -g3
 
 DEBUG =
 ifdef DEBUG
-    CFLAGS += -fsanitize=address -g3
+    CFLAGS += -fsanitize=address
 endif
 
 #Include flag
@@ -56,13 +61,19 @@ $(DIY_NAME):	$(DIY_OBJ) Makefile
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 test:			$(NAME)
-				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ..."
+				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ... \c"
 				@./$< $(SEED)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 diy_test:		$(DIY_NAME)
-				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ..."
+				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ...\c"
 				@./$< $(SEED)
+				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
+
+test_both:		$(NAME) $(DIY_NAME)
+				@echo "-----\nTesting $(_YELLOW)$(NAME)$(_WHITE) and $(_YELLOW)$(DIY_NAME)$(_WHITE) ...\c"
+				@./$(NAME) $(SEED)
+				@./$(DIY_NAME) $(SEED)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 show:
