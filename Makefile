@@ -46,14 +46,17 @@ ifeq ($(DEBUG), fs)
 	CFLAGS += -fsanitize=address
 	CFLAGS += -g3
 	CFLAGS += -O0
-	useless := $(info Compiling with fsanitize and debug flags.)
+	msg = $(shell echo "$(_PURPLE)Compiling with fsanitize and debug flags.$(_WHITE)")
+	useless := $(info $(msg))
 else ifeq ($(DEBUG), vl)
 	CFLAGS += -g3
 	CFLAGS += -O0
-	useless := $(info Compiling with valgrind and debug flags.)
+	msg := $(shell echo "$(_PURPLE)Compiling with valgrind and debug flags. Take care to rebuild the program entirely if you already used valgrind.$(_WHITE)")
+	useless := $(info $(msg))
 else
 	CFLAGS += -O3
-	useless := $(info Compiling without debug flags. Optimization flags are added.)
+	msg := $(shell echo "$(_PURPLE)Compiling without debug flags. Optimization flags are added.$(_WHITE)")
+	useless := $(info $(msg))
 endif
 
 all:			$(NAME) $(DIY_NAME)
