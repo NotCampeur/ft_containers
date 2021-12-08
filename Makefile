@@ -24,18 +24,12 @@ OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 DIY_OBJ		=	$(addprefix $(DIY_OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
 #Compilation flag
-CFLAGS	=		-Wall -Wextra -Werror -std=c++98 -g3
-
-DEBUG =
-ifdef DEBUG
-    CFLAGS += -fsanitize=address
-endif
+CFLAGS	=		-Wall -Wextra -Werror -std=c++98
 
 #Include flag
 IFLAGS	=		$(foreach dir, $(INC_DIR), -I$(dir))
 
 # Colors
-
 _GREY=	$'\033[30m
 _RED=	$'\033[31m
 _GREEN=	$'\033[32m
@@ -44,6 +38,23 @@ _BLUE=	$'\033[34m
 _PURPLE=$'\033[35m
 _CYAN=	$'\033[36m
 _WHITE=	$'\033[37m
+
+DEBUG =
+# Add fsanitize to the compilation flags if DEBUG is set to fs.
+# If DEBUG is set to valgrind, add debug flags to the compilation flags.
+ifeq ($(DEBUG), fs)
+	CFLAGS += -fsanitize=address
+	CFLAGS += -g3
+	CFLAGS += -O0
+	useless := $(info Compiling with fsanitize and debug flags.)
+else ifeq ($(DEBUG), vl)
+	CFLAGS += -g3
+	CFLAGS += -O0
+	useless := $(info Compiling with valgrind and debug flags.)
+else
+	CFLAGS += -O3
+	useless := $(info Compiling without debug flags. Optimization flags are added.)
+endif
 
 all:			$(NAME) $(DIY_NAME)
 				@echo "$(_PURPLE)Usage:"
@@ -62,12 +73,20 @@ $(DIY_NAME):	$(DIY_OBJ) Makefile
 
 test:			$(NAME)
 				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ... \c"
-				@./$< $(SEED)
+				@if [ "$(DEBUG)" = "vl" ]; then \
+					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
+				else \
+					./$< $(SEED); \
+				fi
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 diy_test:		$(DIY_NAME)
 				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ...\c"
-				@./$< $(SEED)
+				@if [ "$(DEBUG)" = "vl" ]; then \
+					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
+				else \
+					./$< $(SEED); \
+				fi
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 test_both:		$(NAME) $(DIY_NAME)

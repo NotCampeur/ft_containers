@@ -2,3 +2,4 @@ DIY_containers
 containers
 objs/*.o
 diy_objs/*.o
+*.log
