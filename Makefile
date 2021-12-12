@@ -12,12 +12,14 @@ DIY_OBJ_DIR = 	diy_objs
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
+VECTOR_TEST = vector_element_access_test.cpp
+	# vector_iterators_test.cpp \
+	vector_capacity_test.cpp \
+	vector_modifiers_test.cpp \
+	vector_allocator_test.cpp
+
 SRC 	=		main.cpp \
-				vector_iterators_test.cpp \
-				vector_capacity_test.cpp \
-				vector_element_access_test.cpp \
-				vector_modifiers_test.cpp \
-				vector_allocator_test.cpp \
+				$(VECTOR_TEST) \
 				Logger.cpp
 
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
@@ -28,6 +30,8 @@ CFLAGS	=		-Wall -Wextra -Werror -std=c++98
 
 #Include flag
 IFLAGS	=		$(foreach dir, $(INC_DIR), -I$(dir))
+
+BUILD_LOG = logs/Makefile.log
 
 # Colors
 _GREY=	$'\033[30m
@@ -46,33 +50,55 @@ ifeq ($(DEBUG), fs)
 	CFLAGS += -fsanitize=address
 	CFLAGS += -g3
 	CFLAGS += -O0
-	msg = $(shell echo "$(_PURPLE)Compiling with fsanitize and debug flags.$(_WHITE)")
+	msg = $(shell echo "$(_PURPLE)fsanitize and debug flags are added.$(_WHITE)")
 	useless := $(info $(msg))
 else ifeq ($(DEBUG), vl)
 	CFLAGS += -g3
 	CFLAGS += -O0
-	msg := $(shell echo "$(_PURPLE)Compiling with valgrind and debug flags. Take care to rebuild the program entirely if you already used valgrind.$(_WHITE)")
+	msg = $(shell echo "$(_PURPLE)Valgrind and debug flags will are added. Take care to rebuild the program entirely if you already used valgrind.$(_WHITE)")
 	useless := $(info $(msg))
 else
 	CFLAGS += -O3
-	msg := $(shell echo "$(_PURPLE)Compiling without debug flags. Optimization flags are added.$(_WHITE)")
+	msg = $(shell echo "$(_PURPLE)Debug mode not enabled. Optimization flags are added.$(_WHITE)")
 	useless := $(info $(msg))
 endif
+
+msg = $(shell echo "$(_PURPLE)A file named $(_YELLOW)$(BUILD_LOG)$(_PURPLE) will be created in the current directory.$(_WHITE)")
+useless := $(info $(msg))
+
+# Split the log file between each run.
+useless := $(shell echo "________________________________________________________________________________" >> $(BUILD_LOG); \
+				echo -n "$(shell date) : " >> $(BUILD_LOG); \
+				echo "building with : [$(MAKECMDGOALS)]" >> $(BUILD_LOG))
 
 all:			$(NAME) $(DIY_NAME)
 				@echo "$(_PURPLE)Usage:"
 				@echo "Type $(_BLUE)make test SEED=NUMBER$(_PURPLE) to create a binary testing STL containers."
 				@echo "Type $(_BLUE)make diy_test SEED=NUMBER$(_PURPLE) to create a binary testing homemade containers."
+				@echo "Add $(_BLUE)DEBUG=fs$(_PURPLE) to compile with fsanitize and debug flags."
+				@echo "Add $(_BLUE)DEBUG=vl$(_PURPLE) to compile with valgrind and debug flags.$(_WHITE)"
 
-$(NAME):		$(OBJ) Makefile
+$(NAME):		$(OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
-				@$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) -o $@
-				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
+				@echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) -o $@" >> $(BUILD_LOG) 2>&1
+				$(shell $(CC) $(CFLAGS) $(IFLAGS) $(OBJ) -o $@ >> $(BUILD_LOG) 2>&1)
+				@if [ $(.SHELLSTATUS) -eq 0 ]; then \
+					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
+				else \
+					echo "$(_RED)FAILED$(_WHITE)\n-----"; \
+					exit $(.SHELLSTATUS); \
+				fi
 
-$(DIY_NAME):	$(DIY_OBJ) Makefile
+$(DIY_NAME):	$(DIY_OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
-				@$(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) -o $@
-				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
+				@echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) -o $@ " >> $(BUILD_LOG) 2>&1
+				$(shell $(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) -o $@ >> $(BUILD_LOG) 2>&1)
+				@if [ $(.SHELLSTATUS) -eq 0 ]; then \
+					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
+				else \
+					echo "$(_RED)FAILED$(_WHITE)\n-----"; \
+					exit $(.SHELLSTATUS); \
+				fi
 
 test:			$(NAME)
 				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ... \c"
@@ -94,9 +120,16 @@ diy_test:		$(DIY_NAME)
 
 test_both:		$(NAME) $(DIY_NAME)
 				@echo "-----\nTesting $(_YELLOW)$(NAME)$(_WHITE) and $(_YELLOW)$(DIY_NAME)$(_WHITE) ...\c"
-				@./$(NAME) $(SEED)
-				@./$(DIY_NAME) $(SEED)
+				@if [ "$(DEBUG)" = "vl" ]; then \
+					valgrind --leak-check=full --show-leak-kinds=all ./$(NAME) $(SEED); \
+					valgrind --leak-check=full --show-leak-kinds=all ./$(DIY_NAME) $(SEED); \
+				else \
+					./$(NAME) $(SEED); \
+					./$(DIY_NAME) $(SEED); \
+				fi
+				@diff --expand-tabs --ignore-tab-expansion --side-by-side --left-column logs/DIY_containers.log logs/containers.log > logs/diff.log || true
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
+				@echo "$(_PURPLE)logs/diff.log has been created.$(_WHITE)"
 
 show:
 				@echo "\nSRC :\n$(SRC)\n"
@@ -107,34 +140,48 @@ show:
 
 $(OBJ_DIR)/%.o : 	%.cpp
 				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
-				@mkdir -p $(OBJ_DIR)
-				@$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<
-				@echo "$(_GREEN)DONE$(_WHITE)"
+				$(shell mkdir -p $(OBJ_DIR))
+				@echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ;\
+				echo "$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1
+				$(shell $(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1)
+				@if [ $(.SHELLSTATUS) -eq 0 ]; then \
+					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
+				else \
+					echo "$(_RED)FAILED$(_WHITE)\n-----"; \
+					exit $(.SHELLSTATUS); \
+				fi
 
 $(DIY_OBJ_DIR)/%.o : 	%.cpp
 				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
-				@mkdir -p $(DIY_OBJ_DIR)
-				@$(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $<
-				@echo "$(_GREEN)DONE$(_WHITE)"
+				$(shell mkdir -p $(DIY_OBJ_DIR))
+				@echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ;\
+				echo "$(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1
+				$(shell $(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1)
+				@if [ $(.SHELLSTATUS) -eq 0 ]; then \
+					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
+				else \
+					echo "$(_RED)FAILED$(_WHITE)\n-----"; \
+					exit $(.SHELLSTATUS); \
+				fi
 
 re:				fclean all
 
-debug:			$(OBJ) $(NAME) srcs/main.cpp
-				@echo "executing Binary File $(_YELLOW)$@$(_WHITE) ..."
-				@./$(NAME)
-				@echo "$(_GREEN)DONE$(_WHITE)\n"
-
 norme:
 				norminette $(SRC_DIR)
+
+clean_log:
+				@echo "Cleaning $(_YELLOW)$(BUILD_LOG)$(_WHITE) ... \c"
+				@cp /dev/null $(BUILD_LOG)
+				@echo "$(_GREEN)DONE$(_WHITE)\n-----";
 
 clean:
 				@echo "Deleting Objects Directory $(_YELLOW)$(OBJ_DIR)$(_WHITE) ... \c"
 				@rm -rf $(OBJ_DIR) $(DIY_OBJ_DIR)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
-fclean:			clean
+fclean:			clean clean_log
 				@echo "Deleting library File $(_YELLOW)$(NAME)$(_WHITE) ... \c"
 				@rm -f $(NAME) $(DIY_NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
-.PHONY:			all show re clean fclean debug norme test diy_test
+.PHONY:			all show re clean fclean clean_log norme test diy_test test_both

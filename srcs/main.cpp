@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/11 21:02:27 by notcampeur       ###   ########.fr       */
+/*   Updated: 2021/12/11 19:34:57 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,11 +84,11 @@ void	getting_started(int argc, char *argv[])
 void	vector_test(void)
 {
 	Logger() << "======================={Vector test}=======================";
-	vector_iterators_test();
-	vector_capacity_test();
+	// vector_iterators_test();
+	// vector_capacity_test();
 	vector_element_access_test();
-	vector_modifiers_test();
-	vector_allocator_test();
+	// vector_modifiers_test();
+	// vector_allocator_test();
 }
 
 void	stack_test(void)
@@ -137,6 +137,7 @@ int main(int argc, char** argv)
 	// Only keep the binary name without the path
 	log_name = log_name.substr(log_name.find_last_of("/") + 1);
 	log_name += ".log";
+	log_name = "logs/" + log_name;
 	Logger::open_log_file(log_name);
 	Logger::enable_time(false);
 	Logger() << "Starting " << argv[0];
@@ -151,8 +152,8 @@ int main(int argc, char** argv)
 	}
 	
 	vector_test();
-	stack_test();
-	map_test();
+	// stack_test();
+	// map_test();
 	Logger::quit();
 	return EXIT_SUCCESS;
 }

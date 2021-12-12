@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector_element_access_test.cpp                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 16:04:47 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/11 20:47:32 by notcampeur       ###   ########.fr       */
+/*   Updated: 2021/12/10 15:14:04 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	vector_access_operator_test(void)
 	ft::vector<int> myvector (10);   // 10 zero-initialized elements
 
 	ft::vector<int>::size_type sz = myvector.size();
-
+	Logger() << "size of myvector: " << sz;
 	// assign some values:
 	for (unsigned i=0; i<sz; i++) myvector[i]=i;
 
