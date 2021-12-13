@@ -12,11 +12,11 @@ DIY_OBJ_DIR = 	diy_objs
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
-VECTOR_TEST = vector_element_access_test.cpp
-	# vector_iterators_test.cpp \
-	vector_capacity_test.cpp \
-	vector_modifiers_test.cpp \
-	vector_allocator_test.cpp
+VECTOR_TEST =	vector_element_access_test.cpp
+				# vector_iterators_test.cpp \
+				vector_capacity_test.cpp \
+				vector_modifiers_test.cpp \
+				vector_allocator_test.cpp
 
 SRC 	=		main.cpp \
 				$(VECTOR_TEST) \
@@ -79,8 +79,8 @@ all:			$(NAME) $(DIY_NAME)
 				@echo "Add $(_BLUE)DEBUG=vl$(_PURPLE) to compile with valgrind and debug flags.$(_WHITE)"
 
 $(NAME):		$(OBJ)
-				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
-				@echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) -o $@" >> $(BUILD_LOG) 2>&1
+				@echo -n "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... "
+				$(shell echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) -o $@" >> $(BUILD_LOG) 2>&1)
 				$(shell $(CC) $(CFLAGS) $(IFLAGS) $(OBJ) -o $@ >> $(BUILD_LOG) 2>&1)
 				@if [ $(.SHELLSTATUS) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
@@ -90,8 +90,8 @@ $(NAME):		$(OBJ)
 				fi
 
 $(DIY_NAME):	$(DIY_OBJ)
-				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
-				@echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) -o $@ " >> $(BUILD_LOG) 2>&1
+				@echo -n "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... "
+				$(shell echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) -o $@ " >> $(BUILD_LOG) 2>&1)
 				$(shell $(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) -o $@ >> $(BUILD_LOG) 2>&1)
 				@if [ $(.SHELLSTATUS) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
@@ -139,10 +139,10 @@ show:
 				@echo "LIB_DIR :\n$(LIB_DIR)\n"
 
 $(OBJ_DIR)/%.o : 	%.cpp
-				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
+				@echo -n "Compiling $(_YELLOW)$@$(_WHITE) ... "
 				$(shell mkdir -p $(OBJ_DIR))
-				@echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ;\
-				echo "$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1
+				$(shell echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ;\
+				echo "$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
 				$(shell $(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1)
 				@if [ $(.SHELLSTATUS) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
@@ -152,10 +152,10 @@ $(OBJ_DIR)/%.o : 	%.cpp
 				fi
 
 $(DIY_OBJ_DIR)/%.o : 	%.cpp
-				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
+				@echo -n "Compiling $(_YELLOW)$@$(_WHITE) ... "
 				$(shell mkdir -p $(DIY_OBJ_DIR))
-				@echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ;\
-				echo "$(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1
+				$(shell echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ;\
+				echo "$(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
 				$(shell $(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1)
 				@if [ $(.SHELLSTATUS) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
