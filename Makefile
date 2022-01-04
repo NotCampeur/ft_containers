@@ -66,9 +66,12 @@ endif
 msg = $(shell echo "$(_PURPLE)A file named $(_YELLOW)$(BUILD_LOG)$(_PURPLE) will be created in the current directory.$(_WHITE)")
 useless := $(info $(msg))
 
+# Make sure the logs directory exists.
+useless := $(shell mkdir -p logs)
+
 # Split the log file between each run.
 useless := $(shell echo "________________________________________________________________________________" >> $(BUILD_LOG); \
-				echo -n "$(shell date) : " >> $(BUILD_LOG); \
+				echo "$(shell date) : \c" >> $(BUILD_LOG); \
 				echo "building with : [$(MAKECMDGOALS)]" >> $(BUILD_LOG))
 
 all:			$(NAME) $(DIY_NAME)
@@ -79,25 +82,25 @@ all:			$(NAME) $(DIY_NAME)
 				@echo "Add $(_BLUE)DEBUG=vl$(_PURPLE) to compile with valgrind and debug flags.$(_WHITE)"
 
 $(NAME):		$(OBJ)
-				@echo -n "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... "
-				$(shell echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) -o $@" >> $(BUILD_LOG) 2>&1)
-				$(shell $(CC) $(CFLAGS) $(IFLAGS) $(OBJ) -o $@ >> $(BUILD_LOG) 2>&1)
-				@if [ $(.SHELLSTATUS) -eq 0 ]; then \
+				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) -o $@" >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(OBJ) -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
+				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
 					echo "$(_RED)FAILED$(_WHITE)\n-----"; \
-					exit $(.SHELLSTATUS); \
+					exit $(ret_status); \
 				fi
 
 $(DIY_NAME):	$(DIY_OBJ)
-				@echo -n "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... "
-				$(shell echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) -o $@ " >> $(BUILD_LOG) 2>&1)
-				$(shell $(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) -o $@ >> $(BUILD_LOG) 2>&1)
-				@if [ $(.SHELLSTATUS) -eq 0 ]; then \
+				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) -o $@ " >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
+				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
 					echo "$(_RED)FAILED$(_WHITE)\n-----"; \
-					exit $(.SHELLSTATUS); \
+					exit $(ret_status); \
 				fi
 
 test:			$(NAME)
@@ -110,7 +113,7 @@ test:			$(NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 diy_test:		$(DIY_NAME)
-				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ...\c"
+				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ... \c"
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
 				else \
@@ -119,7 +122,7 @@ diy_test:		$(DIY_NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 test_both:		$(NAME) $(DIY_NAME)
-				@echo "-----\nTesting $(_YELLOW)$(NAME)$(_WHITE) and $(_YELLOW)$(DIY_NAME)$(_WHITE) ...\c"
+				@echo "-----\nTesting $(_YELLOW)$(NAME)$(_WHITE) and $(_YELLOW)$(DIY_NAME)$(_WHITE) ... \c"
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$(NAME) $(SEED); \
 					valgrind --leak-check=full --show-leak-kinds=all ./$(DIY_NAME) $(SEED); \
@@ -139,29 +142,29 @@ show:
 				@echo "LIB_DIR :\n$(LIB_DIR)\n"
 
 $(OBJ_DIR)/%.o : 	%.cpp
-				@echo -n "Compiling $(_YELLOW)$@$(_WHITE) ... "
+				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
 				$(shell mkdir -p $(OBJ_DIR))
-				$(shell echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ;\
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ;\
 				echo "$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
-				$(shell $(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1)
-				@if [ $(.SHELLSTATUS) -eq 0 ]; then \
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
+				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
 					echo "$(_RED)FAILED$(_WHITE)\n-----"; \
-					exit $(.SHELLSTATUS); \
+					exit $(ret_status); \
 				fi
 
 $(DIY_OBJ_DIR)/%.o : 	%.cpp
-				@echo -n "Compiling $(_YELLOW)$@$(_WHITE) ... "
+				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
 				$(shell mkdir -p $(DIY_OBJ_DIR))
-				$(shell echo -n "$(shell date) : " >> $(BUILD_LOG) 2>&1 ;\
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ;\
 				echo "$(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
-				$(shell $(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1)
-				@if [ $(.SHELLSTATUS) -eq 0 ]; then \
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
+				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
 					echo "$(_RED)FAILED$(_WHITE)\n-----"; \
-					exit $(.SHELLSTATUS); \
+					exit $(ret_status); \
 				fi
 
 re:				fclean all
