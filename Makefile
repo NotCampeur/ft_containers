@@ -63,7 +63,7 @@ else
 	useless := $(info $(msg))
 endif
 
-msg = $(shell echo "$(_PURPLE)A file named $(_YELLOW)$(BUILD_LOG)$(_PURPLE) will be created in the current directory.$(_WHITE)")
+msg = $(shell echo "$(_PURPLE)A file named $(_YELLOW)$(BUILD_LOG)$(_PURPLE) contain the current build informations.$(_WHITE)")
 useless := $(info $(msg))
 
 # Make sure the logs directory exists.
@@ -78,6 +78,7 @@ all:			$(NAME) $(DIY_NAME)
 				@echo "$(_PURPLE)Usage:"
 				@echo "Type $(_BLUE)make test SEED=NUMBER$(_PURPLE) to create a binary testing STL containers."
 				@echo "Type $(_BLUE)make diy_test SEED=NUMBER$(_PURPLE) to create a binary testing homemade containers."
+				@echo "Type $(_BLUE)make test_both SEED=NUMBER$(_PURPLE) to create a binary testing both containers and a diff.log file."
 				@echo "Add $(_BLUE)DEBUG=fs$(_PURPLE) to compile with fsanitize and debug flags."
 				@echo "Add $(_BLUE)DEBUG=vl$(_PURPLE) to compile with valgrind and debug flags.$(_WHITE)"
 
@@ -132,7 +133,7 @@ test_both:		$(NAME) $(DIY_NAME)
 				fi
 				@diff --expand-tabs --ignore-tab-expansion --side-by-side --left-column logs/DIY_containers.log logs/containers.log > logs/diff.log || true
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
-				@echo "$(_PURPLE)logs/diff.log has been created.$(_WHITE)"
+				@echo "$(_YELLOW)logs/diff.log$(_PURPLE) has been created.$(_WHITE)"
 
 show:
 				@echo "\nSRC :\n$(SRC)\n"

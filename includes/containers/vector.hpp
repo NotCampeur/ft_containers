@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/09 16:36:22 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/12/16 18:43:04 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,14 @@ namespace ft
 				for (size_type i = 0; i < _size; i++)
 					_alloc.construct(&_array[i], x._array[i]);
 			}
-
+			vector &operator=(const vector& x)
+			{
+				_alloc = x._alloc;
+				_array = x._array;
+				_size = x._size;
+				_capacity = x._capacity;
+				return *this;
+			}
 		// DESTRUCTOR
 			~vector()
 			{
