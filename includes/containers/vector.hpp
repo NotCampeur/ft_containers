@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/16 18:43:04 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/07 17:59:35 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,10 @@
 # include <memory>
 # include <sstream>
 # include <exception>
+# include <iterator>
 
 namespace ft
 {
-	// class vector_iterator
-	// {
-
-	// };
-	
 	template < typename T, typename Alloc = std::allocator<T> >
 	class vector
 	{
@@ -42,8 +38,8 @@ namespace ft
 			typedef std::iterator< std::random_access_iterator_tag, T > const_iterator;
 			typedef std::reverse_iterator< iterator >					reverse_iterator;
 			typedef std::reverse_iterator< const_iterator >				const_reverse_iterator;
-
 			typedef	std::ptrdiff_t										difference_type;
+
 			typedef size_t												size_type;
 			
 		private:
@@ -78,8 +74,7 @@ namespace ft
 				const allocator_type& alloc = allocator_type())
 			: _alloc(alloc), _array(NULL), _size(0), _capacity(0)
 			{
-				for (; first != last; first++)
-					push_back(*first);
+				assign(first, last);
 			}
 
 			// Copy constructor
@@ -92,10 +87,7 @@ namespace ft
 			}
 			vector &operator=(const vector& x)
 			{
-				_alloc = x._alloc;
-				_array = x._array;
-				_size = x._size;
-				_capacity = x._capacity;
+				assign(x.begin(), x.end());
 				return *this;
 			}
 		// DESTRUCTOR
@@ -322,6 +314,47 @@ namespace ft
 					}
 				}
 	};
+	template <class T, class Alloc>
+	bool	operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() != rhs.size())
+			return false;
+		for (size_t i = 0; i < lhs.size(); i++)
+			if (lhs[i] != rhs[i])
+				return false;
+		return true;
+	}
+	
+	template <class T, class Alloc>
+	bool	operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	template <class T, class Alloc>
+	bool	operator< (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	}
+
+	template <class T, class Alloc>
+	bool	operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return !(rhs > lhs);
+	}
+
+	template <class T, class Alloc>
+	bool	operator> (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (lhs != rhs)
+			return !(rhs < lhs);
+	}
+
+	template <class T, class Alloc>
+	bool	operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return !(lhs < rhs);
+	}
 }
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/04 17:04:18 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/01 10:19:39 by notcampeur       ###   ########.fr       */
+/*   Created: 2022/01/07 15:22:15 by ldutriez          #+#    #+#             */
+/*   Updated: 2022/01/07 15:26:56 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,24 @@
 # define CONTAINERS_ITERATOR_HPP
 
 # include <cstddef>
+# include <iterator>
 
-template< class Category, class T, class Distance = std::ptrdiff_t, class Pointer = T*, class Reference = T& >
-struct iterator
+namespace ft
 {
-
-};
+	template<
+		class Category,
+		class T,
+		class Distance = std::ptrdiff_t,
+		class Pointer = T*,
+		class Reference = T&
+	> struct iterator
+	{
+		typedef Category							iterator_category;
+		typedef T									value_type;
+		typedef Distance							difference_type;
+		typedef Pointer								pointer;
+		typedef Reference							reference;
+	};
+}
 
 #endif

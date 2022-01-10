@@ -12,11 +12,12 @@ DIY_OBJ_DIR = 	diy_objs
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
-VECTOR_TEST =	vector_element_access_test.cpp
-				# vector_iterators_test.cpp \
-				vector_capacity_test.cpp \
+VECTOR_TEST =	vector_element_access_test.cpp \
+				# vector_capacity_test.cpp \
+				vector_iterators_test.cpp \
 				vector_modifiers_test.cpp \
-				vector_allocator_test.cpp
+				vector_allocator_test.cpp \
+				vector_relational_operators_test.cpp
 
 SRC 	=		main.cpp \
 				$(VECTOR_TEST) \
