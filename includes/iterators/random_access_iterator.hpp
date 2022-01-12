@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/07 15:52:16 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/07 17:57:35 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/12 18:51:11 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,23 @@ namespace ft
 	template<class It>
 	struct random_access_iterator : ft::iterator<random_access_iterator_tag, It>
 	{
-		typedef ft::random_access_iterator_tag						iterator_category;
-		typedef typename ft::iterator_traits<It>::value_type		value_type;
-		typedef typename ft::iterator_traits<It>::difference_type	difference_type;
-		typedef typename ft::iterator_traits<It>::pointer			pointer;
-		typedef typename ft::iterator_traits<It>::reference			reference;
+		typedef ft::random_access_iterator_tag	iterator_category;
+		typedef It								value_type;
+		typedef std::ptrdiff_t					difference_type;
+		typedef It*								pointer;
+		typedef It&								reference;
 
-		It															i;
-		It&															r;
+		It										i;
+		It&										r;
 
-		random_access_iterator() : i(0), r(i) {}
+		random_access_iterator() : i(0), r(&i) {}
+
+		random_access_iterator operator=(const random_access_iterator& rhs)
+		{
+			i = rhs.i;
+			r = rhs.r;
+			return (*this);
+		}
 
 		reference operator*() const { return r; }
 		pointer operator->() const { return &r; }
@@ -63,11 +70,11 @@ namespace ft
 	template<class It>
 	struct const_random_access_iterator : ft::iterator<random_access_iterator_tag, It>
 	{
-		typedef ft::random_access_iterator_tag						iterator_category;
-		typedef const typename ft::iterator_traits<It>::value_type	value_type;
-		typedef typename ft::iterator_traits<It>::difference_type	difference_type;
-		typedef const typename ft::iterator_traits<It>::pointer		pointer;
-		typedef const typename ft::iterator_traits<It>::reference	reference;
+		typedef ft::random_access_iterator_tag	iterator_category;
+		typedef const It						value_type;
+		typedef std::ptrdiff_t					difference_type;
+		typedef const It*						pointer;
+		typedef const It&						reference;
 
 		It															i;
 		It&															r;

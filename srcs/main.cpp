@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/01/07 14:40:31 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/12 16:27:22 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	vector_test(void)
 	// vector_iterators_test();
 	// vector_capacity_test();
 	vector_element_access_test();
-	// vector_modifiers_test();
+	vector_modifiers_test();
 	// vector_allocator_test();
 	// vector_relational_operators_test();
 }
