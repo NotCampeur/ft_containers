@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector_modifiers_test.cpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 16:38:29 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/11 20:47:04 by notcampeur       ###   ########.fr       */
+/*   Updated: 2022/01/12 16:23:58 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,22 @@ void	vector_swap_method_test(void)
 
 	gettimeofday(&start_time, NULL);
 	foo.swap(bar);
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+
+	Logger() << "foo contains:";
+	for (unsigned i=0; i<foo.size(); i++)
+		Logger() << foo[i];
+	Logger();
+
+	Logger() << "bar contains:";
+	for (unsigned i=0; i<bar.size(); i++)
+		Logger() << bar[i];
+	Logger();
+
+	Logger() << "__________[vector_specialized_swap_test]__________";
+
+	gettimeofday(&start_time, NULL);
+	ft::swap(foo, bar);
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
 
 	Logger() << "foo contains:";
