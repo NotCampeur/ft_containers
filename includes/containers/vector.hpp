@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/21 17:01:52 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/21 19:11:56 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "random_access_iterator.hpp"
 # include "reverse_iterator.hpp"
 # include "is_integral.hpp"
+# include "distance.hpp"
 
 namespace ft
 {
@@ -69,32 +70,118 @@ namespace ft
 					reserve(_capacity * 2);
 				for (size_type i(0); i < _size; i++)
 					_alloc.destroy(&_array[i]);
-				for (size_type i(0); first < last; i++ && first++)
+				for (size_type i(0); first < last; i++)
+				{
 					_alloc.construct(&_array[i], *first);
+					first++;
+				}
 				_size = n;
 			}
 
+		// Need to lean on this function.
 			void		insert(iterator pos, size_type n, const value_type& val, ft::true_type)
 			{
-				if (_size + n > _capacity)
-					reserve(_capacity * 2);
-				for (size_type i = _size; i > pos; i--)
-					_alloc.construct(&_array[i], _array[i - 1]);
-				for (size_type i = 0; i < n; i++)
-					_alloc.construct(&_array[pos + i], val);
-				_size += n;
+				size_t range;
+
+				long temp_pos;
+				Alloc alloc;
+				
+				long end_old_vector = end() - begin();
+				range = n;
+				long end_new_vector = end_old_vector + range;
+
+				int nb_element_to_switch = end() - pos;
+				temp_pos = pos - begin() + range;
+				if ((_size + range) > _size)
+				{
+					resize(_size + range);
+				}
+				size_t i = 0;
+				if (end_old_vector == 0)
+				{
+					while (i < range)
+					{
+						_array[i] = val;
+						i++;
+					}
+					return ;
+				}
+				int temp_range = range;
+
+				while (nb_element_to_switch)
+				{
+					_array[end_new_vector - 1] = _array[end_old_vector - i - 1];
+					nb_element_to_switch--;
+					end_new_vector--;
+					i++;
+				}
+				temp_range -= i;
+				while (temp_range > 0)
+				{
+					n--;
+					_array[end_new_vector - 1] =  val;
+					temp_range--;
+					end_new_vector--;
+				}
+				while (n)
+				{
+					n--;
+					_array[end_new_vector - 1] = val;
+					end_new_vector--;
+				}
 			}
 			template <class InputIterator>
 			void		insert(iterator pos, InputIterator first, InputIterator last, ft::false_type)
 			{
-				size_type n = last - first;
-				if (_size + n > _capacity)
-					reserve(_capacity * 2);
-				for (size_type i = _size; i > pos; i--)
-					_alloc.construct(&_array[i], _array[i - 1]);
-				for (size_type i = 0; first < last; i++)
-					_alloc.construct(&_array[pos + i], *(first + i));
-				_size += n;
+				size_t range;
+
+				long temp_pos;
+				Alloc alloc;
+				
+				long end_old_vector = end() - begin() - 1;
+				range = ft::distance(first, last);
+				long end_new_vector = end_old_vector + range;
+
+				int nb_element_to_switch = end() - pos;
+				temp_pos = pos - begin() + range;
+				if ((_size + range) > _size)
+				{
+					resize(_size + range);
+				}
+				size_t i = 0;
+				if (end_old_vector == 0)
+				{
+					while (i < range)
+					{
+						_array[i] = *first;
+						first++;
+						i++;
+					}
+					return ;
+				}
+				int temp_range = range;
+
+				while (nb_element_to_switch)
+				{
+					_array[end_new_vector] = _array[end_old_vector - i];
+					nb_element_to_switch--;
+					end_new_vector--;
+					i++;
+				}
+				temp_range -= i;
+				while (temp_range > 0)
+				{
+					last--;
+					_array[end_new_vector] =  *last;
+					temp_range--;
+					end_new_vector--;
+				}
+				while (first != last)
+				{
+					last--;
+					_array[end_new_vector] = *last;
+					end_new_vector--;
+				}
 			}
 			
 		public:
@@ -291,11 +378,13 @@ namespace ft
 			
 			iterator	insert(iterator pos, const value_type& val)
 			{
-				if (_size == _capacity)
+				if (_capacity == 0)
+					reserve(1);
+				else if (_size == _capacity)
 					reserve(_capacity * 2);
-				for (size_type i = _size; i > pos; i--)
+				for (long i = _size; i > pos - _array; i--)
 					_alloc.construct(&_array[i], _array[i - 1]);
-				_alloc.construct(&_array[pos], val);
+				_alloc.construct(&_array[pos - _array], val);
 				_size++;
 				return pos;
 			}
@@ -334,19 +423,23 @@ namespace ft
 			// }
 			iterator	erase(iterator pos)
 			{
-				for (size_type i = pos; i < _size - 1; i++)
-					_alloc.construct(&_array[i], _array[i + 1]);
-				_alloc.destroy(&_array[_size - 1]);
+				iterator it_end = end();
+				iterator temp = pos;
+				Alloc alloc;
+
+				while (temp != (it_end - 1))
+				{
+					_array[temp - begin()] = *(temp + 1); 
+					temp++;
+				}
+				alloc.destroy(&_array[temp - begin()]);
 				_size--;
 				return pos;
 			}
 			iterator	erase(iterator first, iterator last)
 			{
-				for (size_type i = first; i < last; i++)
-					_alloc.destroy(&_array[i]);
-				for (size_type i = last; i < _size - 1; i++)
-					_alloc.construct(&_array[i], _array[i + 1]);
-				_size -= last - first;
+				for (; first != last; last--)
+					erase(last);
 				return first;
 			}
 			void		swap(vector& x)
