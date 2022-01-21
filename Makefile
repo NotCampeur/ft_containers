@@ -56,7 +56,12 @@ ifeq ($(DEBUG), fs)
 else ifeq ($(DEBUG), vl)
 	CFLAGS += -g3
 	CFLAGS += -O0
-	msg = $(shell echo "$(_PURPLE)Valgrind and debug flags will are added. Take care to rebuild the program entirely if you already used valgrind.$(_WHITE)")
+	msg = $(shell echo "$(_PURPLE)Valgrind and debug flags are added. Take care to rebuild the program entirely if you already used valgrind.$(_WHITE)")
+	useless := $(info $(msg))
+else ifeq ($(DEBUG), gdb)
+	CFLAGS += -g3
+	CFLAGS += -O0
+	msg = $(shell echo "$(_PURPLE)gdb and debug flags are added.$(_WHITE)")
 	useless := $(info $(msg))
 else
 	CFLAGS += -O3
@@ -82,6 +87,7 @@ all:			$(NAME) $(DIY_NAME)
 				@echo "Type $(_BLUE)make test_both SEED=NUMBER$(_PURPLE) to create a binary testing both containers and a diff.log file."
 				@echo "Add $(_BLUE)DEBUG=fs$(_PURPLE) to compile with fsanitize and debug flags."
 				@echo "Add $(_BLUE)DEBUG=vl$(_PURPLE) to compile with valgrind and debug flags.$(_WHITE)"
+				@echo "Add $(_BLUE)DEBUG=gdb$(_PURPLE) to compile with gdb and debug flags.$(_WHITE)"
 
 $(NAME):		$(OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
@@ -109,6 +115,8 @@ test:			$(NAME)
 				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ... \c"
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
+				else if [ "$(DEBUG)" = "gdb" ]; then \
+					gdb ./$< $(SEED); \
 				else \
 					./$< $(SEED); \
 				fi
@@ -118,6 +126,8 @@ diy_test:		$(DIY_NAME)
 				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ... \c"
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
+				else if [ "$(DEBUG)" = "gdb" ]; then \
+					gdb ./$< $(SEED); \
 				else \
 					./$< $(SEED); \
 				fi
@@ -128,6 +138,9 @@ test_both:		$(NAME) $(DIY_NAME)
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$(NAME) $(SEED); \
 					valgrind --leak-check=full --show-leak-kinds=all ./$(DIY_NAME) $(SEED); \
+				else if [ "$(DEBUG)" = "gdb" ]; then \
+					gdb ./$(NAME) $(SEED); \
+					gdb ./$(DIY_NAME) $(SEED); \
 				else \
 					./$(NAME) $(SEED); \
 					./$(DIY_NAME) $(SEED); \
