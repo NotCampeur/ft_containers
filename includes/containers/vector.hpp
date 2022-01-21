@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/12 16:02:52 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/21 17:01:52 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <exception>
 # include "random_access_iterator.hpp"
 # include "reverse_iterator.hpp"
+# include "is_integral.hpp"
 
 namespace ft
 {
@@ -49,6 +50,53 @@ namespace ft
 			size_type	_size;
 			size_type	_capacity;
 
+			// Private modifiers functions used to indicate if the type can be used.
+			void		assign(size_type n, const value_type& val, ft::true_type)
+			{
+				while (n > _capacity)
+					reserve(_capacity * 2);
+				for (size_type i = 0; i < _size; i++)
+					_alloc.destroy(&_array[i]);
+				for (size_type i = 0; i < n; i++)
+					_alloc.construct(&_array[i], val);
+				_size = n;
+			}
+			template <class InputIterator>
+			void		assign(InputIterator first, InputIterator last, ft::false_type)
+			{
+				size_type n = last - first;
+				while (n > _capacity)
+					reserve(_capacity * 2);
+				for (size_type i(0); i < _size; i++)
+					_alloc.destroy(&_array[i]);
+				for (size_type i(0); first < last; i++ && first++)
+					_alloc.construct(&_array[i], *first);
+				_size = n;
+			}
+
+			void		insert(iterator pos, size_type n, const value_type& val, ft::true_type)
+			{
+				if (_size + n > _capacity)
+					reserve(_capacity * 2);
+				for (size_type i = _size; i > pos; i--)
+					_alloc.construct(&_array[i], _array[i - 1]);
+				for (size_type i = 0; i < n; i++)
+					_alloc.construct(&_array[pos + i], val);
+				_size += n;
+			}
+			template <class InputIterator>
+			void		insert(iterator pos, InputIterator first, InputIterator last, ft::false_type)
+			{
+				size_type n = last - first;
+				if (_size + n > _capacity)
+					reserve(_capacity * 2);
+				for (size_type i = _size; i > pos; i--)
+					_alloc.construct(&_array[i], _array[i - 1]);
+				for (size_type i = 0; first < last; i++)
+					_alloc.construct(&_array[pos + i], *(first + i));
+				_size += n;
+			}
+			
 		public:
 		// CONSTRUCTORS
 			// Default constructor
@@ -194,28 +242,38 @@ namespace ft
 			const_reference	back() const { return _array[_size - 1]; }
 
 		// Modifiers
-			void		assign(size_type n, const value_type& val)
-			{
-				while (n > _capacity)
-					reserve(_capacity * 2);
-				for (size_type i = 0; i < _size; i++)
-					_alloc.destroy(&_array[i]);
-				for (size_type i = 0; i < n; i++)
-					_alloc.construct(&_array[i], val);
-				_size = n;
-			}
 			template <class InputIterator>
-			void		assign(InputIterator first, InputIterator last)
+			void assign (InputIterator first, InputIterator last)
 			{
-				size_type n = last - first;
-				while (n > _capacity)
-					reserve(_capacity * 2);
-				for (size_type i(0); i < _size; i++)
-					_alloc.destroy(&_array[i]);
-				for (size_type i(0); first < last; i++ && first++)
-					_alloc.construct(&_array[i], *first);
-				_size = n;
+				assign(first, last, ft::is_integral<InputIterator>());
 			}
+
+			void assign (size_type n, const T& val)
+			{
+				assign(n, val, ft::true_type());
+			}
+			// void		assign(size_type n, const value_type& val)
+			// {
+			// 	while (n > _capacity)
+			// 		reserve(_capacity * 2);
+			// 	for (size_type i = 0; i < _size; i++)
+			// 		_alloc.destroy(&_array[i]);
+			// 	for (size_type i = 0; i < n; i++)
+			// 		_alloc.construct(&_array[i], val);
+			// 	_size = n;
+			// }
+			// template <class InputIterator>
+			// void		assign(InputIterator first, InputIterator last)
+			// {
+			// 	size_type n = last - first;
+			// 	while (n > _capacity)
+			// 		reserve(_capacity * 2);
+			// 	for (size_type i(0); i < _size; i++)
+			// 		_alloc.destroy(&_array[i]);
+			// 	for (size_type i(0); first < last; i++ && first++)
+			// 		_alloc.construct(&_array[i], *first);
+			// 	_size = n;
+			// }
 			void		push_back(const value_type& val)
 			{
 				if (_capacity == 0)
@@ -230,6 +288,7 @@ namespace ft
 				_alloc.destroy(&_array[_size - 1]);
 				_size--;
 			}
+			
 			iterator	insert(iterator pos, const value_type& val)
 			{
 				if (_size == _capacity)
@@ -240,28 +299,39 @@ namespace ft
 				_size++;
 				return pos;
 			}
-			void		insert(iterator pos, size_type n, const value_type& val)
+			
+			void insert (iterator pos, size_type n, const value_type& val)
 			{
-				if (_size + n > _capacity)
-					reserve(_capacity * 2);
-				for (size_type i = _size; i > pos; i--)
-					_alloc.construct(&_array[i], _array[i - 1]);
-				for (size_type i = 0; i < n; i++)
-					_alloc.construct(&_array[pos + i], val);
-				_size += n;
+				insert(pos, n, val, ft::true_type());
 			}
+
 			template <class InputIterator>
-			void		insert(iterator pos, InputIterator first, InputIterator last)
+			void insert (iterator pos, InputIterator first, InputIterator last)
 			{
-				size_type n = last - first;
-				if (_size + n > _capacity)
-					reserve(_capacity * 2);
-				for (size_type i = _size; i > pos; i--)
-					_alloc.construct(&_array[i], _array[i - 1]);
-				for (size_type i = 0; first < last; i++)
-					_alloc.construct(&_array[pos + i], *(first + i));
-				_size += n;
+				insert(pos, first, last, ft::is_integral<InputIterator>());
 			}
+			// void		insert(iterator pos, size_type n, const value_type& val)
+			// {
+			// 	if (_size + n > _capacity)
+			// 		reserve(_capacity * 2);
+			// 	for (size_type i = _size; i > pos; i--)
+			// 		_alloc.construct(&_array[i], _array[i - 1]);
+			// 	for (size_type i = 0; i < n; i++)
+			// 		_alloc.construct(&_array[pos + i], val);
+			// 	_size += n;
+			// }
+			// template <class InputIterator>
+			// void		insert(iterator pos, InputIterator first, InputIterator last)
+			// {
+			// 	size_type n = last - first;
+			// 	if (_size + n > _capacity)
+			// 		reserve(_capacity * 2);
+			// 	for (size_type i = _size; i > pos; i--)
+			// 		_alloc.construct(&_array[i], _array[i - 1]);
+			// 	for (size_type i = 0; first < last; i++)
+			// 		_alloc.construct(&_array[pos + i], *(first + i));
+			// 	_size += n;
+			// }
 			iterator	erase(iterator pos)
 			{
 				for (size_type i = pos; i < _size - 1; i++)
