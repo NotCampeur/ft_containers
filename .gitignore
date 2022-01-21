@@ -3,3 +3,4 @@ containers
 objs/*.o
 diy_objs/*.o
 logs/*.log
+.vscode
