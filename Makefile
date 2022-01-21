@@ -115,7 +115,7 @@ test:			$(NAME)
 				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ... \c"
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
-				else if [ "$(DEBUG)" = "gdb" ]; then \
+				elif [ "$(DEBUG)" = "gdb" ]; then \
 					gdb ./$< $(SEED); \
 				else \
 					./$< $(SEED); \
@@ -126,7 +126,7 @@ diy_test:		$(DIY_NAME)
 				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ... \c"
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
-				else if [ "$(DEBUG)" = "gdb" ]; then \
+				elif [ "$(DEBUG)" = "gdb" ]; then \
 					gdb ./$< $(SEED); \
 				else \
 					./$< $(SEED); \
@@ -138,7 +138,7 @@ test_both:		$(NAME) $(DIY_NAME)
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$(NAME) $(SEED); \
 					valgrind --leak-check=full --show-leak-kinds=all ./$(DIY_NAME) $(SEED); \
-				else if [ "$(DEBUG)" = "gdb" ]; then \
+				elif [ "$(DEBUG)" = "gdb" ]; then \
 					gdb ./$(NAME) $(SEED); \
 					gdb ./$(DIY_NAME) $(SEED); \
 				else \
