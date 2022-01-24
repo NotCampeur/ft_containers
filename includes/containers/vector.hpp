@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/21 19:11:56 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/24 19:16:25 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,56 +78,30 @@ namespace ft
 				_size = n;
 			}
 
-		// Need to lean on this function.
 			void		insert(iterator pos, size_type n, const value_type& val, ft::true_type)
 			{
-				size_t range;
-
-				long temp_pos;
-				Alloc alloc;
+				difference_type signed_n = n;
 				
-				long end_old_vector = end() - begin();
-				range = n;
-				long end_new_vector = end_old_vector + range;
-
-				int nb_element_to_switch = end() - pos;
-				temp_pos = pos - begin() + range;
-				if ((_size + range) > _size)
-				{
-					resize(_size + range);
-				}
-				size_t i = 0;
-				if (end_old_vector == 0)
-				{
-					while (i < range)
-					{
-						_array[i] = val;
-						i++;
-					}
+				if (n == 0)
 					return ;
-				}
-				int temp_range = range;
-
-				while (nb_element_to_switch)
+				if (_size +  n > _capacity)
+					resize(_size + n);
+				if (pos == end())
 				{
-					_array[end_new_vector - 1] = _array[end_old_vector - i - 1];
-					nb_element_to_switch--;
-					end_new_vector--;
-					i++;
+					for (size_type i = 0; i < n; i++)
+						_alloc.construct(&_array[_size + i], val);
+					_size += n;
 				}
-				temp_range -= i;
-				while (temp_range > 0)
+				else
 				{
-					n--;
-					_array[end_new_vector - 1] =  val;
-					temp_range--;
-					end_new_vector--;
-				}
-				while (n)
-				{
-					n--;
-					_array[end_new_vector - 1] = val;
-					end_new_vector--;
+					for (difference_type i = _size - 1; i > distance(begin(), pos); i--)
+					{
+						std::cout << "i = " << i << " _size = " << _size << " distance(begin(), pos) = " << distance(begin(), pos) << " _capacity = " << _capacity << std::endl;
+						_alloc.construct(&_array[i + n], _array[i]);
+					}
+					for (difference_type i = 0; i < signed_n; i++)
+						_alloc.construct(&_array[distance(begin(), pos) + i], val);
+					_size += n;
 				}
 			}
 			template <class InputIterator>
@@ -273,8 +247,7 @@ namespace ft
 			size_type	max_size() const { return _alloc.max_size(); }
 			void		resize(size_type n, value_type val = value_type())
 			{
-				while (n > _capacity)
-					reserve(_capacity);
+				reserve(n + 1);
 				if (n > _size)
 				{
 					for (size_type i = _size; i < n; i++)
@@ -291,16 +264,19 @@ namespace ft
 			bool		empty() const { return _size == 0; }
 			void		reserve(size_type n)
 			{
+				size_type new_capacity(1);
+				
 				if (n > _capacity)
 				{
-					pointer tmp = _alloc.allocate(n);
+					for (; new_capacity < n; new_capacity = new_capacity << 1);
+					pointer tmp = _alloc.allocate(new_capacity);
 					for (size_type i = 0; i < _size; i++)
 						_alloc.construct(&tmp[i], _array[i]);
 					for (size_type i = 0; i < _size; i++)
 						_alloc.destroy(&_array[i]);
 					_alloc.deallocate(_array, _capacity);
 					_array = tmp;
-					_capacity = n;
+					_capacity = new_capacity;
 				}
 			}
 			
@@ -378,10 +354,11 @@ namespace ft
 			
 			iterator	insert(iterator pos, const value_type& val)
 			{
+				std::cout << "insert" << std::endl;
 				if (_capacity == 0)
 					reserve(1);
 				else if (_size == _capacity)
-					reserve(_capacity * 2);
+					reserve(_size);
 				for (long i = _size; i > pos - _array; i--)
 					_alloc.construct(&_array[i], _array[i - 1]);
 				_alloc.construct(&_array[pos - _array], val);

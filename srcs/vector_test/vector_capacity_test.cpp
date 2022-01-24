@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector_capacity_test.cpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:10:54 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/04 16:15:35 by notcampeur       ###   ########.fr       */
+/*   Updated: 2022/01/24 16:25:43 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
