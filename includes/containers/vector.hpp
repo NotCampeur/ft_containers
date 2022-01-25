@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/24 19:16:25 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/25 18:00:58 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,28 +80,25 @@ namespace ft
 
 			void		insert(iterator pos, size_type n, const value_type& val, ft::true_type)
 			{
-				difference_type signed_n = n;
-				
 				if (n == 0)
 					return ;
-				if (_size +  n > _capacity)
-					resize(_size + n);
 				if (pos == end())
 				{
+					if (_size +  n > _capacity)
+						resize(_size + n);
 					for (size_type i = 0; i < n; i++)
-						_alloc.construct(&_array[_size + i], val);
-					_size += n;
+						_alloc.construct(&_array[_size - n + i], val);
 				}
 				else
 				{
+					if (_size +  n > _capacity)
+						resize(_size + n);					
 					for (difference_type i = _size - 1; i > distance(begin(), pos); i--)
 					{
-						std::cout << "i = " << i << " _size = " << _size << " distance(begin(), pos) = " << distance(begin(), pos) << " _capacity = " << _capacity << std::endl;
 						_alloc.construct(&_array[i + n], _array[i]);
 					}
-					for (difference_type i = 0; i < signed_n; i++)
-						_alloc.construct(&_array[distance(begin(), pos) + i], val);
-					_size += n;
+					for (difference_type i = 0; i < static_cast<difference_type>(n); i++)
+						_alloc.construct(&_array[_size - n + i], val);
 				}
 			}
 			template <class InputIterator>

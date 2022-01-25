@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:10:54 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/01/24 16:25:43 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/25 17:48:12 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ void	vector_size_method_test(void)
 	Logger() << "2. size: " << myints.size();
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs\n";
 
+	for (ft::vector<int>::iterator it=myints.begin(); it!=myints.end(); ++it)
+		Logger() << *it;
 	myints.pop_back();
 	gettimeofday(&start_time, NULL);
 	Logger() << "3. size: " << myints.size();
