@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/01/24 13:44:44 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/26 16:05:27 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ int main(int argc, char** argv)
 	log_name = "logs/" + log_name;
 	Logger::open_log_file(log_name);
 	Logger::enable_time(false);
+	Logger::put_timestamp();
 	Logger() << "Starting " << argv[0];
 	try
 	{

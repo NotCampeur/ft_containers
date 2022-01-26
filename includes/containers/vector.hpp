@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/25 18:00:58 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/26 16:15:30 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,19 +261,16 @@ namespace ft
 			bool		empty() const { return _size == 0; }
 			void		reserve(size_type n)
 			{
-				size_type new_capacity(1);
-				
 				if (n > _capacity)
 				{
-					for (; new_capacity < n; new_capacity = new_capacity << 1);
-					pointer tmp = _alloc.allocate(new_capacity);
+					pointer tmp = _alloc.allocate(n);
 					for (size_type i = 0; i < _size; i++)
 						_alloc.construct(&tmp[i], _array[i]);
 					for (size_type i = 0; i < _size; i++)
 						_alloc.destroy(&_array[i]);
 					_alloc.deallocate(_array, _capacity);
 					_array = tmp;
-					_capacity = new_capacity;
+					_capacity = n;
 				}
 			}
 			
@@ -351,7 +348,6 @@ namespace ft
 			
 			iterator	insert(iterator pos, const value_type& val)
 			{
-				std::cout << "insert" << std::endl;
 				if (_capacity == 0)
 					reserve(1);
 				else if (_size == _capacity)
