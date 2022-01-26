@@ -48,8 +48,19 @@ log_importance_level operator~(const log_importance_level & value_a);
 class Logger
 {
 	public:
-		Logger(log_type type = basic_type, log_importance_level importance = major_lvl);
+		Logger(void);
+		Logger(log_type type);
+		Logger(log_importance_level importance);
+		Logger(log_type type, log_importance_level importance);
 		~Logger();
+
+		// In case the type is not specified when you create a Logger. 
+		// The type of the entry will be the default one.
+		static void set_default_type(log_type type);
+
+		// In case the importance is not specified when you create a Logger.
+		// The importance of the entry will be the default one.
+		static void set_default_importance(log_importance_level importance);
 
 		// This function will set the accepted level.
 		// If you try to write an entry below the accepted level
@@ -70,6 +81,9 @@ class Logger
 		// If you never set it yourself the time will be displayed.
 		static void	enable_time(bool enable);
 
+		// In cases you want to manually print the time. The use of enable_time is recommended.
+		static void	put_timestamp(void);
+
 		// This function need to be called right before the end of the program.
 		// The ofstream map will be correctly deleted.
 		static void	quit(void);
@@ -86,13 +100,11 @@ class Logger
 		Logger	&operator<<(const bool & entry);
 
 	private:
-		void	put_timestamp(void);
-
 		static std::ofstream		_file;
 		static log_importance_level	_accepted_importance;
 		static pid_t				_process_id;
-		log_type					_type;
-		log_importance_level		_importance;
+		static log_type				_type;
+		static log_importance_level	_importance;
 };
 
 #endif

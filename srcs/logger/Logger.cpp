@@ -8,7 +8,28 @@
 std::ofstream			Logger::_file;
 log_importance_level	Logger::_accepted_importance = log_importance_level(error_lvl | major_lvl | time_lvl);
 pid_t					Logger::_process_id = getpid();
+log_type				Logger::_type = basic_type;
+log_importance_level	Logger::_importance = major_lvl;
 
+Logger::Logger(void)
+{
+	if (is_important_enough() && (_accepted_importance & time_lvl) != 0)
+		put_timestamp();
+}
+
+Logger::Logger(log_type type)
+{
+	_type = type;
+	if (is_important_enough() && (_accepted_importance & time_lvl) != 0)
+		put_timestamp();
+}
+
+Logger::Logger(log_importance_level importance)
+{
+	_importance = importance;
+	if (is_important_enough() && (_accepted_importance & time_lvl) != 0)
+		put_timestamp();
+}
 
 Logger::Logger(log_type type, log_importance_level importance)
 {
@@ -39,6 +60,18 @@ Logger::put_timestamp(void)
 	if (_type == error_type)
 		msg += "{ERROR} ";
 	_file << msg;
+}
+
+void
+Logger::set_default_type(log_type type)
+{
+	_type = type;
+}
+
+void
+Logger::set_default_importance(log_importance_level importance)
+{
+	_importance = importance;
 }
 
 void
