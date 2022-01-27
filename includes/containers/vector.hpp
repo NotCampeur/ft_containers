@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/26 16:15:30 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/26 17:05:16 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,12 @@ namespace ft
 			// Private modifiers functions used to indicate if the type can be used.
 			void		assign(size_type n, const value_type& val, ft::true_type)
 			{
-				while (n > _capacity)
-					reserve(_capacity * 2);
+				size_type	new_capacity(1);
+
 				for (size_type i = 0; i < _size; i++)
 					_alloc.destroy(&_array[i]);
+				for (; new_capacity < n; new_capacity = new_capacity << 1){};
+				reserve(new_capacity);
 				for (size_type i = 0; i < n; i++)
 					_alloc.construct(&_array[i], val);
 				_size = n;
@@ -482,6 +484,7 @@ namespace ft
 	{
 		if (lhs != rhs)
 			return !(rhs < lhs);
+		return false;
 	}
 
 	template <class T, class Alloc>
