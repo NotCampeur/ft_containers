@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 16:38:29 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/01/12 16:23:58 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/27 19:10:10 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ void	vector_assign_method_test(void)
 	gettimeofday(&start_time, NULL);
 	first.assign (7,100);             // 7 ints with a value of 100
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
-
+	first[1] = 200;
+	first[5] = 200;
 	ft::vector<int>::iterator it;
 	it=first.begin()+1;
 
@@ -37,9 +38,15 @@ void	vector_assign_method_test(void)
 	third.assign (myints,myints+3);   // assigning from array.
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
 
-	Logger() << "Size of first: " << int (first.size());
-	Logger() << "Size of second: " << int (second.size());
-	Logger() << "Size of third: " << int (third.size());
+	Logger() << "1. Capacity: " << first.capacity() << " Size: " << int (first.size());
+	for (ft::vector<int>::size_type i = 0; i < first.size(); i++)
+		Logger() << "first[" << i << "] = " << first[i];
+	Logger() << "2. Capacity: " << second.capacity() << " Size: " << int (second.size());
+	for (ft::vector<int>::size_type i = 0; i < second.size(); i++)
+		Logger() << "second[" << i << "] = " << second[i];
+	Logger() << "3. Capacity: " << third.capacity() << " Size: " << int (third.size());
+	for (ft::vector<int>::size_type i = 0; i < third.size(); i++)
+		Logger() << "third[" << i << "] = " << third[i];
 }
 
 void	vector_push_back_method_test(void)
@@ -88,11 +95,14 @@ void	vector_insert_method_test(void)
 	gettimeofday(&start_time, NULL);
 	it = myvector.insert ( it , 200 );
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
-
+	for (ft::vector<int>::size_type i = 0; i < myvector.size(); i++)
+		Logger() << "myvector[" << i << "] = " << myvector[i];
+		
 	gettimeofday(&start_time, NULL);
 	myvector.insert (it,2,300);
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
-
+	for (ft::vector<int>::size_type i = 0; i < myvector.size(); i++)
+		Logger() << "myvector[" << i << "] = " << myvector[i];
 	// "it" no longer valid, get a new one:
 	it = myvector.begin();
 

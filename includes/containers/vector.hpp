@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/26 17:05:16 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/27 19:21:05 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,9 @@ namespace ft
 			// Private modifiers functions used to indicate if the type can be used.
 			void		assign(size_type n, const value_type& val, ft::true_type)
 			{
-				size_type	new_capacity(1);
-
 				for (size_type i = 0; i < _size; i++)
 					_alloc.destroy(&_array[i]);
-				for (; new_capacity < n; new_capacity = new_capacity << 1){};
-				reserve(new_capacity);
+				reserve(n);
 				for (size_type i = 0; i < n; i++)
 					_alloc.construct(&_array[i], val);
 				_size = n;
@@ -67,11 +64,10 @@ namespace ft
 			template <class InputIterator>
 			void		assign(InputIterator first, InputIterator last, ft::false_type)
 			{
-				size_type n = last - first;
-				while (n > _capacity)
-					reserve(_capacity * 2);
+				size_type n = ft::distance(first, last);
 				for (size_type i(0); i < _size; i++)
 					_alloc.destroy(&_array[i]);
+				reserve(n);
 				for (size_type i(0); first < last; i++)
 				{
 					_alloc.construct(&_array[i], *first);
@@ -82,6 +78,7 @@ namespace ft
 
 			void		insert(iterator pos, size_type n, const value_type& val, ft::true_type)
 			{
+				std::ptrdiff_t dist = ft::distance(begin(), pos);
 				if (n == 0)
 					return ;
 				if (pos == end())
@@ -93,67 +90,44 @@ namespace ft
 				}
 				else
 				{
-					if (_size +  n > _capacity)
-						resize(_size + n);					
-					for (difference_type i = _size - 1; i > distance(begin(), pos); i--)
+					if (_size + n > _capacity)
+						resize(_size + n);
+					for (std::ptrdiff_t i = _size - n - 1; i >= dist; i--)
 					{
 						_alloc.construct(&_array[i + n], _array[i]);
 					}
-					for (difference_type i = 0; i < static_cast<difference_type>(n); i++)
-						_alloc.construct(&_array[_size - n + i], val);
+					for (size_type i = dist; i < n; i++)
+						_alloc.construct(&_array[i], val);
 				}
 			}
 			template <class InputIterator>
 			void		insert(iterator pos, InputIterator first, InputIterator last, ft::false_type)
 			{
-				size_t range;
-
-				long temp_pos;
-				Alloc alloc;
-				
-				long end_old_vector = end() - begin() - 1;
-				range = ft::distance(first, last);
-				long end_new_vector = end_old_vector + range;
-
-				int nb_element_to_switch = end() - pos;
-				temp_pos = pos - begin() + range;
-				if ((_size + range) > _size)
+				std::ptrdiff_t n = ft::distance(first, last);
+				if (n == 0)
+					return ;
+				if (pos == end())
 				{
-					resize(_size + range);
-				}
-				size_t i = 0;
-				if (end_old_vector == 0)
-				{
-					while (i < range)
+					if (_size +  n > _capacity)
+						resize(_size + n);
+					for (std::ptrdiff_t i = 0; first < last; first++)
 					{
-						_array[i] = *first;
-						first++;
+						_alloc.construct(&_array[_size - n + i], *first);
 						i++;
 					}
-					return ;
 				}
-				int temp_range = range;
-
-				while (nb_element_to_switch)
+				else
 				{
-					_array[end_new_vector] = _array[end_old_vector - i];
-					nb_element_to_switch--;
-					end_new_vector--;
-					i++;
-				}
-				temp_range -= i;
-				while (temp_range > 0)
-				{
-					last--;
-					_array[end_new_vector] =  *last;
-					temp_range--;
-					end_new_vector--;
-				}
-				while (first != last)
-				{
-					last--;
-					_array[end_new_vector] = *last;
-					end_new_vector--;
+					std::ptrdiff_t dist = ft::distance(begin(), pos);
+					if (_size +  n > _capacity)
+						resize(_size + n);					
+					for (std::ptrdiff_t i = _size - n - 1; i >= dist; i--)
+						_alloc.construct(&_array[i + n], _array[i]);
+					for (std::ptrdiff_t i = dist; first < last; first++)
+					{
+						_alloc.construct(&_array[i], *first);
+						i++;
+					}
 				}
 			}
 			
@@ -350,15 +324,17 @@ namespace ft
 			
 			iterator	insert(iterator pos, const value_type& val)
 			{
+				size_type n = ft::distance(begin(), pos);
+				
 				if (_capacity == 0)
 					reserve(1);
 				else if (_size == _capacity)
-					reserve(_size);
-				for (long i = _size; i > pos - _array; i--)
+					reserve(_capacity + 1);
+				for (size_type i = _size; i > n; i--)
 					_alloc.construct(&_array[i], _array[i - 1]);
-				_alloc.construct(&_array[pos - _array], val);
+				_alloc.construct(&_array[n], val);
 				_size++;
-				return pos;
+				return iterator(&_array[n]);
 			}
 			
 			void insert (iterator pos, size_type n, const value_type& val)
