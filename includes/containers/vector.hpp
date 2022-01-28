@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/28 17:19:30 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/28 19:34:32 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,26 +79,33 @@ namespace ft
 			void		insert(iterator pos, size_type n, const value_type& val, ft::true_type)
 			{
 				std::ptrdiff_t dist = ft::distance(begin(), pos);
+				size_type old_size = _size;
+
 				if (n == 0)
 					return ;
 				if (pos == end())
 				{
 					if (_size +  n > _capacity)
-						resize(_size + n);
+						reserve(_size + n);
 					for (size_type i = 0; i < n; i++)
-						_alloc.construct(&_array[_size - n + i], val);
+					{
+						_alloc.construct(&_array[old_size + i], val);
+						_size++;
+					}
 				}
 				else
 				{
 					if (_size + n > _capacity)
 						resize(_size + n);
-					for (std::ptrdiff_t i = _size - n - 1; i >= static_cast<std::ptrdiff_t>(n); i--)
+					for (std::ptrdiff_t i = old_size - 1; i >= static_cast<std::ptrdiff_t>(n); i--)
 					{
 						_alloc.construct(&_array[i + n], _array[i]);
+						_size++;
 					}
 					for (size_type i = 0; i < n; i++)
 					{
 						_alloc.construct(&_array[dist + i], val);
+						_size++;
 					}
 				}
 			}
@@ -106,30 +113,34 @@ namespace ft
 			template <class InputIterator>
 			void		insert(iterator pos, InputIterator first, InputIterator last, ft::false_type)
 			{
+				size_type	old_size = _size;
 				std::ptrdiff_t n = ft::distance(first, last);
+				
 				if (n == 0)
 					return ;
 				if (pos == end())
 				{
 					if (_size +  n > _capacity)
-						resize(_size + n);
+						reserve(_size + n);
 					for (std::ptrdiff_t i = 0; first < last; first++)
 					{
-						_alloc.construct(&_array[_size - n + i], *first);
+						_alloc.construct(&_array[old_size + i], *first);
 						i++;
+						_size++;
 					}
 				}
 				else
 				{
 					std::ptrdiff_t dist = ft::distance(begin(), pos);
 					if (_size +  n > _capacity)
-						resize(_size + n);					
-					for (std::ptrdiff_t i = _size - n - 1; i >= dist; i--)
+						reserve(_size + n);					
+					for (std::ptrdiff_t i = old_size - 1; i >= dist; i--)
 						_alloc.construct(&_array[i + n], _array[i]);
 					for (std::ptrdiff_t i = dist; first < last; first++)
 					{
 						_alloc.construct(&_array[i], *first);
 						i++;
+						_size++;
 					}
 				}
 			}
@@ -233,7 +244,7 @@ namespace ft
 	
 			void		resize(size_type n, value_type val = value_type())
 			{
-				reserve(n + 1);
+				reserve(n);
 				if (n > _size)
 				{
 					for (size_type i = _size; i < n; i++)
@@ -253,9 +264,13 @@ namespace ft
 	
 			void		reserve(size_type n)
 			{
+				pointer tmp;
 				if (n > _capacity)
 				{
-					pointer tmp = _alloc.allocate(n);
+					if (_size == 0)
+						tmp = _alloc.allocate(n);
+					else
+						tmp = _alloc.allocate(_size * 2);
 					for (size_type i = 0; i < _size; i++)
 						_alloc.construct(&tmp[i], _array[i]);
 					for (size_type i = 0; i < _size; i++)
@@ -314,7 +329,7 @@ namespace ft
 				if (_capacity == 0)
 					reserve(1);
 				else if (_size == _capacity)
-					reserve(_capacity * 2);
+					reserve(_size * 2);
 				_alloc.construct(&_array[_size], val);
 				_size++;
 			}
@@ -327,12 +342,12 @@ namespace ft
 			
 			iterator	insert(iterator pos, const value_type& val)
 			{
-				size_type n = ft::distance(begin(), pos);
+				size_type	n = ft::distance(begin(), pos);
 				
 				if (_capacity == 0)
 					reserve(1);
 				else if (_size == _capacity)
-					reserve(_capacity + 1);
+					reserve(_size * 2);
 				for (size_type i = _size; i > n; i--)
 					_alloc.construct(&_array[i], _array[i - 1]);
 				_alloc.construct(&_array[n], val);
