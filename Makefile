@@ -86,7 +86,7 @@ all:			$(NAME) $(DIY_NAME)
 				@echo "Type $(_BLUE)make diy_test SEED=NUMBER$(_PURPLE) to create a binary testing homemade containers."
 				@echo "Type $(_BLUE)make test_both SEED=NUMBER$(_PURPLE) to create a binary testing both containers and a diff.log file."
 				@echo "Add $(_BLUE)DEBUG=fs$(_PURPLE) to compile with fsanitize and debug flags."
-				@echo "Add $(_BLUE)DEBUG=vl$(_PURPLE) to compile with valgrind and debug flags.$(_WHITE)"
+				@echo "Add $(_BLUE)DEBUG=vl$(_PURPLE) to compile with valgrind and debug flags."
 				@echo "Add $(_BLUE)DEBUG=gdb$(_PURPLE) to compile with gdb and debug flags.$(_WHITE)"
 
 $(NAME):		$(OBJ)

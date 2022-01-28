@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/27 19:21:05 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/28 16:17:56 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,7 @@ namespace ft
 				for (size_type i = 0; i < _size; i++)
 					_alloc.construct(&_array[i], x._array[i]);
 			}
+	
 			vector &operator=(const vector& x)
 			{
 				assign(x.begin(), x.end());
@@ -186,30 +187,37 @@ namespace ft
 			{
 				return iterator(_array);
 			}
+	
 			const_iterator begin() const
 			{
 				return const_iterator(_array);
 			}
+	
 			iterator end()
 			{
 				return iterator(_array + _size);
 			}
+	
 			const_iterator end() const
 			{
 				return const_iterator(_array + _size);
 			}
+	
 			reverse_iterator rbegin()
 			{
 				return reverse_iterator(end());
 			}
+	
 			const_reverse_iterator rbegin() const
 			{
 				return const_reverse_iterator(end());
 			}
+	
 			reverse_iterator rend()
 			{
 				return reverse_iterator(begin());
 			}
+	
 			const_reverse_iterator rend() const
 			{
 				return const_reverse_iterator(begin());
@@ -217,7 +225,9 @@ namespace ft
 
 		// Capacity
 			size_type	size() const { return _size; }
+	
 			size_type	max_size() const { return _alloc.max_size(); }
+	
 			void		resize(size_type n, value_type val = value_type())
 			{
 				reserve(n + 1);
@@ -233,8 +243,11 @@ namespace ft
 				}
 				_size = n;
 			}
+	
 			size_type	capacity() const { return _capacity; }
+	
 			bool		empty() const { return _size == 0; }
+	
 			void		reserve(size_type n)
 			{
 				if (n > _capacity)
@@ -255,23 +268,30 @@ namespace ft
 			{
 				return _array[n];
 			}
+	
 			const_reference	operator[] (size_type n) const
 			{
 				return _array[n];
 			}
+	
 			reference	at(size_type n)
 			{
 				_M_range_check(n); 
 				return _array[n];
 			}
+	
 			const_reference	at(size_type n) const
 			{
 				_M_range_check(n); 
 				return _array[n];
 			}
+	
 			reference	front() { return _array[0]; }
+	
 			const_reference	front() const { return _array[0]; }
+	
 			reference	back() { return _array[_size - 1]; }
+	
 			const_reference	back() const { return _array[_size - 1]; }
 
 		// Modifiers
@@ -285,28 +305,7 @@ namespace ft
 			{
 				assign(n, val, ft::true_type());
 			}
-			// void		assign(size_type n, const value_type& val)
-			// {
-			// 	while (n > _capacity)
-			// 		reserve(_capacity * 2);
-			// 	for (size_type i = 0; i < _size; i++)
-			// 		_alloc.destroy(&_array[i]);
-			// 	for (size_type i = 0; i < n; i++)
-			// 		_alloc.construct(&_array[i], val);
-			// 	_size = n;
-			// }
-			// template <class InputIterator>
-			// void		assign(InputIterator first, InputIterator last)
-			// {
-			// 	size_type n = last - first;
-			// 	while (n > _capacity)
-			// 		reserve(_capacity * 2);
-			// 	for (size_type i(0); i < _size; i++)
-			// 		_alloc.destroy(&_array[i]);
-			// 	for (size_type i(0); first < last; i++ && first++)
-			// 		_alloc.construct(&_array[i], *first);
-			// 	_size = n;
-			// }
+
 			void		push_back(const value_type& val)
 			{
 				if (_capacity == 0)
@@ -316,6 +315,7 @@ namespace ft
 				_alloc.construct(&_array[_size], val);
 				_size++;
 			}
+
 			void		pop_back()
 			{
 				_alloc.destroy(&_array[_size - 1]);
@@ -347,28 +347,7 @@ namespace ft
 			{
 				insert(pos, first, last, ft::is_integral<InputIterator>());
 			}
-			// void		insert(iterator pos, size_type n, const value_type& val)
-			// {
-			// 	if (_size + n > _capacity)
-			// 		reserve(_capacity * 2);
-			// 	for (size_type i = _size; i > pos; i--)
-			// 		_alloc.construct(&_array[i], _array[i - 1]);
-			// 	for (size_type i = 0; i < n; i++)
-			// 		_alloc.construct(&_array[pos + i], val);
-			// 	_size += n;
-			// }
-			// template <class InputIterator>
-			// void		insert(iterator pos, InputIterator first, InputIterator last)
-			// {
-			// 	size_type n = last - first;
-			// 	if (_size + n > _capacity)
-			// 		reserve(_capacity * 2);
-			// 	for (size_type i = _size; i > pos; i--)
-			// 		_alloc.construct(&_array[i], _array[i - 1]);
-			// 	for (size_type i = 0; first < last; i++)
-			// 		_alloc.construct(&_array[pos + i], *(first + i));
-			// 	_size += n;
-			// }
+
 			iterator	erase(iterator pos)
 			{
 				iterator it_end = end();
@@ -384,18 +363,22 @@ namespace ft
 				_size--;
 				return pos;
 			}
+
 			iterator	erase(iterator first, iterator last)
 			{
-				for (; first != last; last--)
-					erase(last);
+				std::ptrdiff_t	range = ft::distance(first, last);
+				for (std::ptrdiff_t i(0); i < range; i++)
+					erase(first);
 				return first;
 			}
+
 			void		swap(vector& x)
 			{
 				std::swap(_array, x._array);
 				std::swap(_size, x._size);
 				std::swap(_capacity, x._capacity);
 			}
+
 			void		clear()
 			{
 				for (size_type i = 0; i < _size; i++)
