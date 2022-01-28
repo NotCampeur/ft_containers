@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector_iterators_test.cpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: notcampeur <notcampeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 18:06:17 by notcampeur        #+#    #+#             */
-/*   Updated: 2021/11/11 21:04:20 by notcampeur       ###   ########.fr       */
+/*   Updated: 2022/01/28 19:12:53 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	vector_begin_method_test(void)
 	myvector.begin();
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
 	for (int i=1; i<=5; i++) myvector.push_back(i);
+	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 
 	Logger() << "myvector contains:";
 	for (ft::vector<int>::iterator it = myvector.begin() ; it != myvector.end(); ++it)
