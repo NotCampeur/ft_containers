@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 16:38:29 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/01/27 19:10:10 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/28 17:10:21 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void	vector_insert_method_test(void)
 	struct timeval	start_time;
 	ft::vector<int> myvector (3,100);
 	ft::vector<int>::iterator it;
+	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 
 	Logger() << "__________[vector_insert_method_test]__________";
 
@@ -95,15 +96,23 @@ void	vector_insert_method_test(void)
 	gettimeofday(&start_time, NULL);
 	it = myvector.insert ( it , 200 );
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
+	for (ft::vector<int>::size_type i = 0; i < myvector.size(); i++)
+		Logger() << "myvector[" << i << "] = " << myvector[i];
+	
+	gettimeofday(&start_time, NULL);
+	it = myvector.insert ( myvector.end() - 2 , 200 );
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 	for (ft::vector<int>::size_type i = 0; i < myvector.size(); i++)
 		Logger() << "myvector[" << i << "] = " << myvector[i];
 		
 	gettimeofday(&start_time, NULL);
 	myvector.insert (it,2,300);
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 	for (ft::vector<int>::size_type i = 0; i < myvector.size(); i++)
 		Logger() << "myvector[" << i << "] = " << myvector[i];
-	// "it" no longer valid, get a new one:
 	it = myvector.begin();
 
 	ft::vector<int> anothervector (2,400);

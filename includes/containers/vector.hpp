@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/28 16:17:56 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/28 17:19:30 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,14 +92,17 @@ namespace ft
 				{
 					if (_size + n > _capacity)
 						resize(_size + n);
-					for (std::ptrdiff_t i = _size - n - 1; i >= dist; i--)
+					for (std::ptrdiff_t i = _size - n - 1; i >= static_cast<std::ptrdiff_t>(n); i--)
 					{
 						_alloc.construct(&_array[i + n], _array[i]);
 					}
-					for (size_type i = dist; i < n; i++)
-						_alloc.construct(&_array[i], val);
+					for (size_type i = 0; i < n; i++)
+					{
+						_alloc.construct(&_array[dist + i], val);
+					}
 				}
 			}
+
 			template <class InputIterator>
 			void		insert(iterator pos, InputIterator first, InputIterator last, ft::false_type)
 			{
