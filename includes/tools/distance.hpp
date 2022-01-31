@@ -6,15 +6,15 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/21 18:52:12 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/25 17:46:10 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/31 16:55:57 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONTAINERS_DISTANCE_HPP
 # define CONTAINERS_DISTANCE_HPP  
 
-#include "iterator_traits.hpp"
-#include "iterator_tags.hpp"
+#include "iterators/iterator_traits.hpp"
+#include "iterators/iterator_tags.hpp"
 #include <iterator>
 
 namespace ft
