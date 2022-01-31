@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/01 00:36:06 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/01 00:52:11 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ namespace ft
 				for (size_type i(0); i < _size; i++)
 					_alloc.destroy(&_array[i]);
 				reserve(n);
-				for (size_type i(0); first < last; i++)
+				for (size_type i(0); first != last; i++)
 				{
 					_alloc.construct(&_array[i], *first);
 					first++;
@@ -117,7 +117,7 @@ namespace ft
 				{
 					if (_size +  n > _capacity)
 						reserve(_size + n);
-					for (std::ptrdiff_t i = 0; first < last; first++)
+					for (std::ptrdiff_t i = 0; first != last; first++)
 					{
 						_alloc.construct(&_array[old_size + i], *first);
 						i++;
@@ -131,7 +131,7 @@ namespace ft
 						reserve(_size + n);					
 					for (std::ptrdiff_t i = old_size - 1; i >= dist; i--)
 						_alloc.construct(&_array[i + n], _array[i]);
-					for (std::ptrdiff_t i = dist; first < last; first++)
+					for (std::ptrdiff_t i = dist; first != last; first++)
 					{
 						_alloc.construct(&_array[i], *first);
 						i++;
