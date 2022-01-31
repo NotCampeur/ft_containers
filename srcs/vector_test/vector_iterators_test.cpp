@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 18:06:17 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/01/28 19:12:53 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/31 13:38:44 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	vector_begin_method_test(void)
 	gettimeofday(&start_time, NULL);
 	myvector.begin();
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 	for (int i=1; i<=5; i++) myvector.push_back(i);
 	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 

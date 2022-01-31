@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 16:38:29 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/01/28 18:58:34 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/31 16:28:28 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,48 +88,60 @@ void	vector_insert_method_test(void)
 	struct timeval	start_time;
 	ft::vector<int> myvector (3,100);
 	ft::vector<int>::iterator it;
-	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 
 	Logger() << "__________[vector_insert_method_test]__________";
+	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 
 	it = myvector.begin();
 	gettimeofday(&start_time, NULL);
 	it = myvector.insert ( it , 200 );
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
-	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 	for (ft::vector<int>::size_type i = 0; i < myvector.size(); i++)
 		Logger() << "myvector[" << i << "] = " << myvector[i];
+	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 	
 	gettimeofday(&start_time, NULL);
 	it = myvector.insert ( myvector.end() - 2 , 200 );
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
-	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 	for (ft::vector<int>::size_type i = 0; i < myvector.size(); i++)
 		Logger() << "myvector[" << i << "] = " << myvector[i];
+	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 		
 	gettimeofday(&start_time, NULL);
 	myvector.insert (it,2,300);
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
-	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 	for (ft::vector<int>::size_type i = 0; i < myvector.size(); i++)
 		Logger() << "myvector[" << i << "] = " << myvector[i];
+	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 	it = myvector.begin();
 
 	ft::vector<int> anothervector (2,400);
 	gettimeofday(&start_time, NULL);
 	myvector.insert (it+2,anothervector.begin(),anothervector.end());
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+	for (it=myvector.begin(); it<myvector.end(); it++)
+		Logger() << *it;
 	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 
 	int myarray [] = { 501,502,503 };
 	gettimeofday(&start_time, NULL);
 	myvector.insert (myvector.begin(), myarray, myarray+3);
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
-	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
 
 	Logger() << "myvector contains:";
 	for (it=myvector.begin(); it<myvector.end(); it++)
 		Logger() << *it;
+	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
+
+	gettimeofday(&start_time, NULL);
+	myvector.insert (myvector.begin(), 50, 42);
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+
+	Logger() << "myvector contains:";
+	for (it=myvector.begin(); it<myvector.end(); it++)
+		Logger() << *it;
+	Logger() << "Vector capacity: " << myvector.capacity() << " Vector size: " << int (myvector.size());
+	
 	Logger();
 }
 

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/28 19:34:32 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/31 16:09:14 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ namespace ft
 
 			void		insert(iterator pos, size_type n, const value_type& val, ft::true_type)
 			{
-				std::ptrdiff_t dist = ft::distance(begin(), pos);
+				std::ptrdiff_t pos_n = ft::distance(begin(), pos);
 				size_type old_size = _size;
 
 				if (n == 0)
@@ -88,25 +88,20 @@ namespace ft
 					if (_size +  n > _capacity)
 						reserve(_size + n);
 					for (size_type i = 0; i < n; i++)
-					{
 						_alloc.construct(&_array[old_size + i], val);
-						_size++;
-					}
+					_size += n;
 				}
 				else
 				{
 					if (_size + n > _capacity)
-						resize(_size + n);
-					for (std::ptrdiff_t i = old_size - 1; i >= static_cast<std::ptrdiff_t>(n); i--)
+						reserve(_size + n);
+					for (std::ptrdiff_t i = old_size - 1; i >= pos_n; i--)
 					{
 						_alloc.construct(&_array[i + n], _array[i]);
-						_size++;
 					}
 					for (size_type i = 0; i < n; i++)
-					{
-						_alloc.construct(&_array[dist + i], val);
-						_size++;
-					}
+						_alloc.construct(&_array[pos_n + i], val);
+					_size += n;
 				}
 			}
 
@@ -264,20 +259,27 @@ namespace ft
 	
 			void		reserve(size_type n)
 			{
-				pointer tmp;
+				pointer		tmp;
+				size_type	new_capacity(_size);
+				
 				if (n > _capacity)
 				{
 					if (_size == 0)
-						tmp = _alloc.allocate(n);
+						new_capacity = n;
 					else
-						tmp = _alloc.allocate(_size * 2);
+					{
+						new_capacity = new_capacity << 1;
+						if (new_capacity < n)
+							new_capacity = n;
+					}
+					tmp = _alloc.allocate(new_capacity);
 					for (size_type i = 0; i < _size; i++)
 						_alloc.construct(&tmp[i], _array[i]);
 					for (size_type i = 0; i < _size; i++)
 						_alloc.destroy(&_array[i]);
 					_alloc.deallocate(_array, _capacity);
 					_array = tmp;
-					_capacity = n;
+					_capacity = new_capacity;
 				}
 			}
 			
@@ -329,7 +331,7 @@ namespace ft
 				if (_capacity == 0)
 					reserve(1);
 				else if (_size == _capacity)
-					reserve(_size * 2);
+					reserve(_size + 1);
 				_alloc.construct(&_array[_size], val);
 				_size++;
 			}
@@ -347,7 +349,7 @@ namespace ft
 				if (_capacity == 0)
 					reserve(1);
 				else if (_size == _capacity)
-					reserve(_size * 2);
+					reserve(_size + 1);
 				for (size_type i = _size; i > n; i--)
 					_alloc.construct(&_array[i], _array[i - 1]);
 				_alloc.construct(&_array[n], val);
