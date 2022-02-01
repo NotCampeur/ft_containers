@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/01 04:14:36 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/01 12:58:28 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include "../tools/iterators/reverse_iterator.hpp"
 # include "../tools/integral_constant/is_integral.hpp"
 # include "../tools/distance.hpp"
+# include "../tools/lexicographical_compare.hpp"
 
 namespace ft
 {
@@ -449,7 +450,7 @@ namespace ft
 	template <class T, class Alloc>
 	bool	operator<(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{
-		return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+		return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 	}
 
 	template <class T, class Alloc>
