@@ -19,8 +19,15 @@ VECTOR_TEST =	vector_modifiers_test.cpp \
 				vector_allocator_test.cpp \
 				vector_relational_operators_test.cpp
 
+STACK_TEST =	stack_modifiers_test.cpp \
+				stack_capacity_test.cpp \
+				stack_element_access_test.cpp \
+				stack_relational_operators_test.cpp \
+				stack_mutant_test.cpp
+
 SRC 	=		main.cpp \
 				$(VECTOR_TEST) \
+				$(STACK_TEST) \
 				Logger.cpp
 
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
