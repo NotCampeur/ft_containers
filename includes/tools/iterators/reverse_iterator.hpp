@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/10 14:36:01 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/01 03:51:09 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/01 04:23:45 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,25 +73,25 @@ namespace ft
 	template< class It1, class It2 >
 	bool operator<(const reverse_iterator<It1>& lhs, const reverse_iterator<It2>& rhs)
 	{
-		return lhs.base() < rhs.base();
+		return lhs.base() > rhs.base();
 	}
 
 	template< class It1, class It2 >
 	bool operator<=(const reverse_iterator<It1>& lhs, const reverse_iterator<It2>& rhs)
 	{
-		return lhs.base() <= rhs.base();
+		return lhs.base() >= rhs.base();
 	}
 
 	template< class It1, class It2 >
 	bool operator>(const reverse_iterator<It1>& lhs, const reverse_iterator<It2>& rhs)
 	{
-		return lhs.base() > rhs.base();
+		return lhs.base() < rhs.base();
 	}
 
 	template< class It1, class It2 >
 	bool operator>=(const reverse_iterator<It1>& lhs, const reverse_iterator<It2>& rhs)
 	{
-		return lhs.base() >= rhs.base();
+		return lhs.base() <= rhs.base();
 	}
 
 	template< class It >
