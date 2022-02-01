@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/01 00:52:11 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/01 04:14:36 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -455,15 +455,13 @@ namespace ft
 	template <class T, class Alloc>
 	bool	operator<=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{
-		return !(rhs > lhs);
+		return !(rhs < lhs);
 	}
 
 	template <class T, class Alloc>
 	bool	operator>(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{
-		if (lhs != rhs)
-			return !(rhs < lhs);
-		return false;
+		return rhs < lhs;
 	}
 
 	template <class T, class Alloc>
