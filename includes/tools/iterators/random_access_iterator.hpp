@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/07 15:52:16 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/01/21 18:04:08 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/01 01:46:26 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ namespace ft
 		pointer									_ptr;
 
 		const_random_access_iterator() {}
+		const_random_access_iterator(const random_access_iterator<It> & iterator) : _ptr(iterator._ptr) {}
 		const_random_access_iterator(pointer ptr) : _ptr(ptr) {}
 
 		reference operator*() const { return *_ptr; }
