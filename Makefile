@@ -108,6 +108,7 @@ all:			$(NAME) $(DIY_NAME)
 
 # Compile every library.
 %.a:
+				$(shell ./libs/verif_submodules.sh)
 				@echo "\n$(_BLUE)___$(notdir $@) Setting___\n$(_WHITE)"
 				@make --no-print-directory -C $(dir $@)
 
