@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/01 12:58:28 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/01 14:46:52 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 # include "../tools/iterators/reverse_iterator.hpp"
 # include "../tools/integral_constant/is_integral.hpp"
 # include "../tools/distance.hpp"
-# include "../tools/lexicographical_compare.hpp"
+# include "../tools/comparison/lexicographical_compare.hpp"
+# include "../tools/comparison/equal.hpp"
 
 namespace ft
 {
@@ -435,10 +436,7 @@ namespace ft
 	{
 		if (lhs.size() != rhs.size())
 			return false;
-		for (size_t i = 0; i < lhs.size(); i++)
-			if (lhs[i] != rhs[i])
-				return false;
-		return true;
+		return equal(lhs.begin(), lhs.end(), rhs.begin());
 	}
 	
 	template <class T, class Alloc>

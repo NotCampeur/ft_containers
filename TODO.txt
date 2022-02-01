@@ -1,10 +1,4 @@
-iterators_traits, reverse_iterator, enable_if, is_integral, equal/lexicographical compare, std : :pair, std : :make_pair, doivent être réimplémenté.
+- std::pair
+- std::make_pair
 
-template <class InputIterator>
-vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());
-
-and
-
-explicit vector (size_type n, const value_type& val = value_type(),	const allocator_type& alloc = allocator_type());
-
-are confused.
+reverse_iterator use a c++11 compliant operator-. A tag has been added to the commit.
