@@ -1,0 +1,3 @@
+[submodule "libs/LDLogger"]
+	path = libs/LDLogger
+	url = git@github.com:NotCampeur/LDLogger.git
