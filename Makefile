@@ -108,7 +108,14 @@ all:			$(NAME) $(DIY_NAME)
 
 # Compile every library.
 %.a:
-				$(shell ./libs/verif_submodules.sh)
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "building submodules">> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell ./libs/verif_submodules.sh))
+				@if [ $(ret_status) -eq 0 ]; then \
+					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
+				else \
+					echo "$(_RED)FAILED$(_WHITE)\n-----"; \
+					exit $(ret_status); \
+				fi
 				@echo "\n$(_BLUE)___$(notdir $@) Setting___\n$(_WHITE)"
 				@make --no-print-directory -C $(dir $@)
 
