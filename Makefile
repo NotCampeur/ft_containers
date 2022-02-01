@@ -5,12 +5,19 @@ CC 		=		clang++
 
 SRC_DIR = 		$(shell find srcs -type d)
 INC_DIR = 		$(shell find includes -type d) \
-				$(shell find srcs -type d)
+				$(shell find srcs -type d) \
+				$(shell find libs -type d)
+
+LIB_DIR = 		libs/LDLogger
+LIB = 			LDLogger
+LDLOGGER = 		libs/LDLogger/libLDLogger.a
+
 
 OBJ_DIR = 		objs
 DIY_OBJ_DIR = 	diy_objs
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
+vpath %.a $(foreach dir, $(LIB_DIR), $(dir):)
 
 VECTOR_TEST =	vector_modifiers_test.cpp \
 				vector_capacity_test.cpp \
@@ -27,8 +34,7 @@ STACK_TEST =	stack_modifiers_test.cpp \
 
 SRC 	=		main.cpp \
 				$(VECTOR_TEST) \
-				$(STACK_TEST) \
-				Logger.cpp
+				$(STACK_TEST)
 
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 DIY_OBJ		=	$(addprefix $(DIY_OBJ_DIR)/, $(SRC:%.cpp=%.o))
@@ -38,6 +44,10 @@ CFLAGS	=		-Wall -Wextra -Werror -std=c++98
 
 #Include flag
 IFLAGS	=		$(foreach dir, $(INC_DIR), -I$(dir))
+
+#Library flag
+LFLAGS	=		$(foreach dir, $(LIB_DIR), -L $(dir)) \
+				$(foreach lib, $(LIB), -l $(lib))
 
 BUILD_LOG = logs/Makefile.log
 
@@ -96,10 +106,18 @@ all:			$(NAME) $(DIY_NAME)
 				@echo "Add $(_BLUE)DEBUG=vl$(_PURPLE) to compile with valgrind and debug flags."
 				@echo "Add $(_BLUE)DEBUG=gdb$(_PURPLE) to compile with gdb and debug flags.$(_WHITE)"
 
-$(NAME):		$(OBJ)
+# Compile every library.
+%.a:
+				@echo "\n$(_BLUE)___$(notdir $@) Setting___\n$(_WHITE)"
+				@make --no-print-directory -C $(dir $@)
+
+re-install:
+				@$(foreach dir, $(LIB_DIR), make --no-print-directory -C $(dir) re ; )
+
+$(NAME):		$(LDLOGGER) $(OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
-				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) -o $@" >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(OBJ) -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) $(LFLAGS) -o $@" >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(OBJ) $(LFLAGS) -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
@@ -107,10 +125,10 @@ $(NAME):		$(OBJ)
 					exit $(ret_status); \
 				fi
 
-$(DIY_NAME):	$(DIY_OBJ)
+$(DIY_NAME):	$(LDLOGGER) $(DIY_OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
-				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) -o $@ " >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) $(LFLAGS) -o $@ " >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) $(LFLAGS) -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
