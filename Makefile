@@ -32,9 +32,12 @@ STACK_TEST =	stack_modifiers_test.cpp \
 				stack_relational_operators_test.cpp \
 				stack_mutant_test.cpp
 
+PAIR_TEST =		pair_basic_test.cpp
+
 SRC 	=		main.cpp \
 				$(VECTOR_TEST) \
-				$(STACK_TEST)
+				$(STACK_TEST) \
+				$(PAIR_TEST)
 
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 DIY_OBJ		=	$(addprefix $(DIY_OBJ_DIR)/, $(SRC:%.cpp=%.o))

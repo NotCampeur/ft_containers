@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/01 17:04:20 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/02 16:04:17 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,12 @@ void	stack_test(void)
 	stack_mutant_test();
 }
 
+void	pair_test(void)
+{
+	Logger() << "======================={Pair test}=======================";
+	pair_basic_test();
+}
+
 void	map_test(void)
 {
 	#ifndef DIY
@@ -128,6 +134,7 @@ int main(int argc, char** argv)
 	
 	vector_test();
 	stack_test();
+	pair_test();
 	// map_test();
 	Logger::quit();
 	return EXIT_SUCCESS;

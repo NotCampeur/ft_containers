@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:13:05 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/01 17:03:24 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/02 17:03:03 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ void	stack_element_access_test(void);
 void	stack_modifiers_test(void);
 void	stack_relational_operators_test(void);
 void	stack_mutant_test(void);
+
+void	pair_basic_test(void);
 
 void	map_test(void);
 
