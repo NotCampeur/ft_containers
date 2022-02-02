@@ -1,4 +1,1 @@
-- std::pair
-- std::make_pair
-
 reverse_iterator use a c++11 compliant operator-. A tag has been added to the commit.
