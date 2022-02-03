@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/02 16:04:17 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/03 18:09:29 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,22 @@ void	map_test(void)
 	#endif
 }
 
+#include "binary_tree.hpp"
+
+void	binary_tree_test(void)
+{
+	Logger() << "======================={Binary Tree test}=======================";
+	ft::binary_tree<int> test(42);
+
+	test.insert(2);
+	test.insert(0);
+	test.insert(54);
+	test.insert(60);
+	test.insert(-60);
+	test.insert(-40);
+	test.print();
+}
+
 int main(int argc, char** argv)
 {
 	std::string	log_name(argv[0]);
@@ -132,10 +148,11 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 	
-	vector_test();
-	stack_test();
-	pair_test();
+	// vector_test();
+	// stack_test();
+	// pair_test();
 	// map_test();
+	binary_tree_test();
 	Logger::quit();
 	return EXIT_SUCCESS;
 }
