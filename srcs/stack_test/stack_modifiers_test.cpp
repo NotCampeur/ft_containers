@@ -6,12 +6,11 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 16:23:42 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/01 17:06:30 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/04 15:42:48 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "main.hpp"
-# include <stdint.h>
 
 void	stack_pop_method_test(void)
 {

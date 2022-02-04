@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/03 18:09:29 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/04 16:06:01 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,19 +110,40 @@ void	map_test(void)
 	#endif
 }
 
-#include "binary_tree.hpp"
+#include "binary_search_tree.hpp"
 
 void	binary_tree_test(void)
 {
 	Logger() << "======================={Binary Tree test}=======================";
-	ft::binary_tree<int> test(42);
+	ft::binary_search_tree<int> test(rand() % INT32_MAX);
 
-	test.insert(2);
-	test.insert(0);
-	test.insert(54);
-	test.insert(60);
-	test.insert(-60);
-	test.insert(-40);
+	int rand_nb = rand() % INT32_MAX;
+	test.insert(rand_nb);
+	test.insert(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	try
+	{
+		test.insert(rand_nb);
+	}
+	catch(const std::exception& e)
+	{
+		Logger() << e.what();
+	}
+	try
+	{
+		test.erase(-42);
+	}
+	catch(const std::exception& e)
+	{
+		Logger() << e.what();
+	}
+	Logger() << "Content of the tree: ";;
+	test.print();
+	test.erase(rand_nb);
+	Logger() << "Content of the tree: ";;
 	test.print();
 }
 

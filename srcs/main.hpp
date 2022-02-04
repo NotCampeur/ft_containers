@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:13:05 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/02 17:03:03 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/04 15:43:02 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <sys/time.h>
 # include <stdlib.h>
 # include <limits>
+# include <stdint.h>
 # include "Logger.hpp"
 
 # ifdef DIY
