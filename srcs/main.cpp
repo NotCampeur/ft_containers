@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/04 18:24:12 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/04 18:59:04 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,68 @@ void	map_test(void)
 	#endif
 }
 
+void	exit_input(lcppgl::Context & context)
+{
+	SDL_Event event;
+	if (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
+			case SDL_QUIT:
+				context.stop();
+				break;
+			case SDL_KEYDOWN:
+				if (event.key.keysym.sym == SDLK_ESCAPE)
+					context.stop();
+				else if (event.key.keysym.sym == SDLK_F11)
+					context.set_fullscreen(!context.is_fullscreen());
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+#include <sstream>
+
+void	text_rendering(lcppgl::Context & context)
+{
+	lcppgl::Printer render(context);
+	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 40);
+	context.set_fps_limit(2);
+	
+	render.clear();
+	writer.put_text("Hello World!", lcppgl::tools::Rectangle(20, 50, 480, 80),
+		lcppgl::tools::Color(255, 255, 255, 255));
+	writer.put_text_and_bg("Hello World!", lcppgl::tools::Rectangle(20, 150, 480, 80),
+		lcppgl::tools::Color(255, 255, 255, 255), lcppgl::tools::Color(100, 100, 100, 255));
+	writer.put_pretty_text("Hello World!", lcppgl::tools::Rectangle(20, 250, 480, 80),
+		lcppgl::tools::Color(255, 255, 255, 255));
+
+	std::ostringstream nb;
+
+	nb << rand() % 100;
+	writer.put_text(nb.str(), lcppgl::tools::Rectangle(rand() % (context.width() - 40), rand() % (context.height() - 80) + 40, 40, 40),
+		lcppgl::tools::Color(rand() % 255, rand() % 255, rand() % 255, 255));
+	render.present();
+}
+
+void	visualize_b_tree(void)
+{
+	Logger() << "======================={Visualize B-Tree test}=======================";
+	try
+	{
+		lcppgl::Context & main_context = lcppgl::Application::instance().create_context();
+		main_context.add_event_functor(exit_input);
+		main_context.add_render_functor(text_rendering);
+		lcppgl::Application::instance().run();
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+}
+
 void	binary_tree_test(void)
 {
 	#ifdef DIY
@@ -139,10 +201,11 @@ void	binary_tree_test(void)
 	{
 		Logger() << e.what();
 	}
-	Logger() << "Content of the tree: ";;
+	Logger() << "Content of the tree: ";
+	visualize_b_tree();
 	test.print();
 	test.erase(rand_nb);
-	Logger() << "Content of the tree: ";;
+	Logger() << "Content of the tree: ";
 	test.print();
 	#endif
 }

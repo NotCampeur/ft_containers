@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:13:05 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/04 15:43:02 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/04 18:42:36 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <limits>
 # include <stdint.h>
 # include "Logger.hpp"
+# include "lcppgl.hpp"
 
 # ifdef DIY
 	#  include <map.hpp>
