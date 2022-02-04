@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/04 16:06:01 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/04 18:24:12 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,10 +110,9 @@ void	map_test(void)
 	#endif
 }
 
-#include "binary_search_tree.hpp"
-
 void	binary_tree_test(void)
 {
+	#ifdef DIY
 	Logger() << "======================={Binary Tree test}=======================";
 	ft::binary_search_tree<int> test(rand() % INT32_MAX);
 
@@ -145,6 +144,7 @@ void	binary_tree_test(void)
 	test.erase(rand_nb);
 	Logger() << "Content of the tree: ";;
 	test.print();
+	#endif
 }
 
 int main(int argc, char** argv)

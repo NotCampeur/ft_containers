@@ -8,9 +8,10 @@ INC_DIR = 		$(shell find includes -type d) \
 				$(shell find srcs -type d) \
 				$(shell find libs -type d)
 
-LIB_DIR = 		libs/LDLogger
-LIB = 			LDLogger
+LIB_DIR = 		libs/LDLogger libs/LCPPGL
+LIB = 			LDLogger lcppgl
 LDLOGGER = 		libs/LDLogger/libLDLogger.a
+LCPPGL = 		libs/LCPPGL/liblcppgl.a
 
 
 OBJ_DIR = 		objs
@@ -126,7 +127,7 @@ all:			$(NAME) $(DIY_NAME)
 re-install:
 				@$(foreach dir, $(LIB_DIR), make --no-print-directory -C $(dir) re ; )
 
-$(NAME):		$(LDLOGGER) $(OBJ)
+$(NAME):		$(LCPPGL) $(LDLOGGER) $(OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
 				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) $(LFLAGS) -o $@" >> $(BUILD_LOG) 2>&1)
 				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(OBJ) $(LFLAGS) -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
@@ -137,7 +138,7 @@ $(NAME):		$(LDLOGGER) $(OBJ)
 					exit $(ret_status); \
 				fi
 
-$(DIY_NAME):	$(LDLOGGER) $(DIY_OBJ)
+$(DIY_NAME):	$(LCPPGL) $(LDLOGGER) $(DIY_OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
 				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) $(LFLAGS) -o $@ " >> $(BUILD_LOG) 2>&1)
 				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) $(LFLAGS) -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
