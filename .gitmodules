@@ -1,3 +1,6 @@
 [submodule "libs/LDLogger"]
 	path = libs/LDLogger
 	url = git@github.com:NotCampeur/LDLogger.git
+[submodule "libs/LCPPGL"]
+	path = libs/LCPPGL
+	url = git@github.com:NotCampeur/LCPPGL.git
