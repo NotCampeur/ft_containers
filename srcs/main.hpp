@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:13:05 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/04 18:42:36 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/06 02:30:57 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ void	stack_mutant_test(void);
 void	pair_basic_test(void);
 
 void	map_test(void);
+
+void	visualize_b_tree(void);
 
 long	get_elapsed_time(struct timeval	start_time);
 

@@ -21,7 +21,7 @@ namespace ft
 	template< class T >
 	class binary_search_tree
 	{
-		private:
+		public:
 			typedef binary_search_tree<T>*	node_pointer;
 
 			node_pointer				_parent;
