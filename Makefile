@@ -6,7 +6,8 @@ CC 		=		clang++
 SRC_DIR = 		$(shell find srcs -type d)
 INC_DIR = 		$(shell find includes -type d) \
 				$(shell find srcs -type d) \
-				$(shell find libs -type d)
+				$(shell find libs -type d) \
+				/urs/includes
 
 LIB_DIR = 		libs/LDLogger libs/LCPPGL
 LIB = 			LDLogger lcppgl
@@ -198,8 +199,8 @@ $(OBJ_DIR)/%.o : 	%.cpp
 				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
 				$(shell mkdir -p $(OBJ_DIR))
 				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ;\
-				echo "$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
+				echo "$(CC) $(CFLAGS) $(IFLAGS) `sdl2-config --cflags` -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) `sdl2-config --cflags` -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
@@ -211,8 +212,8 @@ $(DIY_OBJ_DIR)/%.o : 	%.cpp
 				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
 				$(shell mkdir -p $(DIY_OBJ_DIR))
 				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ;\
-				echo "$(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
+				echo "$(CC) $(CFLAGS) -D DIY=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) -D DIY=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
