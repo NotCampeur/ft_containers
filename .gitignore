@@ -3,5 +3,6 @@ containers
 !includes/containers
 objs/*.o
 diy_objs/*.o
+visualizer_objs/*.o
 logs/*.log
 .vscode

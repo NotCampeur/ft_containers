@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/06 02:41:47 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/07 14:36:33 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,44 +110,6 @@ void	map_test(void)
 	#endif
 }
 
-void	binary_tree_test(void)
-{
-	#ifdef DIY
-	Logger() << "======================={Binary Tree test}=======================";
-	// ft::binary_search_tree<int> test(rand() % INT32_MAX);
-
-	// int rand_nb = rand() % INT32_MAX;
-	// test.insert(rand_nb);
-	// test.insert(rand() % INT32_MAX);
-	// test.insert(rand() % INT32_MAX);
-	// test.insert(rand() % INT32_MAX);
-	// test.insert(rand() % INT32_MAX);
-	// test.insert(rand() % INT32_MAX);
-	// try
-	// {
-	// 	test.insert(rand_nb);
-	// }
-	// catch(const std::exception& e)
-	// {
-	// 	Logger() << e.what();
-	// }
-	// try
-	// {
-	// 	test.erase(-42);
-	// }
-	// catch(const std::exception& e)
-	// {
-	// 	Logger() << e.what();
-	// }
-	// Logger() << "Content of the tree: ";
-	visualize_b_tree();
-	// test.print();
-	// test.erase(rand_nb);
-	// Logger() << "Content of the tree: ";
-	// test.print();
-	#endif
-}
-
 int main(int argc, char** argv)
 {
 	std::string	log_name(argv[0]);
@@ -170,11 +132,13 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 	
-	// vector_test();
-	// stack_test();
-	// pair_test();
+	vector_test();
+	stack_test();
+	pair_test();
 	// map_test();
-	binary_tree_test();
+	#ifdef TREE_VISUALIZER
+	visualize_b_tree();
+	#endif
 	Logger::quit();
 	return EXIT_SUCCESS;
 }

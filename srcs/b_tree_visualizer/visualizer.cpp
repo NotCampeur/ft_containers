@@ -6,12 +6,11 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 02:29:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/06 16:35:08 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/07 12:08:52 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.hpp"
-
 
 void	exit_input(lcppgl::Context & context)
 {
@@ -35,7 +34,6 @@ void	exit_input(lcppgl::Context & context)
 	}
 }
 
-#ifdef DIY
 #include <sstream>
 void	print_node(lcppgl::Writer & writer, lcppgl::Printer & render, lcppgl::Context & context, ft::binary_search_tree<int> &node)
 {
@@ -96,7 +94,6 @@ void	print_node(lcppgl::Writer & writer, lcppgl::Printer & render, lcppgl::Conte
 		lcppgl::tools::Color(255, 255, 255, 255),
 		lcppgl::tools::Color(40, 40, 40, 255));
 }
-#endif
 
 void	tree_rendering(lcppgl::Context & context)
 {
@@ -107,7 +104,6 @@ void	tree_rendering(lcppgl::Context & context)
 	render.clear();
 	// writer.put_pretty_text("Hello World!", lcppgl::tools::Rectangle(20, 250, 480, 80),
 	// 	lcppgl::tools::Color(255, 255, 255, 255));
-	#ifdef DIY
 	ft::binary_search_tree<int> test(rand() % INT32_MAX);
 	// ft::binary_search_tree<int> test(42);
 
@@ -138,7 +134,6 @@ void	tree_rendering(lcppgl::Context & context)
 	test.insert(rand() % INT32_MAX);
 	test.insert(rand() % INT32_MAX);
 	print_node(writer, render, context, test);	
-	#endif
 	render.present();
 }
 

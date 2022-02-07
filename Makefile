@@ -1,5 +1,6 @@
-NAME	=		containers
-DIY_NAME	=	DIY_containers
+NAME	=			containers
+DIY_NAME	=		DIY_containers
+VISUALIZER_NAME	=	visualizer
 
 CC 		=		clang++
 
@@ -15,8 +16,9 @@ LDLOGGER = 		libs/LDLogger/libLDLogger.a
 LCPPGL = 		libs/LCPPGL/liblcppgl.a
 
 
-OBJ_DIR = 		objs
-DIY_OBJ_DIR = 	diy_objs
+OBJ_DIR = 				objs
+DIY_OBJ_DIR = 			diy_objs
+VISUALIZER_OBJ_DIR = 	visualizer_objs
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 vpath %.a $(foreach dir, $(LIB_DIR), $(dir):)
@@ -41,11 +43,14 @@ BINARY_VISUALIZER = visualizer.cpp
 SRC 	=		main.cpp \
 				$(VECTOR_TEST) \
 				$(STACK_TEST) \
-				$(PAIR_TEST) \
-				$(BINARY_VISUALIZER)
+				$(PAIR_TEST)
 
-OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
-DIY_OBJ		=	$(addprefix $(DIY_OBJ_DIR)/, $(SRC:%.cpp=%.o))
+VISUALIZER_SRC =	visualizer.cpp
+
+OBJ	=				$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
+DIY_OBJ	=			$(addprefix $(DIY_OBJ_DIR)/, $(SRC:%.cpp=%.o))
+VISUALIZER_OBJ =	$(addprefix $(VISUALIZER_OBJ_DIR)/, $(SRC:%.cpp=%.o))
+VISUALIZER_OBJ +=	$(addprefix $(VISUALIZER_OBJ_DIR)/, $(VISUALIZER_SRC:%.cpp=%.o))
 
 #Compilation flag
 CFLAGS	=		-Wall -Wextra -Werror -std=c++98
@@ -153,6 +158,17 @@ $(DIY_NAME):	$(LCPPGL) $(LDLOGGER) $(DIY_OBJ)
 					exit $(ret_status); \
 				fi
 
+$(VISUALIZER_NAME):		$(LCPPGL) $(LDLOGGER) $(VISUALIZER_OBJ)
+				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(VISUALIZER_OBJ) $(LFLAGS) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image -o $@ " >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(VISUALIZER_OBJ) $(LFLAGS) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
+				@if [ $(ret_status) -eq 0 ]; then \
+					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
+				else \
+					echo "$(_RED)FAILED$(_WHITE)\n-----"; \
+					exit $(ret_status); \
+				fi
+
 test:			$(NAME)
 				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ... \c"
 				@if [ "$(DEBUG)" = "vl" ]; then \
@@ -165,6 +181,17 @@ test:			$(NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 diy_test:		$(DIY_NAME)
+				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ... \c"
+				@if [ "$(DEBUG)" = "vl" ]; then \
+					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
+				elif [ "$(DEBUG)" = "gdb" ]; then \
+					gdb ./$< $(SEED); \
+				else \
+					./$< $(SEED); \
+				fi
+				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
+
+visualizer_test:	$(VISUALIZER_NAME)
 				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ... \c"
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
@@ -224,6 +251,19 @@ $(DIY_OBJ_DIR)/%.o : 	%.cpp
 					exit $(ret_status); \
 				fi
 
+$(VISUALIZER_OBJ_DIR)/%.o : 	%.cpp
+				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
+				$(shell mkdir -p $(VISUALIZER_OBJ_DIR))
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ;\
+				echo "$(CC) $(CFLAGS) -D DIY=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) -D DIY=true -D TREE_VISUALIZER=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
+				@if [ $(ret_status) -eq 0 ]; then \
+					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
+				else \
+					echo "$(_RED)FAILED$(_WHITE)\n-----"; \
+					exit $(ret_status); \
+				fi
+
 re:				fclean all
 
 norme:
@@ -241,7 +281,7 @@ clean:
 
 fclean:			clean clean_log
 				@echo "Deleting library File $(_YELLOW)$(NAME)$(_WHITE) ... \c"
-				@rm -f $(NAME) $(DIY_NAME)
+				@rm -f $(NAME) $(DIY_NAME) $(VISUALIZER_NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 .PHONY:			all show re clean fclean clean_log norme test diy_test test_both
