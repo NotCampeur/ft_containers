@@ -22,18 +22,34 @@ namespace ft
 	class binary_search_tree
 	{
 		public:
+			typedef enum 	e_node_color
+			{
+				red,
+				black
+			}				node_color;
+
 			typedef binary_search_tree<T>*	node_pointer;
 
 			node_pointer				_parent;
 			node_pointer				_left;
 			node_pointer				_right;
 			T							_value;
+			node_color					_color;
 
+		private:
 			// For now I consider that a binary tree must be initiate with at least one value.
-			binary_search_tree() : _parent(NULL), _left(NULL), _right(NULL), _value() {}
+			binary_search_tree()
+			: _parent(NULL), _left(NULL), _right(NULL)
+			, _value(), _color(black) {}
+
 		public:
-			binary_search_tree(const T& value) : _parent(NULL), _left(NULL), _right(NULL), _value(value) {}
-			binary_search_tree(const binary_search_tree& other) : _parent(other._parent), _left(other._left), _right(other._right), _value(other._value) {}
+			// The parent must be a black node.
+			binary_search_tree(const T& value, node_color color = black)
+			: _parent(NULL), _left(NULL), _right(NULL)
+			, _value(value), _color(color) {}
+			binary_search_tree(const binary_search_tree& other)
+			: _parent(other._parent), _left(other._left), _right(other._right)
+			, _value(other._value), _color(other._color) {}
 
 			// The destructor will not delete all the tree but only his children.
 			~binary_search_tree()
@@ -52,10 +68,123 @@ namespace ft
 					_left = other._left;
 					_right = other._right;
 					_value = other._value;
+					_color = other._color;
 				}
 				return (*this);
 			}
 
+		private:
+			// This function will rotate the tree to the right.
+			// ie: the parent will be the right child of the current node.
+			void	right_rotate(node_pointer node)
+			{
+				node_pointer				parent = node->_parent;
+				node_pointer				left = node->_left;
+
+				if (parent)
+				{
+					node->_parent = parent->_parent;
+					if (node->right)
+						parent->left = node->right;
+					else
+						parent->left = NULL;
+					node->right = parent;
+					parent->_parent = node;
+				}
+				else
+				{
+					left->_parent = parent;
+					node->_parent = node->_left;
+					node->_left = left->_right;
+					left->_right = node;
+				}
+			}
+
+			void	left_rotate(node_pointer node)
+			{
+				node_pointer				parent = node->_parent;
+				node_pointer				right = node->_right;
+
+				if (parent)
+				{
+					node->_parent = parent->_parent;
+					if (node->left)
+						parent->right = node->left;
+					else
+						parent->right = NULL;
+					node->left = parent;
+					parent->_parent = node;
+				}
+				else
+				{
+					right->_parent = node->_parent;
+					node->_parent = node->_right;
+					node->right = right->left;
+					right->left = node;
+				}
+			}
+
+			// This function will resolve any color violation.
+			void	resolve_color_violation(node_pointer node)
+			{
+				node_pointer	uncle;
+				node_pointer	grand_parent;
+
+				while (node->_parent && node->_parent->_color == red)
+				{
+					grand_parent = node->_parent->_parent;
+					if (node->_parent == grand_parent->_left)
+					{
+						uncle = grand_parent->_right;
+						if (uncle && uncle->_color == red)
+						{
+							node->_parent->_color = black;
+							uncle->_color = black;
+							grand_parent->_color = red;
+							node = grand_parent;
+						}
+						else
+						{
+							if (node == node->_parent->_right)
+							{
+								node = node->_parent;
+								left_rotate(node);
+							}
+							node->_parent->_color = black;
+							grand_parent->_color = red;
+							right_rotate(grand_parent);
+						}
+					}
+					else
+					{
+						uncle = grand_parent->_left;
+						if (uncle && uncle->_color == red)
+						{
+							node->_parent->_color = black;
+							uncle->_color = black;
+							grand_parent->_color = red;
+							node = grand_parent;
+						}
+						else
+						{
+							if (node == node->_parent->_left)
+							{
+								node = node->_parent;
+								right_rotate(node);
+							}
+							node->_parent->_color = black;
+							grand_parent->_color = red;
+							left_rotate(grand_parent);
+						}
+					}
+				}
+			}
+
+
+		public:
+			// This function might be call on an non empty tree.
+			// It will add a node to the tree.
+			// throw std::exception if the value is already in the tree.
 			void	insert(const T& value)
 			{
 				if (value < _value)
@@ -64,7 +193,7 @@ namespace ft
 						_left->insert(value);
 					else
 					{
-						_left = new binary_search_tree(value);
+						_left = new binary_search_tree(value, red);
 						_left->_parent = this;
 					}
 				}
@@ -74,7 +203,7 @@ namespace ft
 						_right->insert(value);
 					else
 					{
-						_right = new binary_search_tree(value);
+						_right = new binary_search_tree(value, red);
 						_right->_parent = this;
 					}
 				}

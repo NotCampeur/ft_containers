@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/07 14:36:33 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/07 16:24:10 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,23 @@ void	map_test(void)
 	#endif
 }
 
+void	tree_test(void)
+{
+	Logger() << "======================={Tree test}=======================";
+	#ifdef DIY
+	ft::binary_search_tree<int> test(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	test.insert(rand() % INT32_MAX);
+	#endif
+}
+
 int main(int argc, char** argv)
 {
 	std::string	log_name(argv[0]);
@@ -135,6 +152,7 @@ int main(int argc, char** argv)
 	vector_test();
 	stack_test();
 	pair_test();
+	tree_test();
 	// map_test();
 	#ifdef TREE_VISUALIZER
 	visualize_b_tree();
