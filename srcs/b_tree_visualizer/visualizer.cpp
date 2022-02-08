@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 02:29:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/07 12:08:52 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/08 11:38:29 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,19 @@ void	print_node(lcppgl::Writer & writer, lcppgl::Printer & render, lcppgl::Conte
 	p2 = lcppgl::tools::Point(context.width() / 2 + (parent_offset * 50),
 								50 + (parent_depth * 50));
 	render.put_line(p1, p2, lcppgl::tools::Color(255, 0, 0, 255));
+
+	lcppgl::tools::Color	node_color;
+	if (node._color == red)
+		node_color = lcppgl::tools::Color(255, 0, 0, 255);
+	else if (node._color == black)
+		node_color = lcppgl::tools::Color(0, 0, 0, 255);
 	writer.put_text_and_bg(nb.str(),
 		lcppgl::tools::Rectangle(context.width() / 2 - (nb_width / 2) + (offset * 50),
 								50 + (depth * 50),
 								nb_width,
 								25),
 		lcppgl::tools::Color(255, 255, 255, 255),
-		lcppgl::tools::Color(40, 40, 40, 255));
+		node_color);
 }
 
 void	tree_rendering(lcppgl::Context & context)
@@ -101,38 +107,41 @@ void	tree_rendering(lcppgl::Context & context)
 	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 20);
 	context.set_fps_limit(1);
 	
+	render.set_draw_color(lcppgl::tools::Color(70, 70, 70, 255));
 	render.clear();
 	// writer.put_pretty_text("Hello World!", lcppgl::tools::Rectangle(20, 250, 480, 80),
 	// 	lcppgl::tools::Color(255, 255, 255, 255));
-	ft::binary_search_tree<int> test(rand() % INT32_MAX);
-	// ft::binary_search_tree<int> test(42);
+	// ft::binary_search_tree<int> test(rand() % INT32_MAX);
+	ft::binary_search_tree<int> test(100);
 
 	// int rand_nb = rand() % INT32_MAX;
 	// test.insert(rand_nb);
-	// test.insert(12);
+	test.insert(42);
+	test.insert(142);
+	test.insert(12);
+	test.insert(99);
 	// test.insert(13);
 	// test.insert(-728);
 	// test.insert(0);
 	// test.insert(15678);
 	// test.insert(-683155);
-	// test.insert(99);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
+	// test.insert(rand() % INT32_MAX);
 	print_node(writer, render, context, test);	
 	render.present();
 }
