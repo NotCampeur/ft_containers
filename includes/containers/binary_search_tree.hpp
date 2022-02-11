@@ -16,18 +16,18 @@
 # include <exception>
 # include "Logger.hpp"
 
+typedef enum 	e_node_color
+{
+	red,
+	black
+}				node_color;
+
 namespace ft
 {
 	template< class T >
 	class binary_search_tree
 	{
 		public:
-			typedef enum 	e_node_color
-			{
-				red,
-				black
-			}				node_color;
-
 			typedef binary_search_tree<T>*	node_pointer;
 
 			node_pointer				_parent;
@@ -84,11 +84,11 @@ namespace ft
 				if (parent)
 				{
 					node->_parent = parent->_parent;
-					if (node->right)
-						parent->left = node->right;
+					if (node->_right)
+						parent->_left = node->_right;
 					else
-						parent->left = NULL;
-					node->right = parent;
+						parent->_left = NULL;
+					node->_right = parent;
 					parent->_parent = node;
 				}
 				else
@@ -108,76 +108,70 @@ namespace ft
 				if (parent)
 				{
 					node->_parent = parent->_parent;
-					if (node->left)
-						parent->right = node->left;
+					if (node->_left)
+						parent->_right = node->_left;
 					else
-						parent->right = NULL;
-					node->left = parent;
+						parent->_right = NULL;
+					node->_left = parent;
 					parent->_parent = node;
 				}
 				else
 				{
 					right->_parent = node->_parent;
 					node->_parent = node->_right;
-					node->right = right->left;
-					right->left = node;
+					node->_right = right->_left;
+					right->_left = node;
+				}
+			}
+
+			// Will init the pointer with the address of relatives of node.
+			void	build_relation(node_pointer const node, node_pointer & parent, node_pointer & grand_parent, node_pointer & uncle)
+			{
+				parent = node->_parent;
+				if (parent)
+				{
+					grand_parent = parent->_parent;
+					if (grand_parent)
+					{
+						if (grand_parent->_left == this)
+							uncle = grand_parent->_right;
+						else if (grand_parent->_right == this)
+							uncle = grand_parent->_left;
+					}
+				}
+			}
+
+			// In the case the uncle is red.
+			void	resolve_uncle_red(node_pointer node)
+			{
+				node_pointer	uncle(NULL);
+				node_pointer	grand_parent(NULL);
+				node_pointer	parent(NULL);
+
+				build_relation(node, parent, grand_parent, uncle);
+				
+				if (parent && grand_parent && uncle
+				&& parent->_color == red && uncle->_color == red)
+				{
+					parent->_color = black;
+					uncle->_color = black;
+					grand_parent->_color = red;
+					resolve_uncle_red(grand_parent);
 				}
 			}
 
 			// This function will resolve any color violation.
 			void	resolve_color_violation(node_pointer node)
 			{
-				node_pointer	uncle;
-				node_pointer	grand_parent;
+				node_pointer	uncle(NULL);
+				node_pointer	grand_parent(NULL);
+				node_pointer	parent(NULL);
 
-				while (node->_parent && node->_parent->_color == red)
-				{
-					grand_parent = node->_parent->_parent;
-					if (node->_parent == grand_parent->_left)
-					{
-						uncle = grand_parent->_right;
-						if (uncle && uncle->_color == red)
-						{
-							node->_parent->_color = black;
-							uncle->_color = black;
-							grand_parent->_color = red;
-							node = grand_parent;
-						}
-						else
-						{
-							if (node == node->_parent->_right)
-							{
-								node = node->_parent;
-								left_rotate(node);
-							}
-							node->_parent->_color = black;
-							grand_parent->_color = red;
-							right_rotate(grand_parent);
-						}
-					}
-					else
-					{
-						uncle = grand_parent->_left;
-						if (uncle && uncle->_color == red)
-						{
-							node->_parent->_color = black;
-							uncle->_color = black;
-							grand_parent->_color = red;
-							node = grand_parent;
-						}
-						else
-						{
-							if (node == node->_parent->_left)
-							{
-								node = node->_parent;
-								right_rotate(node);
-							}
-							node->_parent->_color = black;
-							grand_parent->_color = red;
-							left_rotate(grand_parent);
-						}
-					}
-				}
+				build_relation(node, parent, grand_parent, uncle);
+				
+				if (parent && grand_parent && uncle
+				&& parent->_color == red && uncle->_color == red)
+					resolve_uncle_red(node);
 			}
 
 
@@ -195,6 +189,7 @@ namespace ft
 					{
 						_left = new binary_search_tree(value, red);
 						_left->_parent = this;
+						resolve_color_violation(_left);
 					}
 				}
 				else if (value > _value)
@@ -205,6 +200,7 @@ namespace ft
 					{
 						_right = new binary_search_tree(value, red);
 						_right->_parent = this;
+						resolve_color_violation(_right);
 					}
 				}
 				else
