@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 02:29:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/07 12:08:52 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/11 19:30:52 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,35 +104,35 @@ void	tree_rendering(lcppgl::Context & context)
 	render.clear();
 	// writer.put_pretty_text("Hello World!", lcppgl::tools::Rectangle(20, 250, 480, 80),
 	// 	lcppgl::tools::Color(255, 255, 255, 255));
-	ft::binary_search_tree<int> test(rand() % INT32_MAX);
-	// ft::binary_search_tree<int> test(42);
+	// ft::binary_search_tree<int> test(rand() % 9999);
+	ft::binary_search_tree<int> test(42);
 
-	// int rand_nb = rand() % INT32_MAX;
+	// int rand_nb = rand() % 9999;
 	// test.insert(rand_nb);
-	// test.insert(12);
-	// test.insert(13);
-	// test.insert(-728);
-	// test.insert(0);
-	// test.insert(15678);
-	// test.insert(-683155);
-	// test.insert(99);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
-	test.insert(rand() % INT32_MAX);
+	test.insert(12);
+	test.insert(13);
+	test.insert(-728);
+	test.insert(0);
+	test.insert(15678);
+	test.insert(-683155);
+	test.insert(99);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
+	// test.insert(rand() % 9999);
 	print_node(writer, render, context, test);	
 	render.present();
 }

@@ -224,6 +224,7 @@ show:
 				@echo "CFLAGS :\n$(CFLAGS)\n"
 				@echo "IFLAGS :\n$(IFLAGS)\n"
 				@echo "LIB_DIR :\n$(LIB_DIR)\n"
+				@echo "LFLAGS :\n$(LFLAGS)\n"
 
 $(OBJ_DIR)/%.o : 	%.cpp
 				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
