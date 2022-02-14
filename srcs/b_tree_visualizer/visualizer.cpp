@@ -6,62 +6,69 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 02:29:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/11 20:16:59 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/14 14:11:52 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.hpp"
 
-void	exit_input(lcppgl::Context & context)
+void	continue_input(lcppgl::Context & context)
 {
 	SDL_Event event;
-	if (SDL_PollEvent(&event))
+	bool	carry_on(false);
+
+	while (carry_on == false)
 	{
-		switch (event.type)
+		if (SDL_WaitEvent(&event))
 		{
-			case SDL_QUIT:
-				context.stop();
-				break;
-			case SDL_KEYDOWN:
-				if (event.key.keysym.sym == SDLK_ESCAPE)
+			switch (event.type)
+			{
+				case SDL_QUIT:
 					context.stop();
-				else if (event.key.keysym.sym == SDLK_F11)
-					context.set_fullscreen(!context.is_fullscreen());
-				break;
-			default:
-				break;
+					break;
+				case SDL_KEYDOWN:
+					if (event.key.keysym.sym == SDLK_ESCAPE)
+						context.stop();
+					else if (event.key.keysym.sym == SDLK_F11)
+						context.set_fullscreen(!context.is_fullscreen());
+					else if (event.key.keysym.sym == SDLK_SPACE)
+						carry_on = true;
+					break;
+				default:
+					break;
+			}
 		}
 	}
 }
 
 #include <sstream>
-void	print_node(lcppgl::Writer & writer, lcppgl::Printer & render, lcppgl::Context & context, ft::binary_search_tree<int> &node)
+void	print_node(lcppgl::Writer & writer, lcppgl::Printer & render, lcppgl::Context & context, const RedBlackTreeNode<int> *node)
 {
 	static int	depth(0);
 	static int	offset(0);
 	static lcppgl::tools::Point	p1;
 	static lcppgl::tools::Point	p2;
 	
-	if (node._left)
+	if (node->_left)
 	{
 		offset--;
-		if (node._left->_right && node._right && node._right->_left)
+		if (node->_left->_right && node->_right && node->_right->_left)
 			offset--;
 		depth++;
-		print_node(writer, render, context, *node._left);
-		if (node._left->_right && node._right && node._right->_left)
+		print_node(writer, render, context, node->_left);
+		if (node->_left->_right && node->_right && node->_right->_left)
 			offset++;
 		offset++;
 		depth--;
 	}
 	std::ostringstream nb;
-	nb << node._value;
+	nb << node->_value;
 	int	nb_width(12 * nb.str().size());
-	if (node._right)
+	if (node->_right)
 	{
 		offset++;
 		depth++;
-		print_node(writer, render, context, *node._right);
+		print_node(writer, render, context, node->_right);
 		offset--;
 		depth--;
 	}
@@ -69,17 +76,17 @@ void	print_node(lcppgl::Writer & writer, lcppgl::Printer & render, lcppgl::Conte
 								50 + (depth * 50));
 	int	parent_offset(offset);
 	int	parent_depth(depth);
-	if (node._parent && node._parent->_left == &node)
+	if (node->_parent && node->_parent->_left == node)
 	{
 		parent_offset++;
-		if (node._parent->_right && node._parent->_right->_left)
+		if (node->_parent->_right && node->_parent->_right->_left)
 			parent_offset++;
 	}
-	else if (node._parent && node._parent->_right == &node)
+	else if (node->_parent && node->_parent->_right == node)
 		parent_offset--;
 	else
 		parent_offset = 0;
-	if (node._parent == NULL)
+	if (node->_parent == NULL)
 		parent_depth = 0;
 	else
 		parent_depth--;
@@ -88,9 +95,9 @@ void	print_node(lcppgl::Writer & writer, lcppgl::Printer & render, lcppgl::Conte
 	render.put_line(p1, p2, lcppgl::tools::Color(255, 0, 0, 255));
 
 	lcppgl::tools::Color	node_color;
-	if (node._color == red)
+	if (node->_color == red)
 		node_color = lcppgl::tools::Color(255, 0, 0, 255);
-	else if (node._color == black)
+	else if (node->_color == black)
 		node_color = lcppgl::tools::Color(0, 0, 0, 255);
 	writer.put_text_and_bg(nb.str(),
 		lcppgl::tools::Rectangle(context.width() / 2 - (nb_width / 2) + (offset * 50),
@@ -104,44 +111,28 @@ void	print_node(lcppgl::Writer & writer, lcppgl::Printer & render, lcppgl::Conte
 void	tree_rendering(lcppgl::Context & context)
 {
 	lcppgl::Printer render(context);
-	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 20);
+	lcppgl::Writer writer(context, "/Users/ldutriez/.brew/Library/Homebrew/vendor/portable-ruby/2.6.8/lib/ruby/2.6.0/rdoc/generator/template/darkfish/fonts/Lato-Regular.ttf", 20);
+	// lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 20);
+
+	static rbtree<int> test;
+
 	context.set_fps_limit(1);
 	
 	render.set_draw_color(lcppgl::tools::Color(70, 70, 70, 255));
 	render.clear();
 	// writer.put_pretty_text("Hello World!", lcppgl::tools::Rectangle(20, 250, 480, 80),
 	// 	lcppgl::tools::Color(255, 255, 255, 255));
-	// ft::binary_search_tree<int> test(rand() % 9999);
-	ft::binary_search_tree<int> test(42);
-
-	// int rand_nb = rand() % 9999;
-	// test.insert(rand_nb);
-	test.insert(12);
-	test.insert(13);
-	test.insert(-728);
-	test.insert(0);
-	test.insert(15678);
-	test.insert(-683155);
-	test.insert(99);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-	// test.insert(rand() % 9999);
-
-	print_node(writer, render, context, test);	
+	// RedBlackTree<int> test(rand() % 9999);
+	
+	try
+	{
+		test.insert(rand() % 9999);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	print_node(writer, render, context, test.root());
 	render.present();
 }
 
@@ -151,7 +142,7 @@ void	visualize_b_tree(void)
 	try
 	{
 		lcppgl::Context & main_context = lcppgl::Application::instance().create_context("B-Tree Visualizer", 1920, 1080);
-		main_context.add_event_functor(exit_input);
+		main_context.add_event_functor(continue_input);
 		main_context.add_render_functor(tree_rendering);
 		lcppgl::Application::instance().run();
 	}

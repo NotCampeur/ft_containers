@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/02 15:44:38 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/02 16:51:12 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/14 11:26:08 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,9 @@ void	pair_basic_test(void)
 	v.push_back(ft::make_pair(2, "baz"));
 	v.push_back(ft::make_pair(2, "bar"));
 	v.push_back(ft::make_pair(1, "foo"));
+	#ifdef LINUX
     std::sort(v.begin(), v.end());
- 
+	#endif
     for(ft::vector<ft::pair<int, std::string> >::iterator it = v.begin(); it != v.end(); ++it)
 	{
         Logger() << "{" << it->first << ", " << it->second << "}";

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 16:23:42 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/01 17:04:32 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/14 11:07:10 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	stack_mutant_test(void)
 {
 	Logger() << "\n----------(stack_mutant_test)----------";
 	ft::stack<int> stack_int;
-	ft::stack<Buffer, std::deque<int> > stack_deq_buffer;
+	ft::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
 	MutantStack<char> iterable_stack;
 
 	for (char letter = 'a'; letter <= 'z'; letter++)
