@@ -106,30 +106,260 @@ class RedBlackTreeNode
 		// If the node doesn't exist, it will return NULL.
 		RedBlackTreeNode*			node(const T& value) const
 		{
-			RedBlackTreeNode*			node(const_cast<RedBlackTreeNode*>(this));
+			RedBlackTreeNode*			current_node(const_cast<RedBlackTreeNode*>(this));
 
-			while (node)
+			while (current_node)
 			{
-				if (value < node->_value)
+				if (value < current_node->_value)
 				{
-					if (node->_left == NULL)
+					if (current_node->_left == NULL)
 						return (NULL);
-					node = node->_left;
+					current_node = current_node->_left;
 				}
-				else if (value > node->_value)
+				else if (value > current_node->_value)
 				{
-					if (node->_right == NULL)
+					if (current_node->_right == NULL)
 						return (NULL);
-					node = node->_right;
+					current_node = current_node->_right;
 				}
 				else
-					return (node);
+					return (current_node);
 			}
 			return (NULL);
 		}
 
+		// This function will remove the node with the given value.
+		// If the node doesn't exist, it do nothing.
+		// return the new root of the tree.
+		RedBlackTreeNode * remove(int n)
+		{
+			RedBlackTreeNode *v = node(n);
+		
+			if (v == NULL)
+				throw std::runtime_error("RedBlackTreeNode::remove: node doesn't exist.");
+			_delete_node(v);
+			return (root());
+		}
+
 	private:
 
+		void _resolve_double_black(RedBlackTreeNode *node)
+		{
+			if (node->_parent == NULL)
+				return;
+		
+			RedBlackTreeNode *sibling = node->_sibling();
+			RedBlackTreeNode *parent = node->_parent;
+
+			if (sibling == NULL)
+			{
+				_resolve_double_black(parent);
+			}
+			else
+			{
+				if (sibling->_color == red)
+				{
+					parent->_color = red;
+					sibling->_color = black;
+					if (sibling->_parent->_left == sibling)
+					{
+						_rotate_right(parent);
+					}
+					else
+					{
+						_rotate_left(parent);
+					}
+					_resolve_double_black(node);
+				}
+				else
+				{
+					if ((sibling->_left != NULL && sibling->_left->_color == red)
+					|| (sibling->_right != NULL && sibling->_right->_color == red))
+					{
+						// at least 1 red children
+						if (sibling->_left != NULL && sibling->_left->_color == red)
+						{
+							if (sibling->_parent->_left == sibling)
+							{
+								// left left
+								sibling->_left->_color = sibling->_color;
+								sibling->_color = parent->_color;
+								_rotate_right(parent);
+							}
+							else
+							{
+								// right left
+								sibling->_left->_color = parent->_color;
+								_rotate_right(sibling);
+								_rotate_left(parent);
+							}
+						}
+						else
+						{
+							if (sibling->_parent->_left == sibling)
+							{
+								// left right
+								sibling->_right->_color = parent->_color;
+								_rotate_left(sibling);
+								_rotate_right(parent);
+							}
+							else
+							{
+								// right right
+								sibling->_right->_color = sibling->_color;
+								sibling->_color = parent->_color;
+								_rotate_left(parent);
+							}
+						}
+						parent->_color = black;
+					}
+					else
+					{
+						// 2 black children
+						sibling->_color = red;
+						if (parent->_color == black)
+							_resolve_double_black(parent);
+						else
+							parent->_color = black;
+					}
+				}
+			}
+		}
+
+		// find node that do not have a left child
+		// in the subtree of the given node
+		RedBlackTreeNode *_successor(RedBlackTreeNode *node)
+		{
+			RedBlackTreeNode *temp = node;
+		
+			while (temp->_left != NULL)
+				temp = temp->_left;
+			return temp;
+		}
+
+		// find node that replaces a deleted node in BST
+		RedBlackTreeNode *_find_replacement(RedBlackTreeNode *node)
+		{
+			// when node have 2 children
+			if (node->_left != NULL and node->_right != NULL)
+				return _successor(node->_right);
+		
+			// when leaf
+			if (node->_left == NULL and node->_right == NULL)
+				return NULL;
+		
+			// when single child
+			if (node->_left != NULL)
+				return node->_left;
+			else
+				return node->_right;
+		}
+
+		// return true if both given nodes are black
+		bool _are_both_black(RedBlackTreeNode *node1, RedBlackTreeNode *node2)
+		{
+			return (node1->_color == black && node2->_color == black);
+		}
+
+		// returns pointer to sibling
+		RedBlackTreeNode *_sibling(void)
+		{
+			// sibling null if no parent
+			if (this->_parent == NULL)
+				return NULL;
+		
+			if (this->_parent->_left == this)
+				return this->_parent->_right;
+		
+			return this->_parent->_left;
+		}
+
+		// Deletes the given node from the tree
+		// After deletion, the node will be replaced by its successor
+		// or NULL if the node is a leaf.
+		// Will then resolve any double black nodes.
+		void _delete_node(RedBlackTreeNode *v)
+		{
+			RedBlackTreeNode*	u = _find_replacement(v);
+			bool				is_u_v_black = _are_both_black(u, v);
+			RedBlackTreeNode*	parent = v->_parent;
+		
+			if (u == NULL)
+			{
+				// u is NULL therefore v is leaf
+				if (v->_parent != NULL)
+				{
+					if (is_u_v_black)
+					{
+						// u and v both black
+						// v is leaf, fix double black at v
+						_resolve_double_black(v);
+					}
+					else
+					{
+						// u or v is red
+						if (v->_sibling() != NULL)
+							// sibling is not null, make it red"
+							v->_sibling()->_color = red;
+					}
+		
+					// delete v from the tree
+					if (v->_parent->_left == v)
+					{
+						parent->_left = NULL;
+					}
+					else
+					{
+						parent->_right = NULL;
+					}
+				}
+				delete v;
+				return;
+			}
+		
+			if (v->_left == NULL || v->_right == NULL)
+			{
+				// v has 1 child
+				if (v->_parent == NULL)
+				{
+					// v is root, assign the value of u to v, and delete u
+					v->_value = u->_value;
+					v->_left = v->_right = NULL;
+					delete u;
+				}
+				else
+				{
+					// Detach v from tree and move u up
+					if (v->_parent->_left == v)
+					{
+						parent->_left = u;
+					} 
+					else
+					{
+						parent->_right = u;
+					}
+					delete v;
+					u->_parent = parent;
+					if (is_u_v_black)
+					{
+						// u and v both black, fix double black at u
+						_resolve_double_black(u);
+					}
+					else
+					{
+						// u or v red, color u black
+						u->_color = black;
+					}
+				}
+				return;
+			}
+			// v has 2 children, swap values with _successor and recurse
+			v->_value = v->_value ^ u->_value;
+			u->_value = v->_value ^ u->_value;
+			v->_value = v->_value ^ u->_value;
+			_delete_node(u);
+		}
+ 
 		// This function function will rotate the tree to the left from the given node.
 		// The node must be the right child of its parent.
 		// behavior: The parent of the given node will become the left child of the node.
@@ -217,8 +447,7 @@ class RedBlackTreeNode
 
 		// If the uncle is red, recolor the parent and uncle to black and grandparent to red.
 		// Then call _resolve_insertion on the grandparent.
-		void	_uncle_is_red(RedBlackTreeNode* current_node,
-							RedBlackTreeNode* parent_node,
+		void	_uncle_is_red(RedBlackTreeNode* parent_node,
 							RedBlackTreeNode* grand_parent_node,
 							RedBlackTreeNode* uncle_node)
 		{
@@ -246,14 +475,14 @@ class RedBlackTreeNode
 		{
 			if (grand_parent_node->_left == parent_node)
 			{
-				if (parent_node->_right == node)
+				if (parent_node->_right == current_node)
 				{
-					_rotate_left(node);
-					_rotate_right(node);
-					node->_color = black;
+					_rotate_left(current_node);
+					_rotate_right(current_node);
+					current_node->_color = black;
 					grand_parent_node->_color = red;
 				}
-				else if (parent_node->_left == node)
+				else if (parent_node->_left == current_node)
 				{
 					_rotate_right(parent_node);
 					parent_node->_color = black;
@@ -277,17 +506,17 @@ class RedBlackTreeNode
 		{
 			if (grand_parent_node->_right == parent_node)
 			{
-				if (parent_node->_right == node)
+				if (parent_node->_right == current_node)
 				{
 					_rotate_left(parent_node);
 					parent_node->_color = black;
 					grand_parent_node->_color = red;
 				}
-				else if (parent_node->_left == node)
+				else if (parent_node->_left == current_node)
 				{
-					_rotate_right(node);
-					_rotate_left(node);
-					node->_color = black;
+					_rotate_right(current_node);
+					_rotate_left(current_node);
+					current_node->_color = black;
 					grand_parent_node->_color = red;
 				}
 				return;
@@ -318,7 +547,7 @@ class RedBlackTreeNode
 			// If the parent is black, the tree is already correct.
 			if (parent_node->_color == black)
 				return ;
-			_uncle_is_red(node, parent_node, grand_parent_node, uncle_node);
+			_uncle_is_red(parent_node, grand_parent_node, uncle_node);
 			_left_parent(node, parent_node, grand_parent_node);
 			_right_parent(node, parent_node, grand_parent_node);
 		}

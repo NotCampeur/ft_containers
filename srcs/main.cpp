@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/14 13:05:01 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/15 17:56:13 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,16 +114,26 @@ void	tree_test(void)
 {
 	Logger() << "======================={Tree test}=======================";
 	#ifdef DIY
-	rbtree<int> tree; 
-	tree.insert(rand() % INT32_MAX);
-	tree.insert(rand() % INT32_MAX);
-	tree.insert(rand() % INT32_MAX);
-	tree.insert(rand() % INT32_MAX);
-	tree.insert(rand() % INT32_MAX);
-	tree.insert(rand() % INT32_MAX);
-	tree.insert(rand() % INT32_MAX);
-	tree.insert(rand() % INT32_MAX);
-	tree.insert(rand() % INT32_MAX);
+	rbtree<int> tree;
+	
+	try
+	{
+		tree.insert(0);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.remove(0);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
 	#endif
 }
 

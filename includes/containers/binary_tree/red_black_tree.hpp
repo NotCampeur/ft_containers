@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/15 15:33:38 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/15 17:53:49 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,13 @@ class rbtree
 				_root = new RedBlackTreeNode<T>(value);
 			else
 				_root = _root->insert(value);
+		};
+
+		// Remove a node from the tree by calling the remove function of the root.
+		void	remove(const T& value)
+		{
+			if (_root != NULL)
+				_root = _root->remove(value);
 		};
 
 		// Get the node with the value.
