@@ -54,60 +54,6 @@ class RedBlackTreeNode
 			return (*this);
 		}
 
-		// This function function will rotate the tree to the left from the given node.
-		// The node must be the right child of its parent.
-		// behavior: The parent of the given node will become the left child of the node.
-		// If the node already has a left child, it will become the right child of the parent.
-		// Thus the sorted order of the tree will be preserved.
-		void	rotate_left(RedBlackTreeNode* node)
-		{
-			RedBlackTreeNode*			parent(node->_parent);
-			RedBlackTreeNode*			left(node->_left);
-
-			if (parent == NULL || parent->_right != node)
-				throw std::runtime_error("rotate_left: node is not the right child of its parent.");
-			parent->_right = left;
-			node->_left = parent;
-			node->_parent = parent->_parent;
-			parent->_parent = node;
-			if (left)
-				left->_parent = parent;
-			if (node->_parent)
-			{
-				if (node->_parent->_left == parent)
-					node->_parent->_left = node;
-				else
-					node->_parent->_right = node;
-			}
-		}
-
-		// This function function will rotate the tree to the right from the given node.
-		// The node must be the left child of its parent.
-		// behavior: The parent of the given node will become the right child of the node.
-		// If the node already has a right child, it will become the left child of the parent.
-		// Thus the sorted order of the tree will be preserved.
-		void	rotate_right(RedBlackTreeNode* node)
-		{
-			RedBlackTreeNode*			parent(node->_parent);
-			RedBlackTreeNode*			right(node->_right);
-
-			if (parent == NULL || parent->_left != node)
-				throw std::runtime_error("rotate_right: node is not the left child of its parent.");
-			parent->_left = right;
-			node->_right = parent;
-			node->_parent = parent->_parent;
-			parent->_parent = node;
-			if (right)
-				right->_parent = parent;
-			if (node->_parent)
-			{
-				if (node->_parent->_left == parent)
-					node->_parent->_left = node;
-				else
-					node->_parent->_right = node;
-			}
-		}
-
 		// This function will insert a new node in the tree in a sorting order.
 		// And resolve the red-black tree properties.
 		// return the new root of the tree.
@@ -123,7 +69,7 @@ class RedBlackTreeNode
 						node->_left = new RedBlackTreeNode(value, red);
 						node->_left->_parent = node;
 						// Resolve the red-black tree properties.
-						resolve_insertion(node->_left);
+						_resolve_insertion(node->_left);
 						break ;
 					}
 					node = node->_left;
@@ -135,7 +81,7 @@ class RedBlackTreeNode
 						node->_right = new RedBlackTreeNode(value, red);
 						node->_right->_parent = node;
 						// Resolve the red-black tree properties.
-						resolve_insertion(node->_right);
+						_resolve_insertion(node->_right);
 						break ;
 					}
 					node = node->_right;
@@ -156,8 +102,64 @@ class RedBlackTreeNode
 			return (node);
 		}
 
+	private:
+
+		// This function function will rotate the tree to the left from the given node.
+		// The node must be the right child of its parent.
+		// behavior: The parent of the given node will become the left child of the node.
+		// If the node already has a left child, it will become the right child of the parent.
+		// Thus the sorted order of the tree will be preserved.
+		void	_rotate_left(RedBlackTreeNode* node)
+		{
+			RedBlackTreeNode*			parent(node->_parent);
+			RedBlackTreeNode*			left(node->_left);
+
+			if (parent == NULL || parent->_right != node)
+				throw std::runtime_error("_rotate_left: node is not the right child of its parent.");
+			parent->_right = left;
+			node->_left = parent;
+			node->_parent = parent->_parent;
+			parent->_parent = node;
+			if (left)
+				left->_parent = parent;
+			if (node->_parent)
+			{
+				if (node->_parent->_left == parent)
+					node->_parent->_left = node;
+				else
+					node->_parent->_right = node;
+			}
+		}
+
+		// This function function will rotate the tree to the right from the given node.
+		// The node must be the left child of its parent.
+		// behavior: The parent of the given node will become the right child of the node.
+		// If the node already has a right child, it will become the left child of the parent.
+		// Thus the sorted order of the tree will be preserved.
+		void	_rotate_right(RedBlackTreeNode* node)
+		{
+			RedBlackTreeNode*			parent(node->_parent);
+			RedBlackTreeNode*			right(node->_right);
+
+			if (parent == NULL || parent->_left != node)
+				throw std::runtime_error("_rotate_right: node is not the left child of its parent.");
+			parent->_left = right;
+			node->_right = parent;
+			node->_parent = parent->_parent;
+			parent->_parent = node;
+			if (right)
+				right->_parent = parent;
+			if (node->_parent)
+			{
+				if (node->_parent->_left == parent)
+					node->_parent->_left = node;
+				else
+					node->_parent->_right = node;
+			}
+		}
+
 		// This function will create family relation based on the node.
-		void	make_relation(RedBlackTreeNode* current_node,
+		void	_make_relation(RedBlackTreeNode* current_node,
 			RedBlackTreeNode** parent_node,
 			RedBlackTreeNode** grand_parent_node,
 			RedBlackTreeNode** uncle_node)
@@ -187,10 +189,89 @@ class RedBlackTreeNode
 			}
 		}
 
+		// If the uncle is red, recolor the parent and uncle to black and grandparent to red.
+		// Then call _resolve_insertion on the grandparent.
+		void	_uncle_is_red(RedBlackTreeNode* current_node,
+							RedBlackTreeNode* parent_node,
+							RedBlackTreeNode* grand_parent_node,
+							RedBlackTreeNode* uncle_node)
+		{
+			if (uncle_node != NULL && uncle_node->_color == red)
+			{
+				parent_node->_color = black;
+				uncle_node->_color = black;
+				grand_parent_node->_color = red;
+				_resolve_insertion(grand_parent_node);
+				return ;
+			}
+		}
+
+		// If the parent is a left child:
+		//	If the node is a right child,
+		//	rotate the node to the left then to the right.
+		//	Then recolor node to black and grandparent to red.
+		//
+		//	If the node is a left child,
+		//	rotate the parent to the right.
+		//	Then recolor the parent and grandparent to black and red.
+		void	_left_parent(RedBlackTreeNode* current_node,
+										RedBlackTreeNode* parent_node,
+										RedBlackTreeNode* grand_parent_node)
+		{
+			if (grand_parent_node->_left == parent_node)
+			{
+				if (parent_node->_right == node)
+				{
+					_rotate_left(node);
+					_rotate_right(node);
+					node->_color = black;
+					grand_parent_node->_color = red;
+				}
+				else if (parent_node->_left == node)
+				{
+					_rotate_right(parent_node);
+					parent_node->_color = black;
+					grand_parent_node->_color = red;
+				}
+				return;
+			}
+		}
+
+		// If the parent is a right child:
+		//	If the node is a right child,
+		//	rotate the parent to the left.
+		//	Then recolor the parent and grandparent to black and red.
+		//
+		//	If the node is a left child,
+		//	rotate the node to the right then to the left.
+		//	Then recolor node to black and grandparent to red.
+		void	_right_parent(RedBlackTreeNode* current_node,
+								RedBlackTreeNode* parent_node,
+								RedBlackTreeNode* grand_parent_node)
+		{
+			if (grand_parent_node->_right == parent_node)
+			{
+				if (parent_node->_right == node)
+				{
+					_rotate_left(parent_node);
+					parent_node->_color = black;
+					grand_parent_node->_color = red;
+				}
+				else if (parent_node->_left == node)
+				{
+					_rotate_right(node);
+					_rotate_left(node);
+					node->_color = black;
+					grand_parent_node->_color = red;
+				}
+				return;
+			}
+		}
+
 		// This function will resolve the red-black tree properties after insertion.
 		// It will either rotate the tree to the left or to the right. Or just recolor the nodes.
 		// The node->_parent, node->_parent->_parent and node->_parent->_parent->[_left, _right] will be used.
-		void	resolve_insertion(RedBlackTreeNode* node)
+		void	_resolve_insertion(RedBlackTreeNode* node)
 		{
 			RedBlackTreeNode*				parent_node;
 			RedBlackTreeNode*				grand_parent_node;
@@ -199,7 +280,7 @@ class RedBlackTreeNode
 			if (node == NULL)
 				return ;
 
-			make_relation(node, &parent_node, &grand_parent_node, &uncle_node);
+			_make_relation(node, &parent_node, &grand_parent_node, &uncle_node);
 
 			// If the node is the root, just recolor it.
 			if (parent_node == NULL)
@@ -211,69 +292,9 @@ class RedBlackTreeNode
 			// If the parent is black, the tree is already correct.
 			if (parent_node->_color == black)
 				return ;
-
-			// If the uncle is red, recolor the parent and uncle to black and grandparent to red.
-			// Then call resolve_insertion on the grandparent.
-			if (uncle_node != NULL && uncle_node->_color == red)
-			{
-				parent_node->_color = black;
-				uncle_node->_color = black;
-				grand_parent_node->_color = red;
-				resolve_insertion(grand_parent_node);
-				return ;
-			}
-
-			// If the parent is a left child:
-			//	If the node is a right child,
-			//	rotate the node to the left then to the right.
-			//	Then recolor node to black and grandparent to red.
-			//
-			//	If the node is a left child,
-			//	rotate the parent to the right.
-			//	Then recolor the parent and grandparent to black and red.
-			if (grand_parent_node->_left == parent_node)
-			{
-				if (parent_node->_right == node)
-				{
-					rotate_left(node);
-					rotate_right(node);
-					node->_color = black;
-					grand_parent_node->_color = red;
-				}
-				else if (parent_node->_left == node)
-				{
-					rotate_right(parent_node);
-					parent_node->_color = black;
-					grand_parent_node->_color = red;
-				}
-				return;
-			}
-
-			// If the parent is a right child:
-			//	If the node is a right child,
-			//	rotate the parent to the left.
-			//	Then recolor the parent and grandparent to black and red.
-			//
-			//	If the node is a left child,
-			//	rotate the node to the right then to the left.
-			//	Then recolor node to black and grandparent to red.
-			if (grand_parent_node->_right == parent_node)
-			{
-				if (parent_node->_right == node)
-				{
-					rotate_left(parent_node);
-					parent_node->_color = black;
-					grand_parent_node->_color = red;
-				}
-				else if (parent_node->_left == node)
-				{
-					rotate_right(node);
-					rotate_left(node);
-					node->_color = black;
-					grand_parent_node->_color = red;
-				}
-				return;
-			}
+			_uncle_is_red(node, parent_node, grand_parent_node, uncle_node);
+			_left_parent(node, parent_node, grand_parent_node);
+			_right_parent(node, parent_node, grand_parent_node);
 		}
 };
 
