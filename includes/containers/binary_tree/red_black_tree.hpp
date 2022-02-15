@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/14 13:57:58 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/15 15:33:38 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,27 @@ class rbtree
 
 		RedBlackTreeNode<T>*	root() const {return _root;};
 
+		// Insert a new node in the tree by calling the insert function of the root.
 		void	insert(const T& value)
 		{
 			if (_root == NULL)
 				_root = new RedBlackTreeNode<T>(value);
 			else
 				_root = _root->insert(value);
+		};
+
+		// Get the node with the value.
+		RedBlackTreeNode<T>*	get(const T& value)
+		{
+			if (_root == NULL)
+				return NULL;
+			return _root->node(value);
+		};
+
+		// Operator to get the node with the value.
+		RedBlackTreeNode<T>*	operator[](const T& value)
+		{
+			return get(value);
 		};
 };
 

@@ -89,17 +89,43 @@ class RedBlackTreeNode
 				else
 					throw std::runtime_error("RedBlackTreeNode::insert: value already exists.");
 			}
-			return (get_root());
+			return (root());
 		}
 
 		// This function will return the root of the tree.
-		RedBlackTreeNode*			get_root() const
+		RedBlackTreeNode*			root() const
 		{
 			RedBlackTreeNode*			node(const_cast<RedBlackTreeNode*>(this));
 
 			while (node->_parent)
 				node = node->_parent;
 			return (node);
+		}
+
+		// This function will return the node with the given value.
+		// If the node doesn't exist, it will return NULL.
+		RedBlackTreeNode*			node(const T& value) const
+		{
+			RedBlackTreeNode*			node(const_cast<RedBlackTreeNode*>(this));
+
+			while (node)
+			{
+				if (value < node->_value)
+				{
+					if (node->_left == NULL)
+						return (NULL);
+					node = node->_left;
+				}
+				else if (value > node->_value)
+				{
+					if (node->_right == NULL)
+						return (NULL);
+					node = node->_right;
+				}
+				else
+					return (node);
+			}
+			return (NULL);
 		}
 
 	private:
