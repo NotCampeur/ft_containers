@@ -10,8 +10,16 @@ INC_DIR = 		$(shell find includes -type d) \
 				$(shell find libs -type d) \
 				/urs/includes
 
-LIB_DIR = 		libs/LDLogger libs/LCPPGL
-LIB = 			LDLogger lcppgl
+LIB_DIR = 		libs/LDLogger
+
+VISUALIZER_LIB_DIR = $(LIB_DIR)	\
+					libs/LCPPGL
+
+LIB = 			LDLogger
+
+VISUALIZER_LIB = $(LIB) \
+					lcppgl
+
 LDLOGGER = 		libs/LDLogger/libLDLogger.a
 LCPPGL = 		libs/LCPPGL/liblcppgl.a
 
@@ -61,6 +69,9 @@ IFLAGS	=		$(foreach dir, $(INC_DIR), -I$(dir))
 #Library flag
 LFLAGS	=		$(foreach dir, $(LIB_DIR), -L $(dir)) \
 				$(foreach lib, $(LIB), -l $(lib))
+
+VISUALIZER_LFLAGS	=	$(foreach dir, $(VISUALIZER_LIB_DIR), -L $(dir)) \
+						$(foreach lib, $(VISUALIZER_LIB), -l $(lib))
 
 BUILD_LOG = logs/Makefile.log
 
@@ -136,10 +147,10 @@ all:			$(NAME) $(DIY_NAME)
 re-install:
 				@$(foreach dir, $(LIB_DIR), make --no-print-directory -C $(dir) re ; )
 
-$(NAME):		$(LCPPGL) $(LDLOGGER) $(OBJ)
+$(NAME):		$(LDLOGGER) $(OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
-				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) $(LFLAGS) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image -o $@" >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(OBJ) $(LFLAGS) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) $(LFLAGS) -o $@" >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(OBJ) $(LFLAGS) -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
@@ -147,10 +158,10 @@ $(NAME):		$(LCPPGL) $(LDLOGGER) $(OBJ)
 					exit $(ret_status); \
 				fi
 
-$(DIY_NAME):	$(LCPPGL) $(LDLOGGER) $(DIY_OBJ)
+$(DIY_NAME):	$(LDLOGGER) $(DIY_OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
-				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) $(LFLAGS) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image -o $@ " >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) $(LFLAGS) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) $(LFLAGS) -o $@ " >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) $(LFLAGS) -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
@@ -160,8 +171,8 @@ $(DIY_NAME):	$(LCPPGL) $(LDLOGGER) $(DIY_OBJ)
 
 $(VISUALIZER_NAME):		$(LCPPGL) $(LDLOGGER) $(VISUALIZER_OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
-				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(VISUALIZER_OBJ) $(LFLAGS) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image -o $@ " >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(VISUALIZER_OBJ) $(LFLAGS) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(VISUALIZER_OBJ) $(VISUALIZER_LFLAGS) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image -o $@ " >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(VISUALIZER_OBJ) $(VISUALIZER_LFLAGS) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
@@ -230,8 +241,8 @@ $(OBJ_DIR)/%.o : 	%.cpp
 				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
 				$(shell mkdir -p $(OBJ_DIR))
 				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ;\
-				echo "$(CC) $(CFLAGS) $(IFLAGS) `sdl2-config --cflags` -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) `sdl2-config --cflags` -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
+				echo "$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
@@ -243,8 +254,8 @@ $(DIY_OBJ_DIR)/%.o : 	%.cpp
 				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
 				$(shell mkdir -p $(DIY_OBJ_DIR))
 				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ;\
-				echo "$(CC) $(CFLAGS) -D DIY=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) -D DIY=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
+				echo "$(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
@@ -256,7 +267,7 @@ $(VISUALIZER_OBJ_DIR)/%.o : 	%.cpp
 				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
 				$(shell mkdir -p $(VISUALIZER_OBJ_DIR))
 				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ;\
-				echo "$(CC) $(CFLAGS) -D DIY=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
+				echo "$(CC) $(CFLAGS) -D DIY=true -D TREE_VISUALIZER=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
 				$(eval ret_status := $(shell $(CC) $(CFLAGS) -D DIY=true -D TREE_VISUALIZER=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \

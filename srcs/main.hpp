@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:13:05 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/07 12:07:58 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/15 18:14:36 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@
 # include <limits>
 # include <stdint.h>
 # include "Logger.hpp"
-# include "lcppgl.hpp"
+
+# ifdef TREE_VISUALIZER
+#  include "lcppgl.hpp"
+# endif
 
 # ifdef DIY
 	#  include <map.hpp>
