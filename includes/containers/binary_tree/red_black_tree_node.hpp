@@ -447,16 +447,19 @@ class RedBlackTreeNode
 
 		// If the uncle is red, recolor the parent and uncle to black and grandparent to red.
 		// Then call _resolve_insertion on the grandparent.
-		void	_uncle_is_red(RedBlackTreeNode* parent_node,
-							RedBlackTreeNode* grand_parent_node,
-							RedBlackTreeNode* uncle_node)
+		void	_uncle_is_red(RedBlackTreeNode* node)
 		{
+			RedBlackTreeNode*	parent_node;
+			RedBlackTreeNode*	grand_parent_node;
+			RedBlackTreeNode*	uncle_node;
+
+			_make_relation(node, &parent_node, &grand_parent_node, &uncle_node);
 			if (uncle_node != NULL && uncle_node->_color == red)
 			{
 				parent_node->_color = black;
 				uncle_node->_color = black;
 				grand_parent_node->_color = red;
-				_resolve_insertion(grand_parent_node);
+				_uncle_is_red(grand_parent_node);
 				return ;
 			}
 		}
@@ -547,7 +550,7 @@ class RedBlackTreeNode
 			// If the parent is black, the tree is already correct.
 			if (parent_node->_color == black)
 				return ;
-			_uncle_is_red(parent_node, grand_parent_node, uncle_node);
+			_uncle_is_red(node);
 			_left_parent(node, parent_node, grand_parent_node);
 			_right_parent(node, parent_node, grand_parent_node);
 		}
