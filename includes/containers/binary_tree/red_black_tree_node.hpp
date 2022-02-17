@@ -163,11 +163,11 @@ class RedBlackTreeNode
 					sibling->_color = black;
 					if (sibling->_parent->_left == sibling)
 					{
-						_rotate_right(parent);
+						_rotate_right(sibling);
 					}
 					else
 					{
-						_rotate_left(parent);
+						_rotate_left(sibling);
 					}
 					_resolve_double_black(node);
 				}
@@ -184,14 +184,15 @@ class RedBlackTreeNode
 								// left left
 								sibling->_left->_color = sibling->_color;
 								sibling->_color = parent->_color;
-								_rotate_right(parent);
+								_rotate_right(sibling);
 							}
 							else
 							{
 								// right left
 								sibling->_left->_color = parent->_color;
-								_rotate_right(sibling);
-								_rotate_left(parent);
+								RedBlackTreeNode *tmp = sibling->_left;
+								_rotate_right(tmp);
+								_rotate_left(tmp);
 							}
 						}
 						else
@@ -200,15 +201,16 @@ class RedBlackTreeNode
 							{
 								// left right
 								sibling->_right->_color = parent->_color;
-								_rotate_left(sibling);
-								_rotate_right(parent);
+								RedBlackTreeNode *tmp = sibling->_right;
+								_rotate_left(tmp);
+								_rotate_right(tmp);
 							}
 							else
 							{
 								// right right
 								sibling->_right->_color = sibling->_color;
 								sibling->_color = parent->_color;
-								_rotate_left(parent);
+								_rotate_left(sibling);
 							}
 						}
 						parent->_color = black;
@@ -258,7 +260,14 @@ class RedBlackTreeNode
 		// return true if both given nodes are black
 		bool _are_both_black(RedBlackTreeNode *node1, RedBlackTreeNode *node2)
 		{
-			return (node1->_color == black && node2->_color == black);
+			if (node1 == NULL && node2 == NULL)
+				return true;
+			else if (node1 == NULL && node2 != NULL && node2->_color == black)
+				return true;
+			else if (node1 != NULL && node1->_color == black && node2 == NULL)
+				return true;
+			else
+				return (node1->_color == black && node2->_color == black);
 		}
 
 		// returns pointer to sibling
@@ -278,33 +287,33 @@ class RedBlackTreeNode
 		// After deletion, the node will be replaced by its successor
 		// or NULL if the node is a leaf.
 		// Will then resolve any double black nodes.
-		void _delete_node(RedBlackTreeNode *v)
+		void _delete_node(RedBlackTreeNode *node_to_del)
 		{
-			RedBlackTreeNode*	u = _find_replacement(v);
-			bool				is_u_v_black = _are_both_black(u, v);
-			RedBlackTreeNode*	parent = v->_parent;
+			RedBlackTreeNode*	replacement = _find_replacement(node_to_del);
+			bool				is_r_n_black = _are_both_black(replacement, node_to_del);
+			RedBlackTreeNode*	parent = node_to_del->_parent;
 		
-			if (u == NULL)
+			if (replacement == NULL)
 			{
-				// u is NULL therefore v is leaf
-				if (v->_parent != NULL)
+				// replacement is NULL therefore node_to_del is leaf
+				if (node_to_del->_parent != NULL)
 				{
-					if (is_u_v_black)
+					if (is_r_n_black)
 					{
-						// u and v both black
-						// v is leaf, fix double black at v
-						_resolve_double_black(v);
+						// replacement and node_to_del both black
+						// node_to_del is leaf, fix double black at node_to_del
+						_resolve_double_black(node_to_del);
 					}
 					else
 					{
-						// u or v is red
-						if (v->_sibling() != NULL)
+						// replacement or node_to_del is red
+						if (node_to_del->_sibling() != NULL)
 							// sibling is not null, make it red"
-							v->_sibling()->_color = red;
+							node_to_del->_sibling()->_color = red;
 					}
 		
-					// delete v from the tree
-					if (v->_parent->_left == v)
+					// delete node_to_del from the tree
+					if (node_to_del->_parent->_left == node_to_del)
 					{
 						parent->_left = NULL;
 					}
@@ -313,51 +322,51 @@ class RedBlackTreeNode
 						parent->_right = NULL;
 					}
 				}
-				delete v;
+				delete node_to_del;
 				return;
 			}
 		
-			if (v->_left == NULL || v->_right == NULL)
+			if (node_to_del->_left == NULL || node_to_del->_right == NULL)
 			{
-				// v has 1 child
-				if (v->_parent == NULL)
+				// node_to_del has 1 child
+				if (node_to_del->_parent == NULL)
 				{
-					// v is root, assign the value of u to v, and delete u
-					v->_value = u->_value;
-					v->_left = v->_right = NULL;
-					delete u;
+					// node_to_del is root, assign the value of replacement to node_to_del, and delete replacement
+					node_to_del->_value = replacement->_value;
+					node_to_del->_left = node_to_del->_right = NULL;
+					delete replacement;
 				}
 				else
 				{
-					// Detach v from tree and move u up
-					if (v->_parent->_left == v)
+					// Detach node_to_del from tree and move replacement up
+					if (node_to_del->_parent->_left == node_to_del)
 					{
-						parent->_left = u;
+						parent->_left = replacement;
 					} 
 					else
 					{
-						parent->_right = u;
+						parent->_right = replacement;
 					}
-					delete v;
-					u->_parent = parent;
-					if (is_u_v_black)
+					delete node_to_del;
+					replacement->_parent = parent;
+					if (is_r_n_black)
 					{
-						// u and v both black, fix double black at u
-						_resolve_double_black(u);
+						// replacement and node_to_del both black, fix double black at replacement
+						_resolve_double_black(replacement);
 					}
 					else
 					{
-						// u or v red, color u black
-						u->_color = black;
+						// replacement or node_to_del red, color replacement black
+						replacement->_color = black;
 					}
 				}
 				return;
 			}
-			// v has 2 children, swap values with _successor and recurse
-			v->_value = v->_value ^ u->_value;
-			u->_value = v->_value ^ u->_value;
-			v->_value = v->_value ^ u->_value;
-			_delete_node(u);
+			// node_to_del has 2 children, swap values with _successor and recurse
+			node_to_del->_value = node_to_del->_value ^ replacement->_value;
+			replacement->_value = node_to_del->_value ^ replacement->_value;
+			node_to_del->_value = node_to_del->_value ^ replacement->_value;
+			_delete_node(replacement);
 		}
  
 		// This function function will rotate the tree to the left from the given node.
