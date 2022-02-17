@@ -463,6 +463,12 @@ class RedBlackTreeNode
 			RedBlackTreeNode*	uncle_node;
 
 			_make_relation(node, &parent_node, &grand_parent_node, &uncle_node);
+			// If the node is the root, just recolor it.
+			if (parent_node == NULL)
+			{
+				node->_color = black;
+				return ;
+			}
 			if (uncle_node != NULL && uncle_node->_color == red)
 			{
 				parent_node->_color = black;
@@ -481,10 +487,15 @@ class RedBlackTreeNode
 		//	If the node is a left child,
 		//	rotate the parent to the right.
 		//	Then recolor the parent and grandparent to black and red.
-		void	_left_parent(RedBlackTreeNode* current_node,
-										RedBlackTreeNode* parent_node,
-										RedBlackTreeNode* grand_parent_node)
+		void	_left_parent(RedBlackTreeNode* current_node)
 		{
+			RedBlackTreeNode*	parent_node;
+			RedBlackTreeNode*	grand_parent_node;
+			RedBlackTreeNode*	uncle_node;
+
+			_make_relation(current_node, &parent_node, &grand_parent_node, &uncle_node);
+			// if (uncle_node != NULL && uncle_node->_color == red)
+			// 	_uncle_is_red(current_node);
 			if (grand_parent_node->_left == parent_node)
 			{
 				if (parent_node->_right == current_node)
@@ -512,10 +523,15 @@ class RedBlackTreeNode
 		//	If the node is a left child,
 		//	rotate the node to the right then to the left.
 		//	Then recolor node to black and grandparent to red.
-		void	_right_parent(RedBlackTreeNode* current_node,
-								RedBlackTreeNode* parent_node,
-								RedBlackTreeNode* grand_parent_node)
+		void	_right_parent(RedBlackTreeNode* current_node)
 		{
+			RedBlackTreeNode*	parent_node;
+			RedBlackTreeNode*	grand_parent_node;
+			RedBlackTreeNode*	uncle_node;
+
+			_make_relation(current_node, &parent_node, &grand_parent_node, &uncle_node);
+			// if (uncle_node != NULL && uncle_node->_color == red)
+			// 	_uncle_is_red(current_node);
 			if (grand_parent_node->_right == parent_node)
 			{
 				if (parent_node->_right == current_node)
@@ -556,12 +572,20 @@ class RedBlackTreeNode
 				return ;
 			}
 
-			// If the parent is black, the tree is already correct.
+			// If the parent is black, the node is already correct.
 			if (parent_node->_color == black)
-				return ;
-			_uncle_is_red(node);
-			_left_parent(node, parent_node, grand_parent_node);
-			_right_parent(node, parent_node, grand_parent_node);
+			{
+				_resolve_insertion(grand_parent_node);
+				return;
+			}
+			if (uncle_node != NULL && uncle_node->_color == red)
+				_uncle_is_red(node);
+			else if (grand_parent_node->_left == parent_node)
+				_left_parent(node);
+			else if (grand_parent_node->_right == parent_node)
+				_right_parent(node);
+			if (node->_color == red)
+				_resolve_insertion(node);
 		}
 };
 

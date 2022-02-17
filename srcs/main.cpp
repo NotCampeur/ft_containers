@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/17 14:42:34 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/17 15:42:54 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ int main(int argc, char** argv)
 	vector_test();
 	stack_test();
 	pair_test();
-	tree_test();
+	// tree_test();
 	// map_test();
 	#ifdef TREE_VISUALIZER
 	visualize_b_tree();

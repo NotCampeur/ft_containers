@@ -6,11 +6,14 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 02:29:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/15 20:15:20 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/17 18:58:06 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.hpp"
+
+bool	g_delete_node = false;
+bool	g_insert_node = false;
 
 void	continue_input(lcppgl::Context & context)
 {
@@ -19,7 +22,7 @@ void	continue_input(lcppgl::Context & context)
 
 	while (carry_on == false)
 	{
-		if (SDL_WaitEvent(&event))
+		if (SDL_PollEvent(&event))
 		{
 			switch (event.type)
 			{
@@ -33,6 +36,10 @@ void	continue_input(lcppgl::Context & context)
 						context.set_fullscreen(!context.is_fullscreen());
 					else if (event.key.keysym.sym == SDLK_SPACE)
 						carry_on = true;
+					else if (event.key.keysym.sym == SDLK_d)
+						g_delete_node = true;
+					else if (event.key.keysym.sym == SDLK_i)
+						g_insert_node = true;
 					break;
 				default:
 					break;
@@ -172,80 +179,6 @@ void	draw_tree(lcppgl::Context & context, const RedBlackTreeNode<int> *node, boo
 	}
 }
 
-// void	print_node(lcppgl::Writer & writer, lcppgl::Printer & render, lcppgl::Context & context, const RedBlackTreeNode<int> *node)
-// {
-// 	static int	depth(0);
-// 	static int	offset(0);
-// 	static lcppgl::tools::Point	p1;
-// 	static lcppgl::tools::Point	p2;
-	
-// 	if (node->_left)
-// 	{
-// 		offset--;
-// 		if (node->_left->_right && node->_right && node->_right->_left)
-// 			offset--;
-// 		depth++;
-// 		print_node(writer, render, context, node->_left);
-// 		if (node->_left->_right && node->_right && node->_right->_left)
-// 			offset++;
-// 		offset++;
-// 		depth--;
-// 	}
-// 	std::ostringstream nb;
-// 	nb << node->_value;
-// 	int	nb_width(12 * nb.str().size());
-// 	if (node->_right)
-// 	{
-// 		offset++;
-// 		if (node->_right->_left && node->_left && node->_left->_right)
-// 			offset++;
-// 		depth++;
-// 		print_node(writer, render, context, node->_right);
-// 		if (node->_right->_left && node->_left && node->_left->_right)
-// 			offset--;
-// 		offset--;
-// 		depth--;
-// 	}
-// 	p1 = lcppgl::tools::Point(context.width() / 2 + (offset * 50),
-// 								50 + (depth * 50));
-// 	int	parent_offset(offset);
-// 	int	parent_depth(depth);
-// 	if (node->_parent && node->_parent->_left == node)
-// 	{
-// 		parent_offset++;
-// 		if (node->_parent->_right && node->_parent->_right->_left && node->_right)
-// 			parent_offset++;
-// 	}
-// 	else if (node->_parent && node->_parent->_right == node)
-// 	{
-// 		parent_offset--;
-// 		if (node->_parent->_left && node->_parent->_left->_right && node->_left)
-// 			parent_offset--;
-// 	}
-// 	else
-// 		parent_offset = 0;
-// 	if (node->_parent == NULL)
-// 		parent_depth = 0;
-// 	else
-// 		parent_depth--;
-// 	p2 = lcppgl::tools::Point(context.width() / 2 + (parent_offset * 50),
-// 								50 + (parent_depth * 50));
-// 	render.put_line(p1, p2, lcppgl::tools::Color(255, 0, 0, 255));
-
-// 	lcppgl::tools::Color	node_color;
-// 	if (node->_color == red)
-// 		node_color = lcppgl::tools::Color(255, 0, 0, 255);
-// 	else if (node->_color == black)
-// 		node_color = lcppgl::tools::Color(0, 0, 0, 255);
-// 	writer.put_text_and_bg(nb.str(),
-// 		lcppgl::tools::Rectangle(context.width() / 2 - (nb_width / 2) + (offset * 50),
-// 								50 + (depth * 50),
-// 								nb_width,
-// 								25),
-// 		lcppgl::tools::Color(255, 255, 255, 255),
-// 		node_color);
-// }
-
 void	tree_rendering(lcppgl::Context & context)
 {
 	lcppgl::Printer render(context);
@@ -262,16 +195,40 @@ void	tree_rendering(lcppgl::Context & context)
 	// 	lcppgl::tools::Color(255, 255, 255, 255));
 	// RedBlackTree<int> test(rand() % 9999);
 	
-	try
+	if (g_delete_node == false)
 	{
-		// std::string var;
-		// std::cin >> var;
-		// test.insert(to_int(var));
-		test.insert(rand() % 999);
+		try
+		{
+			if (g_insert_node == true)
+			{
+				std::string var;
+				std::cin >> var;
+				test.insert(to_int(var));
+				g_insert_node = false;
+			}
+			else
+			{
+				test.insert(rand() % 999);
+			}
+		}
+		catch(const std::exception& e)
+		{
+			std::cerr << e.what() << '\n';
+		}
 	}
-	catch(const std::exception& e)
+	else if (g_delete_node == true)
 	{
-		std::cerr << e.what() << '\n';
+		try
+		{
+			std::string var;
+			std::cin >> var;
+			test.remove(to_int(var));
+		}
+		catch(const std::exception& e)
+		{
+			std::cerr << e.what() << '\n';
+		}
+		g_delete_node = false;
 	}
 	draw_tree(context, test.root(), true);
 	render.present();
