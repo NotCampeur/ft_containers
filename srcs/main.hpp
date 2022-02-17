@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:13:05 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/15 18:14:36 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/17 19:45:11 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@
 
 # ifdef TREE_VISUALIZER
 #  include "lcppgl.hpp"
+int	input_nbr_box(lcppgl::Context & context, const char *text
+					, std::vector<std::string> &proposition
+					, unsigned long max_size_entry);
 # endif
 
 # ifdef DIY

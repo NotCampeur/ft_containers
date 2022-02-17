@@ -46,14 +46,13 @@ STACK_TEST =	stack_modifiers_test.cpp \
 
 PAIR_TEST =		pair_basic_test.cpp
 
-BINARY_VISUALIZER = visualizer.cpp
-
 SRC 	=		main.cpp \
 				$(VECTOR_TEST) \
 				$(STACK_TEST) \
 				$(PAIR_TEST)
 
-VISUALIZER_SRC =	visualizer.cpp
+VISUALIZER_SRC =	visualizer.cpp \
+					input_nbr_box.cpp
 
 OBJ	=				$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 DIY_OBJ	=			$(addprefix $(DIY_OBJ_DIR)/, $(SRC:%.cpp=%.o))

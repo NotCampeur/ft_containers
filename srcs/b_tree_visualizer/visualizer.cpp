@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 02:29:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/17 18:58:06 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/17 20:04:43 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,34 +18,34 @@ bool	g_insert_node = false;
 void	continue_input(lcppgl::Context & context)
 {
 	SDL_Event event;
-	bool	carry_on(false);
+	bool	carry_on = false;
 
 	while (carry_on == false)
-	{
-		if (SDL_PollEvent(&event))
+		if (SDL_WaitEvent(&event))
 		{
 			switch (event.type)
 			{
 				case SDL_QUIT:
 					context.stop();
+					carry_on = true;
 					break;
 				case SDL_KEYDOWN:
 					if (event.key.keysym.sym == SDLK_ESCAPE)
 						context.stop();
 					else if (event.key.keysym.sym == SDLK_F11)
 						context.set_fullscreen(!context.is_fullscreen());
-					else if (event.key.keysym.sym == SDLK_SPACE)
-						carry_on = true;
+					// else if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_SPACE)
+						// carry_on = true;
 					else if (event.key.keysym.sym == SDLK_d)
 						g_delete_node = true;
 					else if (event.key.keysym.sym == SDLK_i)
 						g_insert_node = true;
+					carry_on = true;
 					break;
 				default:
 					break;
 			}
 		}
-	}
 }
 
 // Will calcul the offset between the root nodes and his children.
@@ -182,18 +182,13 @@ void	draw_tree(lcppgl::Context & context, const RedBlackTreeNode<int> *node, boo
 void	tree_rendering(lcppgl::Context & context)
 {
 	lcppgl::Printer render(context);
-	// lcppgl::Writer writer(context, "/Users/ldutriez/.brew/Library/Homebrew/vendor/portable-ruby/2.6.8/lib/ruby/2.6.0/rdoc/generator/template/darkfish/fonts/Lato-Regular.ttf", 20);
-	// lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 20);
-
 	static rbtree<int> test;
+	static std::vector<std::string> proposition;
 
-	context.set_fps_limit(1);
+	// context.set_fps_limit(1);
 	
 	render.set_draw_color(lcppgl::tools::Color(70, 70, 70, 255));
 	render.clear();
-	// writer.put_pretty_text("Hello World!", lcppgl::tools::Rectangle(20, 250, 480, 80),
-	// 	lcppgl::tools::Color(255, 255, 255, 255));
-	// RedBlackTree<int> test(rand() % 9999);
 	
 	if (g_delete_node == false)
 	{
@@ -201,10 +196,7 @@ void	tree_rendering(lcppgl::Context & context)
 		{
 			if (g_insert_node == true)
 			{
-				std::string var;
-				std::cin >> var;
-				test.insert(to_int(var));
-				g_insert_node = false;
+				test.insert(input_nbr_box(context, "Number to insert:", proposition, 4));
 			}
 			else
 			{
@@ -215,14 +207,14 @@ void	tree_rendering(lcppgl::Context & context)
 		{
 			std::cerr << e.what() << '\n';
 		}
+		if (g_insert_node == true)
+			g_insert_node = false;
 	}
 	else if (g_delete_node == true)
 	{
 		try
 		{
-			std::string var;
-			std::cin >> var;
-			test.remove(to_int(var));
+			test.remove(input_nbr_box(context, "Number to remove:", proposition, 4));
 		}
 		catch(const std::exception& e)
 		{
