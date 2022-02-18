@@ -172,7 +172,8 @@ int	input_nbr_box(lcppgl::Context & context, const char *text
 					, unsigned long max_size_entry)
 {
 	lcppgl::Printer	render(context);
-	lcppgl::Writer	writer(context, "/Users/ldutriez/.brew/Library/Homebrew/vendor/portable-ruby/2.6.8/lib/ruby/2.6.0/rdoc/generator/template/darkfish/fonts/Lato-Regular.ttf", 20);
+	(void)text;
+	// lcppgl::Writer	writer(context, "/Users/ldutriez/.brew/Library/Homebrew/vendor/portable-ruby/2.6.8/lib/ruby/2.6.0/rdoc/generator/template/darkfish/fonts/Lato-Regular.ttf", 20);
 	std::string		result("|");
 	SDL_Event		e;
 	SDL_bool		done(SDL_FALSE);
@@ -188,8 +189,8 @@ int	input_nbr_box(lcppgl::Context & context, const char *text
 				catch_nbr_input(e, result, index, done, proposition, proposition_index, max_size_entry);
 			render.put_filled_rect(lcppgl::tools::Rectangle(context.width() / 2 - 150, context.height() /2 - 50, 300, 100), lcppgl::tools::Color(10, 70, 160, 255));
 			render.put_filled_rect(lcppgl::tools::Rectangle(context.width() / 2 - 140, context.height() /2, 280, 45), lcppgl::tools::Color(50, 50, 50, 255));
-			writer.put_pretty_text(text, lcppgl::tools::Rectangle(context.width() / 2 - 100, context.height() /2 - 45, 200, 50), lcppgl::tools::Color(0, 0, 0, 255));
-			writer.put_pretty_text(result, lcppgl::tools::Rectangle(context.width() / 2 - 135, context.height() /2 - 5, result.length() * 9, 50), lcppgl::tools::Color(0, 0, 0, 255));
+			// writer.put_pretty_text(text, lcppgl::tools::Rectangle(context.width() / 2 - 100, context.height() /2 - 45, 200, 50), lcppgl::tools::Color(0, 0, 0, 255));
+			// writer.put_pretty_text(result, lcppgl::tools::Rectangle(context.width() / 2 - 135, context.height() /2 - 5, result.length() * 9, 50), lcppgl::tools::Color(0, 0, 0, 255));
 			render.present();
 		}
 	}

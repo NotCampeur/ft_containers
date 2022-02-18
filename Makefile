@@ -170,8 +170,8 @@ $(DIY_NAME):	$(LDLOGGER) $(DIY_OBJ)
 
 $(VISUALIZER_NAME):		$(LCPPGL) $(LDLOGGER) $(VISUALIZER_OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
-				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(VISUALIZER_OBJ) $(VISUALIZER_LFLAGS) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image -o $@ " >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(VISUALIZER_OBJ) $(VISUALIZER_LFLAGS) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(VISUALIZER_OBJ) $(VISUALIZER_LFLAGS) `sdl2-config --libs` -o $@ " >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(VISUALIZER_OBJ) $(VISUALIZER_LFLAGS) `sdl2-config --libs` -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \

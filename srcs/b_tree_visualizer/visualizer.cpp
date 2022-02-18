@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 02:29:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/17 20:04:43 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/18 19:01:24 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 bool	g_delete_node = false;
 bool	g_insert_node = false;
 
-void	continue_input(lcppgl::Context & context)
+void	input_manager(lcppgl::Context & context)
 {
 	SDL_Event event;
 	bool	carry_on = false;
@@ -83,51 +83,38 @@ int		to_int(const std::string & str)
 	return (nb);
 }
 
+// Calcul the how much nodes separate the node from the farthest leave.
+int		deepest(const RedBlackTreeNode<int> * node)
+{
+	int		result(0);
+
+	if (node->_left != NULL)
+		result = std::max(result, deepest(node->_left));
+	if (node->_right != NULL)
+		result = std::max(result, deepest(node->_right));
+	return (result + 1);
+}
+
 void	draw_node(lcppgl::Context & context, const RedBlackTreeNode<int> *node
 				, int depth, int offset)
 {
-	lcppgl::Writer writer(context, "/Users/ldutriez/.brew/Library/Homebrew/vendor/portable-ruby/2.6.8/lib/ruby/2.6.0/rdoc/generator/template/darkfish/fonts/Lato-Regular.ttf", 20);
+	// lcppgl::Writer writer(context, "/Users/ldutriez/.brew/Library/Homebrew/vendor/portable-ruby/2.6.8/lib/ruby/2.6.0/rdoc/generator/template/darkfish/fonts/Lato-Regular.ttf", 20);
+	lcppgl::Printer drawer(context);
 	lcppgl::tools::Color		node_color;
-	lcppgl::tools::Color		writing_color(255, 255, 255, 255);
-	std::string					s_value = to_string(node->_value);
-	int							nb_width(12 * s_value.size());
-	lcppgl::tools::Rectangle	pos(offset * 50
-								, depth * 50
-								, nb_width, 25);
+	// lcppgl::tools::Color		writing_color(255, 255, 255, 255);
+	// std::string					s_value = to_string(node->_value);
+	// int							nb_width(12 * s_value.size());
+	lcppgl::tools::Rectangle	pos(offset * 26
+								, depth * 100
+								, 50, 25);
+								// , nb_width, 25);
 
 	if (node->_color == red)
 		node_color = lcppgl::tools::Color(255, 0, 0, 255);
 	else if (node->_color == black)
 		node_color = lcppgl::tools::Color(0, 0, 0, 255);
-	writer.put_text_and_bg(s_value, pos, writing_color, node_color);
-}
-
-// count the number of right children of the node
-int	count_right_children(const RedBlackTreeNode<int> * node)
-{
-	int							nb_right_children(1);
-	const RedBlackTreeNode<int> *tmp(node);
-
-	while (tmp->_right != NULL)
-	{
-		nb_right_children++;
-		tmp = tmp->_right;
-	}
-	return (nb_right_children);
-}
-
-// count the number of left children of the node
-int	count_left_children(const RedBlackTreeNode<int> * node)
-{
-	int							nb_left_children(1);
-	const RedBlackTreeNode<int> *tmp(node);
-
-	while (tmp->_left != NULL)
-	{
-		nb_left_children++;
-		tmp = tmp->_left;
-	}
-	return (nb_left_children);
+	// writer.put_text_and_bg(s_value, pos, writing_color, node_color);
+	drawer.put_filled_rect(pos, node_color);
 }
 
 // Will print the tree to the screen.
@@ -156,11 +143,13 @@ void	draw_tree(lcppgl::Context & context, const RedBlackTreeNode<int> *node, boo
 		}
 		
 		{
-			lcppgl::tools::Point	p1(offset * 50, depth * 50);
-			lcppgl::tools::Point	p2(p1.x - (count_left_children(node) * 50), p1.y - 50);
+			lcppgl::tools::Point	p1(offset * 26 + 25, depth * 100);
+			lcppgl::tools::Point	p2(p1.x, p1.y - 75);
 
 			if (node->_parent && node == node->_parent->_left)
-				p2.x = p1.x + (count_right_children(node) * 50);
+				p2.x = ((offset + deepest(node)) * 26) + 25;
+			else if (node->_parent && node == node->_parent->_right)
+				p2.x = ((offset - deepest(node)) * 26) + 25;
 			else if (node->_parent == NULL)
 				p2 = p1;
 			printer.put_line(p1, p2, lcppgl::tools::Color(255, 255, 255, 255));
@@ -232,7 +221,7 @@ void	visualize_b_tree(void)
 	try
 	{
 		lcppgl::Context & main_context = lcppgl::Application::instance().create_context("B-Tree Visualizer", 1920, 1080);
-		main_context.add_event_functor(continue_input);
+		main_context.add_event_functor(input_manager);
 		main_context.add_render_functor(tree_rendering);
 		lcppgl::Application::instance().run();
 	}
