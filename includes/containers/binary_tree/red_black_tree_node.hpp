@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/19 05:59:22 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/19 06:42:38 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,20 +51,7 @@ class RedBlackTreeNode
 		, _value(other._value), _color(other._color) {}
 
 		~RedBlackTreeNode()
-		{
-			// if (_left)
-			// {
-			// 	_alloc.destroy(_left);
-			// 	_alloc.deallocate(_left, 1);
-			// 	// delete _left;
-			// }
-			// if (_right)
-			// {
-			// 	_alloc.destroy(_right);
-			// 	_alloc.deallocate(_right, 1);
-			// 	// delete _right;
-			// }
-		}
+		{}
 
 		RedBlackTreeNode&				operator=(const RedBlackTreeNode& other)
 		{
@@ -94,7 +81,6 @@ class RedBlackTreeNode
 						node->_left = alloc.allocate(1);
 						alloc.construct(node->_left, value);
 						node->_left->_color = red;
-						// node->_left = new RedBlackTreeNode(value, red);
 						node->_left->_parent = node;
 						// Resolve the red-black tree properties.
 						_resolve_insertion(node->_left);
@@ -109,7 +95,6 @@ class RedBlackTreeNode
 						node->_right = alloc.allocate(1);
 						alloc.construct(node->_right, value);
 						node->_right->_color = red;
-						// node->_right = new RedBlackTreeNode(value, red);
 						node->_right->_parent = node;
 						// Resolve the red-black tree properties.
 						_resolve_insertion(node->_right);
@@ -298,7 +283,8 @@ class RedBlackTreeNode
 			else if (node1 != NULL && node1->_color == black && node2 == NULL)
 				return true;
 			else
-				return (node1->_color == black && node2->_color == black);
+				return (node1 != NULL && node2 != NULL
+				&& node1->_color == black && node2->_color == black);
 		}
 
 		// returns pointer to sibling
