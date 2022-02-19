@@ -463,18 +463,12 @@ class RedBlackTreeNode
 			RedBlackTreeNode*	uncle_node;
 
 			_make_relation(node, &parent_node, &grand_parent_node, &uncle_node);
-			// If the node is the root, just recolor it.
-			if (parent_node == NULL)
-			{
-				node->_color = black;
-				return ;
-			}
 			if (uncle_node != NULL && uncle_node->_color == red)
 			{
 				parent_node->_color = black;
 				uncle_node->_color = black;
 				grand_parent_node->_color = red;
-				_uncle_is_red(grand_parent_node);
+				_resolve_insertion(grand_parent_node);
 				return ;
 			}
 		}
@@ -494,8 +488,6 @@ class RedBlackTreeNode
 			RedBlackTreeNode*	uncle_node;
 
 			_make_relation(current_node, &parent_node, &grand_parent_node, &uncle_node);
-			// if (uncle_node != NULL && uncle_node->_color == red)
-			// 	_uncle_is_red(current_node);
 			if (grand_parent_node->_left == parent_node)
 			{
 				if (parent_node->_right == current_node)
@@ -530,8 +522,6 @@ class RedBlackTreeNode
 			RedBlackTreeNode*	uncle_node;
 
 			_make_relation(current_node, &parent_node, &grand_parent_node, &uncle_node);
-			// if (uncle_node != NULL && uncle_node->_color == red)
-			// 	_uncle_is_red(current_node);
 			if (grand_parent_node->_right == parent_node)
 			{
 				if (parent_node->_right == current_node)
@@ -575,7 +565,6 @@ class RedBlackTreeNode
 			// If the parent is black, the node is already correct.
 			if (parent_node->_color == black)
 			{
-				_resolve_insertion(grand_parent_node);
 				return;
 			}
 			if (uncle_node != NULL && uncle_node->_color == red)
