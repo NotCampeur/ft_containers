@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 02:29:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/19 01:46:36 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/19 03:07:25 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,7 @@ void	tree_rendering(lcppgl::Context & context)
 	lcppgl::Printer render(context);
 	static rbtree<int> test;
 	static std::vector<std::string> proposition;
-
+	// static int nb=0;
 	// context.set_fps_limit(1);
 	
 	render.set_draw_color(lcppgl::tools::Color(70, 70, 70, 255));
@@ -214,6 +214,8 @@ void	tree_rendering(lcppgl::Context & context)
 		if (g_insert_random == true)
 		{
 			g_insert_random = false;
+			// test.insert(nb);
+			// nb++;
 			test.insert(rand() % 999);
 		}
 		else if (g_insert_node == true)

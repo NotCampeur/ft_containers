@@ -1,7 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   red_black_tree_node.hpp                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
+/*   Updated: 2022/02/19 05:59:22 by ldutriez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 // A classic implementation of a red-black tree.
 
 #ifndef CONTAINERS_RED_BLACK_TREE_NODE_HPP
 # define CONTAINERS_RED_BLACK_TREE_NODE_HPP
+
+# include <memory>
+# include <exception>
 
 typedef enum e_node_color
 {
@@ -14,8 +29,10 @@ class RedBlackTreeNode
 {
 	public:
 
-		typedef RedBlackTreeNode<T>*	node_pointer;
-
+		typedef T 											value_type;
+		typedef RedBlackTreeNode<T>							node_type;
+		typedef RedBlackTreeNode<T>*						node_pointer;
+		
 		node_pointer				_parent;
 		node_pointer				_left;
 		node_pointer				_right;
@@ -35,10 +52,18 @@ class RedBlackTreeNode
 
 		~RedBlackTreeNode()
 		{
-			if (_left)
-				delete _left;
-			if (_right)
-				delete _right;
+			// if (_left)
+			// {
+			// 	_alloc.destroy(_left);
+			// 	_alloc.deallocate(_left, 1);
+			// 	// delete _left;
+			// }
+			// if (_right)
+			// {
+			// 	_alloc.destroy(_right);
+			// 	_alloc.deallocate(_right, 1);
+			// 	// delete _right;
+			// }
 		}
 
 		RedBlackTreeNode&				operator=(const RedBlackTreeNode& other)
@@ -57,7 +82,7 @@ class RedBlackTreeNode
 		// This function will insert a new node in the tree in a sorting order.
 		// And resolve the red-black tree properties.
 		// return the new root of the tree.
-		RedBlackTreeNode*	insert(const T& value)
+		RedBlackTreeNode*	insert(const T& value, std::allocator<RedBlackTreeNode>& alloc)
 		{
 			RedBlackTreeNode*			node(this);
 			while (node)
@@ -66,7 +91,10 @@ class RedBlackTreeNode
 				{
 					if (node->_left == NULL)
 					{
-						node->_left = new RedBlackTreeNode(value, red);
+						node->_left = alloc.allocate(1);
+						alloc.construct(node->_left, value);
+						node->_left->_color = red;
+						// node->_left = new RedBlackTreeNode(value, red);
 						node->_left->_parent = node;
 						// Resolve the red-black tree properties.
 						_resolve_insertion(node->_left);
@@ -78,7 +106,10 @@ class RedBlackTreeNode
 				{
 					if (node->_right == NULL)
 					{
-						node->_right = new RedBlackTreeNode(value, red);
+						node->_right = alloc.allocate(1);
+						alloc.construct(node->_right, value);
+						node->_right->_color = red;
+						// node->_right = new RedBlackTreeNode(value, red);
 						node->_right->_parent = node;
 						// Resolve the red-black tree properties.
 						_resolve_insertion(node->_right);
@@ -131,13 +162,13 @@ class RedBlackTreeNode
 		// This function will remove the node with the given value.
 		// If the node doesn't exist, it do nothing.
 		// return the new root of the tree.
-		RedBlackTreeNode * remove(int n)
+		RedBlackTreeNode * remove(int n, std::allocator<RedBlackTreeNode>& alloc)
 		{
 			RedBlackTreeNode *v = node(n);
 		
 			if (v == NULL)
 				throw std::runtime_error("RedBlackTreeNode::remove: node doesn't exist.");
-			_delete_node(v);
+			_delete_node(v, alloc);
 			return (root());
 		}
 
@@ -177,7 +208,7 @@ class RedBlackTreeNode
 					|| (sibling->_right != NULL && sibling->_right->_color == red))
 					{
 						// at least 1 red children
-						if (sibling->_left != NULL && sibling->_left->_color == red)
+						if (sibling->_right == NULL && sibling->_left != NULL && sibling->_left->_color == red)
 						{
 							if (sibling->_parent->_left == sibling)
 							{
@@ -243,11 +274,11 @@ class RedBlackTreeNode
 		RedBlackTreeNode *_find_replacement(RedBlackTreeNode *node)
 		{
 			// when node have 2 children
-			if (node->_left != NULL and node->_right != NULL)
+			if (node->_left != NULL && node->_right != NULL)
 				return _successor(node->_right);
 		
 			// when leaf
-			if (node->_left == NULL and node->_right == NULL)
+			if (node->_left == NULL && node->_right == NULL)
 				return NULL;
 		
 			// when single child
@@ -287,8 +318,10 @@ class RedBlackTreeNode
 		// After deletion, the node will be replaced by its successor
 		// or NULL if the node is a leaf.
 		// Will then resolve any double black nodes.
-		void _delete_node(RedBlackTreeNode *node_to_del)
+		void _delete_node(RedBlackTreeNode *node_to_del, std::allocator<RedBlackTreeNode>& alloc)
 		{
+			if (node_to_del == NULL)
+				return;
 			RedBlackTreeNode*	replacement = _find_replacement(node_to_del);
 			bool				is_r_n_black = _are_both_black(replacement, node_to_del);
 			RedBlackTreeNode*	parent = node_to_del->_parent;
@@ -322,7 +355,9 @@ class RedBlackTreeNode
 						parent->_right = NULL;
 					}
 				}
-				delete node_to_del;
+				alloc.destroy(node_to_del);
+				alloc.deallocate(node_to_del, 1);
+				// delete node_to_del;
 				return;
 			}
 		
@@ -334,7 +369,9 @@ class RedBlackTreeNode
 					// node_to_del is root, assign the value of replacement to node_to_del, and delete replacement
 					node_to_del->_value = replacement->_value;
 					node_to_del->_left = node_to_del->_right = NULL;
-					delete replacement;
+					alloc.destroy(replacement);
+					alloc.deallocate(replacement, 1);
+					// delete replacement;
 				}
 				else
 				{
@@ -347,7 +384,9 @@ class RedBlackTreeNode
 					{
 						parent->_right = replacement;
 					}
-					delete node_to_del;
+					alloc.destroy(node_to_del);
+					alloc.deallocate(node_to_del, 1);
+					// delete node_to_del;
 					replacement->_parent = parent;
 					if (is_r_n_black)
 					{
@@ -366,7 +405,7 @@ class RedBlackTreeNode
 			node_to_del->_value = node_to_del->_value ^ replacement->_value;
 			replacement->_value = node_to_del->_value ^ replacement->_value;
 			node_to_del->_value = node_to_del->_value ^ replacement->_value;
-			_delete_node(replacement);
+			_delete_node(replacement, alloc);
 		}
  
 		// This function function will rotate the tree to the left from the given node.
