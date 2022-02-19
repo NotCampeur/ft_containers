@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 02:29:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/18 19:01:24 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/19 01:46:36 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,48 @@
 
 bool	g_delete_node = false;
 bool	g_insert_node = false;
+bool	g_insert_random = false;
+
+int		cam_x = 0;
+int		cam_y = 0;
 
 void	input_manager(lcppgl::Context & context)
 {
 	SDL_Event event;
-	bool	carry_on = false;
 
-	while (carry_on == false)
-		if (SDL_WaitEvent(&event))
+	if (SDL_PollEvent(&event))
+	{
+		switch (event.type)
 		{
-			switch (event.type)
-			{
-				case SDL_QUIT:
+			case SDL_QUIT:
+				context.stop();
+				break;
+			case SDL_KEYDOWN:
+				if (event.key.keysym.sym == SDLK_ESCAPE)
 					context.stop();
-					carry_on = true;
-					break;
-				case SDL_KEYDOWN:
-					if (event.key.keysym.sym == SDLK_ESCAPE)
-						context.stop();
-					else if (event.key.keysym.sym == SDLK_F11)
-						context.set_fullscreen(!context.is_fullscreen());
-					// else if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_SPACE)
-						// carry_on = true;
-					else if (event.key.keysym.sym == SDLK_d)
-						g_delete_node = true;
-					else if (event.key.keysym.sym == SDLK_i)
-						g_insert_node = true;
-					carry_on = true;
-					break;
-				default:
-					break;
-			}
+				else if (event.key.keysym.sym == SDLK_F11)
+					context.set_fullscreen(!context.is_fullscreen());
+				// else if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_SPACE)
+					// carry_on = true;
+				else if (event.key.keysym.sym == SDLK_d)
+					g_delete_node = true;
+				else if (event.key.keysym.sym == SDLK_i)
+					g_insert_node = true;
+				else if (event.key.keysym.sym == SDLK_RETURN)
+					g_insert_random = true;
+				else if	(event.key.keysym.sym == SDLK_LEFT)
+					cam_x += 20;
+				else if	(event.key.keysym.sym == SDLK_RIGHT)
+					cam_x -= 20;
+				else if	(event.key.keysym.sym == SDLK_UP)
+					cam_y += 20;
+				else if	(event.key.keysym.sym == SDLK_DOWN)
+					cam_y -= 20;
+				break;
+			default:
+				break;
 		}
+	}
 }
 
 // Will calcul the offset between the root nodes and his children.
@@ -88,6 +98,8 @@ int		deepest(const RedBlackTreeNode<int> * node)
 {
 	int		result(0);
 
+	if (node == NULL)
+		return (0);
 	if (node->_left != NULL)
 		result = std::max(result, deepest(node->_left));
 	if (node->_right != NULL)
@@ -104,8 +116,8 @@ void	draw_node(lcppgl::Context & context, const RedBlackTreeNode<int> *node
 	// lcppgl::tools::Color		writing_color(255, 255, 255, 255);
 	// std::string					s_value = to_string(node->_value);
 	// int							nb_width(12 * s_value.size());
-	lcppgl::tools::Rectangle	pos(offset * 26
-								, depth * 100
+	lcppgl::tools::Rectangle	pos(cam_x + offset * 26
+								, cam_y + depth * 100
 								, 50, 25);
 								// , nb_width, 25);
 
@@ -143,13 +155,13 @@ void	draw_tree(lcppgl::Context & context, const RedBlackTreeNode<int> *node, boo
 		}
 		
 		{
-			lcppgl::tools::Point	p1(offset * 26 + 25, depth * 100);
+			lcppgl::tools::Point	p1(cam_x + offset * 26 + 25, cam_y + depth * 100);
 			lcppgl::tools::Point	p2(p1.x, p1.y - 75);
 
 			if (node->_parent && node == node->_parent->_left)
-				p2.x = ((offset + deepest(node)) * 26) + 25;
+				p2.x = (cam_x + (offset + deepest(node)) * 26) + 25;
 			else if (node->_parent && node == node->_parent->_right)
-				p2.x = ((offset - deepest(node)) * 26) + 25;
+				p2.x = (cam_x + (offset - deepest(node)) * 26) + 25;
 			else if (node->_parent == NULL)
 				p2 = p1;
 			printer.put_line(p1, p2, lcppgl::tools::Color(255, 255, 255, 255));
@@ -168,6 +180,24 @@ void	draw_tree(lcppgl::Context & context, const RedBlackTreeNode<int> *node, boo
 	}
 }
 
+void	welcome_message(lcppgl::Context & context)
+{
+	static bool	printed(false);
+
+	if (printed == false)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "WELCOME",
+		"You launch ldutriez's Red Black Tree Visualizer   \n"
+		"                      Have fun\n"
+		"  return = random insertion                       \n"
+		"  i = input insertion           d = input deletion\n"
+		"  arrow keys = camera movements                   \n"
+		"  escape = quit                   F11 = fullscreen\n",
+		context.window());
+		printed = true;
+	}
+}
+
 void	tree_rendering(lcppgl::Context & context)
 {
 	lcppgl::Printer render(context);
@@ -178,39 +208,30 @@ void	tree_rendering(lcppgl::Context & context)
 	
 	render.set_draw_color(lcppgl::tools::Color(70, 70, 70, 255));
 	render.clear();
-	
-	if (g_delete_node == false)
+	welcome_message(context);
+	try
 	{
-		try
+		if (g_insert_random == true)
 		{
-			if (g_insert_node == true)
-			{
-				test.insert(input_nbr_box(context, "Number to insert:", proposition, 4));
-			}
-			else
-			{
-				test.insert(rand() % 999);
-			}
+			g_insert_random = false;
+			test.insert(rand() % 999);
 		}
-		catch(const std::exception& e)
+		else if (g_insert_node == true)
 		{
-			std::cerr << e.what() << '\n';
-		}
-		if (g_insert_node == true)
 			g_insert_node = false;
-	}
-	else if (g_delete_node == true)
-	{
-		try
+			test.insert(input_nbr_box(context, "Number to insert:", proposition, 4));
+		}
+		else if (g_delete_node == true)
 		{
+			g_delete_node = false;
 			test.remove(input_nbr_box(context, "Number to remove:", proposition, 4));
 		}
-		catch(const std::exception& e)
-		{
-			std::cerr << e.what() << '\n';
-		}
-		g_delete_node = false;
 	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	
 	draw_tree(context, test.root(), true);
 	render.present();
 }
@@ -220,7 +241,7 @@ void	visualize_b_tree(void)
 	Logger() << "======================={Visualize B-Tree test}=======================";
 	try
 	{
-		lcppgl::Context & main_context = lcppgl::Application::instance().create_context("B-Tree Visualizer", 1920, 1080);
+		lcppgl::Context & main_context = lcppgl::Application::instance().create_context("RB-Tree Visualizer", 1920, 1080);
 		main_context.add_event_functor(input_manager);
 		main_context.add_render_functor(tree_rendering);
 		lcppgl::Application::instance().run();
