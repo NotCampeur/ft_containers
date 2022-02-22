@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/22 14:27:02 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/22 14:53:57 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ class RedBlackTreeNode
 					}
 					node = node->_left;
 				}
-				else if (comp(node->_value, _value) == true)
+				else if (comp(node->_value, value) == true)
 				{
 					if (node->_right == NULL)
 					{

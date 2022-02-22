@@ -51,13 +51,14 @@ SRC 	=		main.cpp \
 				$(STACK_TEST) \
 				$(PAIR_TEST)
 
-VISUALIZER_SRC =	visualizer.cpp \
+VISUALIZER_SRC =	main.cpp \
+					visualizer.cpp \
 					input_nbr_box.cpp
 
 OBJ	=				$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 DIY_OBJ	=			$(addprefix $(DIY_OBJ_DIR)/, $(SRC:%.cpp=%.o))
-VISUALIZER_OBJ =	$(addprefix $(VISUALIZER_OBJ_DIR)/, $(SRC:%.cpp=%.o))
-VISUALIZER_OBJ +=	$(addprefix $(VISUALIZER_OBJ_DIR)/, $(VISUALIZER_SRC:%.cpp=%.o))
+# VISUALIZER_OBJ =	$(addprefix $(VISUALIZER_OBJ_DIR)/, $(SRC:%.cpp=%.o))
+VISUALIZER_OBJ =	$(addprefix $(VISUALIZER_OBJ_DIR)/, $(VISUALIZER_SRC:%.cpp=%.o))
 
 #Compilation flag
 CFLAGS	=		-Wall -Wextra -Werror -std=c++98
