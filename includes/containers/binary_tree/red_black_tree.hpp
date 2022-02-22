@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/19 05:58:30 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/22 14:24:18 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <exception>
 # include "red_black_tree_node.hpp"
 
-template< typename T, typename Alloc = std::allocator<RedBlackTreeNode<T> > >
+template< typename T, typename Compare = std::less<T>, typename Alloc = std::allocator<RedBlackTreeNode<T> > >
 class rbtree
 {
 	private:
@@ -36,6 +36,9 @@ class rbtree
 		
 	private:
 		node_pointer			_root;
+		node_pointer			_begin;
+		node_pointer			_last;
+		node_pointer			_end;
 		void	_destroy_tree(node_pointer node)
 		{
 			if (node && node->_left)
@@ -47,7 +50,7 @@ class rbtree
 		}
 
 	public:
-		rbtree() : _root(NULL) {}
+		rbtree() : _root(NULL), _begin(NULL), _last(NULL), _end(NULL) {}
 		~rbtree()
 		{
 			_destroy_tree(_root);
@@ -61,18 +64,30 @@ class rbtree
 			if (_root == NULL)
 			{
 				_root = _alloc.allocate(1);
-				_alloc.construct(_root, RedBlackTreeNode<T>(value));
-				// _root = new RedBlackTreeNode<T>(value);
+				_alloc.construct(_root, RedBlackTreeNode<T, Compare>(value));
+				_begin = _root;
+				_last = _root;
+				_end = _root + 1;
 			}
 			else
+			{
 				_root = _root->insert(value, _alloc);
+				_begin = leftmost(_root);
+				_last = rightmost(_root);
+				_end = _last + 1;
+			}
 		};
 
 		// Remove a node from the tree by calling the remove function of the root.
 		void	remove(const T& value)
 		{
 			if (_root != NULL)
+			{
 				_root = _root->remove(value, _alloc);
+				_begin = leftmost(_root);
+				_last = rightmost(_root);
+				_end = _last + 1;
+			}
 		};
 
 		// Get the node with the value.
