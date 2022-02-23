@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/23 04:06:23 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/23 06:31:56 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,40 @@ class rbtree
 		, _begin(NULL), _last(NULL)
 		, _size(0) {}
 		
+		rbtree(const rbtree &other)
+		: _alloc(), _limit(NULL), _root(NULL)
+		, _begin(NULL), _last(NULL)
+		, _size(0)
+		{
+			iterator it = other.begin();
+			while (it != other.end())
+			{
+				insert(*it);
+				++it;
+			}
+		}
+
 		// While destroy and deallocate every node using iterators.
 		~rbtree()
 		{
 			_destroy_tree(&*_root);
 			_alloc.destroy(_limit);
 			_alloc.deallocate(_limit, 1);
+		}
+
+		rbtree &operator=(const rbtree &other)
+		{
+			if (this != &other)
+			{
+				_destroy_tree(&*_root);
+				iterator it = other.begin();
+				while (it != other.end())
+				{
+					insert(*it);
+					++it;
+				}
+			}
+			return *this;
 		}
 
 		// Iterators
@@ -125,6 +153,32 @@ class rbtree
 			{
 				// std::cout << "limit : " << _limit << std::endl;
 				_root = _root->insert(value, _limit, _alloc);
+				_begin = leftmost(&*_root);
+				_last = rightmost(&*_root);
+				++_size;
+				_limit->_parent = &*_root;
+			}
+		};
+
+		// Insert a new node in the tree via a node_type reference.
+		void	insert(const node_type &node)
+		{
+			if (_root == iterator(NULL))
+			{
+				_limit = _alloc.allocate(1);
+				_alloc.construct(_limit, RedBlackTreeNode<T, Compare>());
+				_limit->set_limit(_limit);
+				_root = _alloc.allocate(1);
+				_alloc.construct(&*_root, node._value);
+				_root->set_limit(_limit);
+				_begin = _root;
+				_last = _root;
+				_size = 1;
+				_limit->_parent = &*_root;
+			}
+			else
+			{
+				_root = _root->insert(node._value, _limit, _alloc);
 				_begin = leftmost(&*_root);
 				_last = rightmost(&*_root);
 				++_size;
