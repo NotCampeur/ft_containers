@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/22 14:53:57 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/23 04:06:14 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,22 @@ class RedBlackTreeNode
 		T							_value;
 		node_color					_color;
 
+	private:
+
+		node_pointer				_limit;
+
+	public:
+
 		RedBlackTreeNode()
 		: _parent(NULL), _left(NULL), _right(NULL)
-		, _value(), _color(black) {}
+		, _value(), _color(black), _limit(NULL) {}
 
 		RedBlackTreeNode(const T& value, node_color color = black)
 		: _parent(NULL), _left(NULL), _right(NULL)
-		, _value(value), _color(color) {}
+		, _value(value), _color(color), _limit(NULL) {}
 		RedBlackTreeNode(const RedBlackTreeNode& other)
 		: _parent(other._parent), _left(other._left), _right(other._right)
-		, _value(other._value), _color(other._color) {}
+		, _value(other._value), _color(other._color), _limit(NULL) {}
 
 		~RedBlackTreeNode()
 		{}
@@ -66,14 +72,21 @@ class RedBlackTreeNode
 			return (*this);
 		}
 
+		// Set the limit of the tree.
+		void	set_limit(node_pointer limit)
+		{
+			_limit = limit;
+		}
+
 		// This function will insert a new node in the tree in a sorting order.
 		// And resolve the red-black tree properties.
 		// return the new root of the tree.
-		RedBlackTreeNode*	insert(const T& value, std::allocator<RedBlackTreeNode>& alloc)
+		RedBlackTreeNode*	insert(const T& value, node_pointer limit, std::allocator<RedBlackTreeNode>& alloc)
 		{
 			RedBlackTreeNode*			node(this);
 			Compare						comp;
 			
+			// std::cout << "limit int insert : " << limit << std::endl;
 			while (node)
 			{
 				if (comp(value, node->_value) == true)
@@ -84,6 +97,7 @@ class RedBlackTreeNode
 						alloc.construct(node->_left, value);
 						node->_left->_color = red;
 						node->_left->_parent = node;
+						node->_left->_limit = limit;
 						// Resolve the red-black tree properties.
 						_resolve_insertion(node->_left);
 						break ;
@@ -98,6 +112,7 @@ class RedBlackTreeNode
 						alloc.construct(node->_right, value);
 						node->_right->_color = red;
 						node->_right->_parent = node;
+						node->_right->_limit = limit;
 						// Resolve the red-black tree properties.
 						_resolve_insertion(node->_right);
 						break ;
@@ -158,6 +173,12 @@ class RedBlackTreeNode
 				throw std::runtime_error("RedBlackTreeNode::remove: node doesn't exist.");
 			_delete_node(v, alloc);
 			return (root());
+		}
+
+		// This function return the limit of the tree.
+		node_pointer				limit() const
+		{
+			return _limit;
 		}
 
 	private:
@@ -606,6 +627,18 @@ class RedBlackTreeNode
 		}
 };
 
+// Get the root node of the tree.
+// Starting from the given node.
+template <typename T>
+RedBlackTreeNode<T>*	root(RedBlackTreeNode<T>* node)
+{
+	if (node == NULL)
+		return NULL;
+	while (node->_parent != NULL)
+		node = node->_parent;
+	return node;
+}
+
 // This function will get the node with the next inorder value.
 // If the node is the last, it will return the node.
 template <typename T>
@@ -613,8 +646,11 @@ RedBlackTreeNode<T> * next_inorder(RedBlackTreeNode<T> * node)
 {
 	if (node == NULL)
 		throw std::runtime_error("next_inorder: node is NULL");
+	if (node->_left == NULL && node->_right == NULL
+	&& node->_parent != NULL && node->_parent->_left != node && node->_parent->_right != node)
+		return begin(node);
 	if (node == last(node))
-		return node;
+		return node->limit();
 	if (node->_right != NULL)
 		return leftmost(node->_right);
 	else
@@ -634,12 +670,16 @@ RedBlackTreeNode<T> * next_inorder(RedBlackTreeNode<T> * node)
 // This function will get the node with the previous inorder value.
 // If the node is the first, it will return the node.
 template <typename T>
-RedBlackTreeNode<T> * previous_inorder(RedBlackTreeNode<T> * node)
+RedBlackTreeNode<T> * prev_inorder(RedBlackTreeNode<T> * node)
 {
 	if (node == NULL)
-		throw std::runtime_error("previous_inorder: node is NULL");
-	if (node == first(node))
-		return node;
+		throw std::runtime_error("prev_inorder: node is NULL");
+	if (node->_left == NULL && node->_right == NULL
+	&& node->_parent != NULL && node->_parent->_left != node && node->_parent->_right != node)
+		return last(node);
+	// if (node == begin(node))
+	if (node == begin(node))
+		return node->limit();
 	if (node->_left != NULL)
 		return rightmost(node->_left);
 	else
@@ -685,8 +725,8 @@ template <typename T>
 RedBlackTreeNode<T> * begin(RedBlackTreeNode<T> * node)
 {
 	if (node == NULL)
-		throw std::runtime_error("get_first_branch: node is NULL");
-	node = node->root();
+		throw std::runtime_error("begin: node is NULL");
+	node = root(node);
 	node = leftmost(node);
 	return node;
 }
@@ -697,7 +737,7 @@ RedBlackTreeNode<T> * last(RedBlackTreeNode<T> * node)
 {
 	if (node == NULL)
 		throw std::runtime_error("last: node is NULL");
-	node = node->root();
+	node = root(node);
 	node = rightmost(node);
 	return node;
 }
@@ -710,7 +750,8 @@ RedBlackTreeNode<T> * end(RedBlackTreeNode<T> * node)
 {
 	if (node == NULL)
 		throw std::runtime_error("end: node is NULL");
-	return last(node) + 1;
+	node = last(node);
+	return node + 1;
 }
 
 #endif

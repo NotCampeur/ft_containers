@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/03 13:01:03 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/03 15:35:51 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/22 14:24:56 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ namespace ft
 		pointer	_ptr;
 
 		bidirectional_iterator() : _ptr(NULL) {};
+		bidirectional_iterator(pointer ptr) : _ptr(ptr) {};
 		bidirectional_iterator(const bidirectional_iterator<I>& other) : _ptr(other._ptr) {};
 		~bidirectional_iterator() {};
 
@@ -49,9 +50,10 @@ namespace ft
 
 		bidirectional_iterator& operator--() { --_ptr; return (*this); }
 		bidirectional_iterator operator--(int) { bidirectional_iterator<I> tmp(*this); --_ptr; return tmp; }
-
-		friend bool operator==(const bidirectional_iterator<I>& lhs, const bidirectional_iterator<I>& rhs) { return (lhs._ptr == rhs._ptr); }
 	};
+	
+	template<class I>
+	bool operator==(const bidirectional_iterator<I>& lhs, const bidirectional_iterator<I>& rhs) { return (lhs._ptr == rhs._ptr); }
 
 	template<class I>
 	bool operator!=(const bidirectional_iterator<I>& lhs, const bidirectional_iterator<I>& rhs) { return !(lhs == rhs); }
@@ -66,7 +68,9 @@ namespace ft
 		typedef const I&						reference;
 
 		const_bidirectional_iterator() : _ptr(NULL) {};
+		const_bidirectional_iterator(pointer ptr) : _ptr(ptr) {};
 		const_bidirectional_iterator(const const_bidirectional_iterator<I>& other) : _ptr(other._ptr) {};
+		const_bidirectional_iterator(const bidirectional_iterator<I>& other) : _ptr(other._ptr) {};
 		~const_bidirectional_iterator() {};
 
 		const_bidirectional_iterator& operator=(const const_bidirectional_iterator<I>& other)

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/22 14:41:29 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/23 04:24:14 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	getting_seed(char *argv[])
 
 void	getting_started(int argc, char *argv[])
 {
-	int seed;
+	int seed(0);
 
 	if (argc != 2)
 	{
@@ -120,14 +120,22 @@ void	tree_test(void)
 	
 	try
 	{
-		tree.insert(0);
 		tree.insert(rand() % INT32_MAX);
 		tree.insert(rand() % INT32_MAX);
 		tree.insert(rand() % INT32_MAX);
 		tree.insert(rand() % INT32_MAX);
 		tree.insert(rand() % INT32_MAX);
 		tree.insert(rand() % INT32_MAX);
-		tree.remove(0);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
+		tree.insert(rand() % INT32_MAX);
 		tree.insert(rand() % INT32_MAX);
 		tree.insert(rand() % INT32_MAX);
 		tree.insert(rand() % INT32_MAX);
@@ -136,6 +144,27 @@ void	tree_test(void)
 	{
 		std::cerr << e.what() << '\n';
 	}
+	
+	rbtree<int>::iterator it = tree.begin();
+	rbtree<int>::iterator ite = tree.end();
+	Logger() << "inorder: " << tree.size();
+	// print address of it and ite
+	for (int i(0); it != ite; it++)
+	{
+		Logger() << it->_value;
+		i++;
+	}
+		
+	rbtree<int>::reverse_iterator rit = tree.rbegin();
+	rbtree<int>::reverse_iterator rite = tree.rend();
+	Logger() << "reverse inorder: " << tree.size();
+	// print address of rit and rite
+	for (int i(0); rit != rite; rit++)
+	{
+		Logger() << rit->_value;
+		i++;
+	}
+	
 	#endif
 }
 
@@ -162,13 +191,14 @@ int main(int argc, char** argv)
 	}
 	
 	#ifndef TREE_VISUALIZER
-	vector_test();
-	stack_test();
-	pair_test();
-	// tree_test();
-	// map_test();
+		vector_test();
+		stack_test();
+		pair_test();
+		tree_test();
+		// map_test();
 	#elif TREE_VISUALIZER
-	visualize_b_tree();
+		tree_test();
+		visualize_b_tree();
 	#endif
 	Logger::quit();
 	return EXIT_SUCCESS;

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/14 14:19:41 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/22 15:27:49 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include "pair.hpp"
 # include "../tools/iterators/bidirectional_iterator.hpp"
 # include "../binary_tree/red_black_tree.hpp"
-// # include "binary_search_tree.hpp"
 
 namespace ft
 {
@@ -43,10 +42,10 @@ namespace ft
 			typedef typename allocator_type::const_pointer const_pointer;
 
 			typedef ft::bidirectional_iterator<value_type> iterator;
-			typedef ft::bidirectional_iterator<const value_type> const_iterator;
+			typedef ft::const_bidirectional_iterator< value_type> const_iterator;
 		
-			typedef std::reverse_iterator<iterator> reverse_iterator;
-			typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+			typedef ft::reverse_iterator<iterator> reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 	};
 }
 

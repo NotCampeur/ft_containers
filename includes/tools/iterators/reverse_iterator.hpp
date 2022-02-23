@@ -6,17 +6,25 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/10 14:36:01 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/01 04:23:45 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/22 17:56:21 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONTAINERS_REVERSE_ITERATOR_HPP
 # define CONTAINERS_REVERSE_ITERATOR_HPP
 
+# include "iterator.hpp"
+# include "iterator_traits.hpp"
+
 namespace ft
 {
 	template<class It>
-	class reverse_iterator
+	class reverse_iterator : public
+		ft::iterator<typename ft::iterator_traits<It>::iterator_category,
+					typename ft::iterator_traits<It>::value_type,
+					typename ft::iterator_traits<It>::difference_type,
+					typename ft::iterator_traits<It>::pointer,
+					typename ft::iterator_traits<It>::reference >
 	{
 		protected:
 			It															current;
@@ -41,7 +49,7 @@ namespace ft
 
 			iterator_type base() const { return current; }
 
-			reference operator*() const { return *(current - 1); }
+			reference operator*() const { iterator_type tmp = current; return *--tmp; }
 			pointer operator->() const { return &(operator*()); }
 
 			reference operator[](difference_type n) const { return *(current - 1 - n); }
