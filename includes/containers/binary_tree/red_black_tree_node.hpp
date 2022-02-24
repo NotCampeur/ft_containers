@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/23 04:06:14 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/24 01:59:30 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ class RedBlackTreeNode
 		}
 
 		// This function will return the node with the given value.
-		// If the node doesn't exist, it will return NULL.
+		// If the node doesn't exist, it will return the limit.
 		RedBlackTreeNode*			node(const T& value) const
 		{
 			RedBlackTreeNode*			current_node(const_cast<RedBlackTreeNode*>(this));
@@ -147,19 +147,19 @@ class RedBlackTreeNode
 				if (comp(value, current_node->_value) == true)
 				{
 					if (current_node->_left == NULL)
-						return (NULL);
+						return (_limit);
 					current_node = current_node->_left;
 				}
 				else if (comp(current_node->_value, value) == true)
 				{
 					if (current_node->_right == NULL)
-						return (NULL);
+						return (_limit);
 					current_node = current_node->_right;
 				}
 				else
 					return (current_node);
 			}
-			return (NULL);
+			return (_limit);
 		}
 
 		// This function will remove the node with the given value.

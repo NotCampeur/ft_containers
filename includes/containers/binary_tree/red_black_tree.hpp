@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/23 06:31:56 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/24 02:13:17 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,21 @@ class rbtree
 		rbtree()
 		: _alloc(), _limit(NULL), _root(NULL)
 		, _begin(NULL), _last(NULL)
-		, _size(0) {}
+		, _size(0)
+		{
+			_limit = _alloc.allocate(1);
+			_alloc.construct(_limit, RedBlackTreeNode<T, Compare>());
+			_limit->set_limit(_limit);
+		}
 		
 		rbtree(const rbtree &other)
 		: _alloc(), _limit(NULL), _root(NULL)
 		, _begin(NULL), _last(NULL)
 		, _size(0)
 		{
+			_limit = _alloc.allocate(1);
+			_alloc.construct(_limit, RedBlackTreeNode<T, Compare>());
+			_limit->set_limit(_limit);
 			iterator it = other.begin();
 			while (it != other.end())
 			{
@@ -107,40 +115,48 @@ class rbtree
 			return *this;
 		}
 
+		void	clear()
+		{
+			_destroy_tree(&*_root);
+			_alloc.destroy(_limit);
+			_alloc.deallocate(_limit, 1);
+			_root = NULL;
+			_begin = NULL;
+			_last = NULL;
+			_size = 0;
+		}
+		
 		// Iterators
 
-		iterator		root() {return _root;};
-		const_iterator	root() const {return const_iterator(_root);};
+		iterator		root() {return _root;}
+		const_iterator	root() const {return const_iterator(_root);}
 		
-		iterator		begin() {return _begin;};
-		const_iterator	begin() const {return const_iterator(_begin);};
+		iterator		begin() {return _begin;}
+		const_iterator	begin() const {return const_iterator(_begin);}
 		
-		iterator		last() {return _last;};
-		const_iterator	last() const {return const_iteraotr(_last);};
+		iterator		last() {return _last;}
+		const_iterator	last() const {return const_iteraotr(_last);}
 		
-		iterator		end() {return iterator(_limit);};
-		const_iterator	end() const {return const_iterator(_limit);};
+		iterator		end() {return iterator(_limit);}
+		const_iterator	end() const {return const_iterator(_limit);}
 
-		reverse_iterator		rbegin() {return reverse_iterator(end());};
-		const_reverse_iterator	rbegin() const {return const_reverse_iterator(end());};
+		reverse_iterator		rbegin() {return reverse_iterator(end());}
+		const_reverse_iterator	rbegin() const {return const_reverse_iterator(end());}
 
-		reverse_iterator		rend() {return reverse_iterator(begin());};
-		const_reverse_iterator	rend() const {return const_reverse_iterator(begin());};
+		reverse_iterator		rend() {return reverse_iterator(begin());}
+		const_reverse_iterator	rend() const {return const_reverse_iterator(begin());}
 
 		// Return the number of nodes in the tree. (Leaves doesn't count)
-		size_type		size() const {return _size;};
+		size_type		size() const {return _size;}
 
 		// Return the limit of the tree.
-		node_pointer	limit() const {return _limit;};
+		node_pointer	limit() const {return _limit;}
 
 		// Insert a new node in the tree by calling the insert function of the root.
 		void	insert(const T& value)
 		{
 			if (_root == iterator(NULL))
 			{
-				_limit = _alloc.allocate(1);
-				_alloc.construct(_limit, RedBlackTreeNode<T, Compare>());
-				_limit->set_limit(_limit);
 				_root = _alloc.allocate(1);
 				_alloc.construct(&*_root, RedBlackTreeNode<T, Compare>(value));
 				_root->set_limit(_limit);
@@ -158,7 +174,7 @@ class rbtree
 				++_size;
 				_limit->_parent = &*_root;
 			}
-		};
+		}
 
 		// Insert a new node in the tree via a node_type reference.
 		void	insert(const node_type &node)
@@ -184,7 +200,7 @@ class rbtree
 				++_size;
 				_limit->_parent = &*_root;
 			}
-		};
+		}
 
 		// Remove a node from the tree by calling the remove function of the root.
 		void	remove(const T& value)
@@ -204,22 +220,55 @@ class rbtree
 					throw;
 				}
 			}
-		};
+		}
 
 		// Get the node with the value.
 		RedBlackTreeNode<T>*	get(const T& value)
 		{
 			if (_root == iterator(NULL))
-				return NULL;
+				return _limit;
 			return _root->node(value);
-		};
+		}
 
 		// Operator to get the node with the value.
 		RedBlackTreeNode<T>*	operator[](const T& value)
 		{
 			return get(value);
-		};
+		}
 
+		// Swap the tree with another tree.
+		void	swap(rbtree &other)
+		{
+			std::swap(_root, other._root);
+			std::swap(_begin, other._begin);
+			std::swap(_last, other._last);
+			std::swap(_limit, other._limit);
+			std::swap(_size, other._size);
+		}
+
+		// Return the first node not less than the value.
+		iterator	lower_bound(const T& value)
+		{
+			iterator	it = _begin;
+			Compare 	comp;
+			
+			while (it != end() && comp(it->_value, value) == true)
+				++it;
+			return it;
+		}
+
+		// Return the first node not less or equal than the value.
+		iterator	upper_bound(const T& value)
+		{
+			iterator	it = _begin;
+			Compare 	comp;
+			
+			while (it != end() && comp(it->_value, value) == true)
+				++it;
+			if (it != end())
+				++it;
+			return it;
+		}
 };
 
 #endif
