@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/24 06:56:40 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/24 08:17:08 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,21 +93,26 @@ void	map_test(void)
 	Logger() << "======================={Map test}=======================";
 	ft::map<int, int> map_int;
 	
-	for (int i = 0; i < COUNT; ++i)
-	{
-		map_int.insert(ft::make_pair(rand(), rand()));
-	}
+	map_int.insert(ft::make_pair<int, int>(1, 54));
+	ft::map<int, int>::iterator it = map_int.find(1);
+	// ft::map<int, int>::rbtree_type::iterator it = map_int.find(1);
 	
-	int sum = 0;
-	for (int i = 0; i < 10000; i++)
-	{
-		int access = rand();
-		sum += map_int[access];
-	}
-	Logger() << "should be constant with the same seed: " << sum;
-	{
-		ft::map<int, int> copy = map_int;
-	}
+	Logger() << "map_int.at(1) = " << it->_value.second << " " << map_int[1];
+	// for (int i = 0; i < COUNT; ++i)
+	// {
+	// 	map_int.insert(ft::make_pair(rand(), rand()));
+	// }
+	
+	// int sum = 0;
+	// for (int i = 0; i < 10000; i++)
+	// {
+	// 	int access = rand();
+	// 	sum += map_int[access];
+	// }
+	// Logger() << "should be constant with the same seed: " << sum;
+	// {
+	// 	ft::map<int, int> copy = map_int;
+	// }
 }
 #endif
 

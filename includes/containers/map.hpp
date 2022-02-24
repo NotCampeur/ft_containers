@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/24 06:08:14 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/24 08:17:00 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ namespace ft
 			typedef rbtree<value_type>								rbtree_type;
 			typedef typename rbtree_type::node_type					node_type;
 			
-			typedef red_black_tree_iterator< node_type >			iterator;
-			typedef const_red_black_tree_iterator< node_type >		const_iterator;
+			typedef typename rbtree_type::iterator					iterator;
+			typedef typename rbtree_type::const_iterator			const_iterator;
 
 			typedef ft::reverse_iterator< iterator >				reverse_iterator;
 			typedef ft::reverse_iterator< const_iterator >			const_reverse_iterator;
