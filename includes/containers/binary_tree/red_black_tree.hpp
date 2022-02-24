@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/24 02:13:17 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/24 04:51:22 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "red_black_tree_node.hpp"
 # include "../../tools/iterators/red_black_tree_iterator.hpp"
 # include "../../tools/iterators/reverse_iterator.hpp"
+# include "../../tools/comparison/lexicographical_compare.hpp"
 
 template< typename T, typename Compare = std::less<T>, typename Alloc = std::allocator<RedBlackTreeNode<T> > >
 class rbtree
@@ -26,6 +27,7 @@ class rbtree
 
 		typedef T 											value_type;
 		typedef RedBlackTreeNode<T, Compare>				node_type;
+		typedef Compare 									compare;
 		typedef Alloc										allocator_type;
 		
 		typedef typename allocator_type::reference			reference;
@@ -269,6 +271,66 @@ class rbtree
 				++it;
 			return it;
 		}
+
+		// Operators
+		friend bool	operator==(const rbtree &lhs, const rbtree &rhs)
+		{
+			rbtree::compare	comp;
+			
+			if (lhs.size() != rhs.size())
+				return false;
+			iterator 	lit = lhs.begin();
+			iterator 	rit = rhs.begin();
+			while (lit != lhs.end() && rit != rhs.end())
+			{
+				if (comp(lit->_value, rit->_value) == true || comp(rit->_value, lit->_value) == true)
+					return false;
+				++lit;
+				++rit;
+			}
+			if (lit != lhs.end() || rit != rhs.end())
+				return false;
+			return true;
+		}
+
+		friend bool operator<(const rbtree &lhs, const rbtree &rhs)
+		{
+			rbtree::compare	comp;
+			
+			iterator 	lit = lhs.begin();
+			iterator 	rit = rhs.begin();
+			return ft::lexicographical_compare(lit, lhs.end(), rit, rhs.end(), comp);
+		}
 };
+
+template <typename T, typename Compare>
+bool	operator!=(const rbtree<T, Compare> &lhs, const rbtree<T, Compare> &rhs)
+{
+	return !(lhs == rhs);
+}
+
+template <typename T, typename Compare>
+bool	operator>(const rbtree<T, Compare> &lhs, const rbtree<T, Compare> &rhs)
+{
+	return rhs < lhs;
+}
+
+template <typename T, typename Compare>
+bool	operator<=(const rbtree<T, Compare> &lhs, const rbtree<T, Compare> &rhs)
+{
+	return !(lhs > rhs);
+}
+
+template <typename T, typename Compare>
+bool	operator>=(const rbtree<T, Compare> &lhs, const rbtree<T, Compare> &rhs)
+{
+	return !(lhs < rhs);
+}
+
+template <typename T, typename Compare>
+void	swap(rbtree<T, Compare> &lhs, rbtree<T, Compare> &rhs)
+{
+	lhs.swap(rhs);
+}
 
 #endif
