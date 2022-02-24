@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/23 04:24:14 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/24 06:56:40 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	pair_test(void)
 
 void	map_test(void)
 {
-	# ifndef DIY
+	Logger() << "======================={Map test}=======================";
 	ft::map<int, int> map_int;
 	
 	for (int i = 0; i < COUNT; ++i)
@@ -108,7 +108,6 @@ void	map_test(void)
 	{
 		ft::map<int, int> copy = map_int;
 	}
-	# endif
 }
 #endif
 
@@ -195,7 +194,7 @@ int main(int argc, char** argv)
 		stack_test();
 		pair_test();
 		tree_test();
-		// map_test();
+		map_test();
 	#elif TREE_VISUALIZER
 		tree_test();
 		visualize_b_tree();

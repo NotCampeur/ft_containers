@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 12:05:24 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/23 02:31:41 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/24 06:12:03 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "iterator.hpp"
 # include "iterator_traits.hpp"
 # include "iterator_tags.hpp"
+# include "../../containers/binary_tree/red_black_tree_node.hpp"
 
 template<class I>
 struct red_black_tree_iterator : ft::iterator<ft::bidirectional_iterator_tag, I>

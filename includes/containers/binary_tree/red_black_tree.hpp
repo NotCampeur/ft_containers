@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/24 04:51:22 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/24 06:47:31 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include "../../tools/iterators/reverse_iterator.hpp"
 # include "../../tools/comparison/lexicographical_compare.hpp"
 
-template< typename T, typename Compare = std::less<T>, typename Alloc = std::allocator<RedBlackTreeNode<T> > >
+template< typename T, typename Compare = std::less<T>, typename Alloc = std::allocator<RedBlackTreeNode<T, Compare> > >
 class rbtree
 {
 	public:
@@ -29,13 +29,13 @@ class rbtree
 		typedef RedBlackTreeNode<T, Compare>				node_type;
 		typedef Compare 									compare;
 		typedef Alloc										allocator_type;
-		
+
 		typedef typename allocator_type::reference			reference;
 		typedef typename allocator_type::const_reference	const_reference;
 
 		typedef typename allocator_type::pointer			node_pointer;
 		typedef typename allocator_type::const_pointer		const_pointer;
-		
+
 		typedef red_black_tree_iterator< node_type >		iterator;
 		typedef const_red_black_tree_iterator< node_type >	const_iterator;
 
@@ -86,7 +86,7 @@ class rbtree
 			_limit = _alloc.allocate(1);
 			_alloc.construct(_limit, RedBlackTreeNode<T, Compare>());
 			_limit->set_limit(_limit);
-			iterator it = other.begin();
+			const_iterator it = other.begin();
 			while (it != other.end())
 			{
 				insert(*it);
@@ -107,7 +107,7 @@ class rbtree
 			if (this != &other)
 			{
 				_destroy_tree(&*_root);
-				iterator it = other.begin();
+				const_iterator it = other.begin();
 				while (it != other.end())
 				{
 					insert(*it);
@@ -171,8 +171,8 @@ class rbtree
 			{
 				// std::cout << "limit : " << _limit << std::endl;
 				_root = _root->insert(value, _limit, _alloc);
-				_begin = leftmost(&*_root);
-				_last = rightmost(&*_root);
+				_begin = static_cast<iterator>(leftmost(&*_root));
+				_last = static_cast<iterator>(rightmost(&*_root));
 				++_size;
 				_limit->_parent = &*_root;
 			}
@@ -197,8 +197,8 @@ class rbtree
 			else
 			{
 				_root = _root->insert(node._value, _limit, _alloc);
-				_begin = leftmost(&*_root);
-				_last = rightmost(&*_root);
+				_begin = static_cast<iterator>(leftmost(&*_root));
+				_last = static_cast<iterator>(rightmost(&*_root));
 				++_size;
 				_limit->_parent = &*_root;
 			}
@@ -212,8 +212,8 @@ class rbtree
 				try
 				{
 					_root = _root->remove(value, _alloc);
-					_begin = leftmost(&*_root);
-					_last = rightmost(&*_root);
+					_begin = static_cast<iterator>(leftmost(&*_root));
+					_last = static_cast<iterator>(rightmost(&*_root));
 					--_size;
 					_limit->_parent = &*_root;
 				}
@@ -225,7 +225,7 @@ class rbtree
 		}
 
 		// Get the node with the value.
-		RedBlackTreeNode<T>*	get(const T& value)
+		RedBlackTreeNode<T, Compare>*	get(const T& value)
 		{
 			if (_root == iterator(NULL))
 				return _limit;
@@ -233,7 +233,7 @@ class rbtree
 		}
 
 		// Operator to get the node with the value.
-		RedBlackTreeNode<T>*	operator[](const T& value)
+		RedBlackTreeNode<T, Compare>*	operator[](const T& value)
 		{
 			return get(value);
 		}

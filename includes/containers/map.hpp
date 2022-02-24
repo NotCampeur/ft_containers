@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/24 03:17:28 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/24 06:08:14 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ namespace ft
 		public:
 			typedef Key 											key_type;
 			typedef T												mapped_type;
-			typedef std::pair<const Key,T> 							value_type;
+			typedef ft::pair<const Key,T> 							value_type;
 			typedef Compare 										key_compare;
 			typedef Alloc											allocator_type;
 			
@@ -40,7 +40,7 @@ namespace ft
 			typedef typename allocator_type::pointer				pointer;
 			typedef typename allocator_type::const_pointer			const_pointer;
 
-			typedef rbtree<value_type, key_compare>					rbtree_type;
+			typedef rbtree<value_type>								rbtree_type;
 			typedef typename rbtree_type::node_type					node_type;
 			
 			typedef red_black_tree_iterator< node_type >			iterator;
@@ -128,14 +128,14 @@ namespace ft
 			// Otherwise, a node is created with the key and a default-constructed value,
 			mapped_type& operator[](const key_type& key)
 			{
-				return insert(ft::make_pair(key, mapped_type())).first->second;
+				return insert(ft::make_pair(key, mapped_type())).first->_value.second;
 			}
 
 			// Modifiers
 			// A pair of an iterator and a bool is returned.
 			// The iterator points to the element, either it was inserted or already existed.
 			// The bool is true if the element was inserted, false if it already existed.
-			std::pair<iterator, bool> insert(const value_type& value)
+			ft::pair<iterator, bool> insert(const value_type& value)
 			{
 				bool	was_present = false;
 				try
