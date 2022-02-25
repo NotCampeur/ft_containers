@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/24 08:17:08 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/25 02:08:18 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	map_test(void)
 	ft::map<int, int>::iterator it = map_int.find(1);
 	// ft::map<int, int>::rbtree_type::iterator it = map_int.find(1);
 	
-	Logger() << "map_int.at(1) = " << it->_value.second << " " << map_int[1];
+	Logger() << "map_int.at(1) = " << it->second << " " << map_int[1];
 	// for (int i = 0; i < COUNT; ++i)
 	// {
 	// 	map_int.insert(ft::make_pair(rand(), rand()));
@@ -155,7 +155,7 @@ void	tree_test(void)
 	// print address of it and ite
 	for (int i(0); it != ite; it++)
 	{
-		Logger() << it->_value;
+		Logger() << "[" << i << "] :" << *it;
 		i++;
 	}
 		
@@ -165,7 +165,7 @@ void	tree_test(void)
 	// print address of rit and rite
 	for (int i(0); rit != rite; rit++)
 	{
-		Logger() << rit->_value;
+		Logger() << "[" << i << "] :" << *rit;
 		i++;
 	}
 	

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/24 08:17:00 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/25 02:13:38 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ namespace ft
 			typedef typename rbtree_type::iterator					iterator;
 			typedef typename rbtree_type::const_iterator			const_iterator;
 
-			typedef ft::reverse_iterator< iterator >				reverse_iterator;
-			typedef ft::reverse_iterator< const_iterator >			const_reverse_iterator;
+			typedef rb_reverse_iterator< iterator >					reverse_iterator;
+			typedef rb_reverse_iterator< const_iterator >			const_reverse_iterator;
 
 		private:
 
@@ -128,7 +128,7 @@ namespace ft
 			// Otherwise, a node is created with the key and a default-constructed value,
 			mapped_type& operator[](const key_type& key)
 			{
-				return insert(ft::make_pair(key, mapped_type())).first->_value.second;
+				return insert(ft::make_pair(key, mapped_type())).first->second;
 			}
 
 			// Modifiers
@@ -137,11 +137,11 @@ namespace ft
 			// The bool is true if the element was inserted, false if it already existed.
 			ft::pair<iterator, bool> insert(const value_type& value)
 			{
-				bool	was_present = false;
+				bool	was_present = true;
 				try
 				{
 					_tree.insert(value);
-					was_present = true;
+					was_present = false;
 				}
 				catch(...)
 				{
@@ -207,7 +207,7 @@ namespace ft
 				{
 					try
 					{
-						_tree.remove(first->_value);
+						_tree.remove(*first);
 					}
 					catch(...)
 					{

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/10 14:36:01 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/22 17:56:21 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/25 02:11:47 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ namespace ft
 
 			iterator_type base() const { return current; }
 
-			reference operator*() const { iterator_type tmp = current; return *--tmp; }
+			reference operator*() const { iterator_type tmp = current; --tmp; return *tmp; }
 			pointer operator->() const { return &(operator*()); }
 
 			reference operator[](difference_type n) const { return *(current - 1 - n); }

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 02:29:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/22 17:59:48 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/25 00:54:43 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,7 +235,7 @@ void	tree_rendering(lcppgl::Context & context)
 	}
 	
 	std::cout << "Tree size: " << test.size() << "\r" << std::flush;
-	draw_tree(context, &*test.root(), true);
+	draw_tree(context, test.root().base(), true);
 	render.present();
 }
 

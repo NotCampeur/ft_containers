@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/24 06:52:34 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/25 01:26:27 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ class RedBlackTreeNode
 		{
 			RedBlackTreeNode*			node(const_cast<RedBlackTreeNode*>(this));
 
-			while (node->_parent)
+			while (node->_parent != NULL)
 				node = node->_parent;
 			return (node);
 		}
@@ -169,7 +169,7 @@ class RedBlackTreeNode
 		{
 			RedBlackTreeNode *v = node(n);
 		
-			if (v == NULL)
+			if (v == _limit)
 				throw std::runtime_error("RedBlackTreeNode::remove: node doesn't exist.");
 			_delete_node(v, alloc);
 			return (root());

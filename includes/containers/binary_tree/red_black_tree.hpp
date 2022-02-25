@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/24 06:47:31 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/25 02:13:28 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ class rbtree
 		typedef red_black_tree_iterator< node_type >		iterator;
 		typedef const_red_black_tree_iterator< node_type >	const_iterator;
 
-		typedef ft::reverse_iterator< iterator >			reverse_iterator;
-		typedef ft::reverse_iterator< const_iterator >		const_reverse_iterator;
+		typedef rb_reverse_iterator< iterator >				reverse_iterator;
+		typedef rb_reverse_iterator< const_iterator >		const_reverse_iterator;
 
 		typedef std::ptrdiff_t								difference_type;
 
@@ -97,7 +97,7 @@ class rbtree
 		// While destroy and deallocate every node using iterators.
 		~rbtree()
 		{
-			_destroy_tree(&*_root);
+			_destroy_tree(_root.base());
 			_alloc.destroy(_limit);
 			_alloc.deallocate(_limit, 1);
 		}
@@ -106,7 +106,7 @@ class rbtree
 		{
 			if (this != &other)
 			{
-				_destroy_tree(&*_root);
+				_destroy_tree(_root.base());
 				const_iterator it = other.begin();
 				while (it != other.end())
 				{
@@ -119,9 +119,7 @@ class rbtree
 
 		void	clear()
 		{
-			_destroy_tree(&*_root);
-			_alloc.destroy(_limit);
-			_alloc.deallocate(_limit, 1);
+			_destroy_tree(_root.base());
 			_root = NULL;
 			_begin = NULL;
 			_last = NULL;
@@ -160,21 +158,21 @@ class rbtree
 			if (_root == iterator(NULL))
 			{
 				_root = _alloc.allocate(1);
-				_alloc.construct(&*_root, RedBlackTreeNode<T, Compare>(value));
-				_root->set_limit(_limit);
+				_alloc.construct(_root.base(), RedBlackTreeNode<T, Compare>(value));
+				_root.base()->set_limit(_limit);
 				_begin = _root;
 				_last = _root;
 				_size = 1;
-				_limit->_parent = &*_root;
+				_limit->_parent = _root.base();
 			}
 			else
 			{
 				// std::cout << "limit : " << _limit << std::endl;
-				_root = _root->insert(value, _limit, _alloc);
-				_begin = static_cast<iterator>(leftmost(&*_root));
-				_last = static_cast<iterator>(rightmost(&*_root));
+				_root = _root.base()->insert(value, _limit, _alloc);
+				_begin = static_cast<iterator>(leftmost(_root.base()));
+				_last = static_cast<iterator>(rightmost(_root.base()));
 				++_size;
-				_limit->_parent = &*_root;
+				_limit->_parent = _root.base();
 			}
 		}
 
@@ -187,20 +185,20 @@ class rbtree
 				_alloc.construct(_limit, RedBlackTreeNode<T, Compare>());
 				_limit->set_limit(_limit);
 				_root = _alloc.allocate(1);
-				_alloc.construct(&*_root, node._value);
-				_root->set_limit(_limit);
+				_alloc.construct(_root.base(), node._value);
+				_root.base()->set_limit(_limit);
 				_begin = _root;
 				_last = _root;
 				_size = 1;
-				_limit->_parent = &*_root;
+				_limit->_parent = _root.base();
 			}
 			else
 			{
-				_root = _root->insert(node._value, _limit, _alloc);
-				_begin = static_cast<iterator>(leftmost(&*_root));
-				_last = static_cast<iterator>(rightmost(&*_root));
+				_root = _root.base()->insert(node._value, _limit, _alloc);
+				_begin = static_cast<iterator>(leftmost(_root.base()));
+				_last = static_cast<iterator>(rightmost(_root.base()));
 				++_size;
-				_limit->_parent = &*_root;
+				_limit->_parent = _root.base();
 			}
 		}
 
@@ -211,11 +209,11 @@ class rbtree
 			{
 				try
 				{
-					_root = _root->remove(value, _alloc);
-					_begin = static_cast<iterator>(leftmost(&*_root));
-					_last = static_cast<iterator>(rightmost(&*_root));
+					_root = _root.base()->remove(value, _alloc);
+					_begin = static_cast<iterator>(leftmost(_root.base()));
+					_last = static_cast<iterator>(rightmost(_root.base()));
 					--_size;
-					_limit->_parent = &*_root;
+					_limit->_parent = _root.base();
 				}
 				catch(...)
 				{
@@ -227,9 +225,9 @@ class rbtree
 		// Get the node with the value.
 		RedBlackTreeNode<T, Compare>*	get(const T& value)
 		{
-			if (_root == iterator(NULL))
+			if (_root.base() == NULL)
 				return _limit;
-			return _root->node(value);
+			return _root.base()->node(value);
 		}
 
 		// Operator to get the node with the value.
