@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/25 02:13:38 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/25 05:18:03 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ namespace ft
 			typedef typename allocator_type::pointer				pointer;
 			typedef typename allocator_type::const_pointer			const_pointer;
 
-			typedef rbtree<value_type>								rbtree_type;
+			typedef rbtree<value_type, Compare>						rbtree_type;
 			typedef typename rbtree_type::node_type					node_type;
 			
 			typedef typename rbtree_type::iterator					iterator;
