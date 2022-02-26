@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/25 06:06:57 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/26 01:39:38 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -647,7 +647,7 @@ RedBlackTreeNode<T, Compare> * next_inorder(const RedBlackTreeNode<T, Compare> *
 		throw std::runtime_error("next_inorder: node is NULL");
 	if (node->_left == NULL && node->_right == NULL
 	&& node->_parent != NULL && node->_parent->_left != node && node->_parent->_right != node)
-		return begin(node);
+		return last(node);
 	if (node == last(node))
 		return node->limit();
 	if (node->_right != NULL)
@@ -683,7 +683,7 @@ RedBlackTreeNode<T, Compare> * prev_inorder(const RedBlackTreeNode<T, Compare> *
 		return rightmost(node->_left);
 	else
 	{
-		RedBlackTreeNode<T> * parent = node->_parent;
+		RedBlackTreeNode<T, Compare> * parent = node->_parent;
 		while (parent != NULL && parent->_left == node)
 		{
 			node = parent;

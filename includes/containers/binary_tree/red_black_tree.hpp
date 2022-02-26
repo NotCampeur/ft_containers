@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/25 04:25:19 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/26 02:11:08 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,36 @@
 # include "../../tools/iterators/red_black_tree_iterator.hpp"
 # include "../../tools/iterators/reverse_iterator.hpp"
 # include "../../tools/comparison/lexicographical_compare.hpp"
+
+// Will assign a std::size_t to a template value.
+// Used to assign the size of the tree to the limit.
+// If the first value is a pair, the value will be assigned to the key.
+template <typename T, typename U>
+void	assign_size(ft::pair<const T, U> &value, std::size_t size)
+{
+	T *p;
+	
+	p = const_cast<T *>(&value.first);
+	*p = size;
+}
+
+template <typename T, typename U>
+void	assign_size(std::pair<const T, U> &value, std::size_t size)
+{
+	T *p;
+	
+	p = const_cast<T *>(&value.first);
+	*p = size;
+}
+
+template <typename T>
+void	assign_size(const T &value, std::size_t size)
+{
+	T *p;
+	
+	p = const_cast<T *>(&value);
+	*p = size;
+}
 
 template< typename T, typename Compare = std::less<T>, typename Alloc = std::allocator<RedBlackTreeNode<T, Compare> > >
 class rbtree
@@ -124,6 +154,7 @@ class rbtree
 			_begin = NULL;
 			_last = NULL;
 			_size = 0;
+			assign_size(_limit->_value, _size);
 		}
 		
 		// Iterators
@@ -163,6 +194,7 @@ class rbtree
 				_begin = _root;
 				_last = _root;
 				_size = 1;
+				assign_size(_limit->_value, _size);
 				_limit->_parent = _root.base();
 			}
 			else
@@ -172,6 +204,7 @@ class rbtree
 				_begin = static_cast<iterator>(leftmost(_root.base()));
 				_last = static_cast<iterator>(rightmost(_root.base()));
 				++_size;
+				assign_size(_limit->_value, _size);
 				_limit->_parent = _root.base();
 			}
 		}
@@ -190,6 +223,7 @@ class rbtree
 				_begin = _root;
 				_last = _root;
 				_size = 1;
+				assign_size(_limit->_value, _size);
 				_limit->_parent = _root.base();
 			}
 			else
@@ -198,6 +232,7 @@ class rbtree
 				_begin = static_cast<iterator>(leftmost(_root.base()));
 				_last = static_cast<iterator>(rightmost(_root.base()));
 				++_size;
+				assign_size(_limit->_value, _size);
 				_limit->_parent = _root.base();
 			}
 		}
@@ -213,6 +248,7 @@ class rbtree
 					_begin = static_cast<iterator>(leftmost(_root.base()));
 					_last = static_cast<iterator>(rightmost(_root.base()));
 					--_size;
+					assign_size(_limit->_value, _size);
 					_limit->_parent = _root.base();
 				}
 				catch(...)
