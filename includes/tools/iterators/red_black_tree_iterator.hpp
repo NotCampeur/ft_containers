@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 12:05:24 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/25 02:10:35 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/26 02:41:17 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,12 @@ struct const_red_black_tree_iterator : ft::iterator<ft::bidirectional_iterator_t
 {
 	typedef ft::bidirectional_iterator_tag	iterator_category;
 	typedef const I							value_type;
+	typedef const typename I::value_type	value_value_type;
 	typedef std::ptrdiff_t					difference_type;
 	typedef const I*						pointer;
 	typedef const I&						reference;
+	typedef const typename I::value_type*	value_pointer;
+	typedef const typename I::value_type&	value_reference;
 
 	private:
 		pointer	_ptr;
@@ -103,9 +106,14 @@ struct const_red_black_tree_iterator : ft::iterator<ft::bidirectional_iterator_t
 			return (*this);
 		}
 		
-		reference operator*() const { return _ptr->_value; }
-		pointer operator->() { return &_ptr->_value; }
-		const pointer operator->() const { return &_ptr->_value; }
+		pointer base() const
+		{
+			return (_ptr);
+		}
+
+		value_reference operator*() const { return _ptr->_value; }
+		value_pointer operator->() { return &_ptr->_value; }
+		const value_pointer operator->() const { return &_ptr->_value; }
 
 		const_red_black_tree_iterator& operator++() { _ptr = next_inorder(_ptr); return (*this); }
 		const_red_black_tree_iterator operator++(int) { const_red_black_tree_iterator tmp(*this); _ptr = next_inorder(_ptr); return tmp; }
