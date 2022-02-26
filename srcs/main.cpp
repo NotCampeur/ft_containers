@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/26 02:31:39 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/26 04:40:31 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,60 +91,15 @@ void	pair_test(void)
 void	map_test(void)
 {
 	Logger() << "======================={Map test}=======================";
-	ft::map<int, int, std::greater<int> > map_int;
-	
-	// map_int.insert(ft::make_pair<int, int>(1, 54));
-	// map_int.insert(ft::make_pair<int, int>(0, 54));
-	// map_int.insert(ft::make_pair<int, int>(1, 42));
-	// map_int.insert(ft::make_pair<int, int>(0, 54));
-	// map_int.insert(ft::make_pair<int, int>(8, 54));
-	// map_int.insert(ft::make_pair<int, int>(-8, 504));
-	// ft::map<int, int, std::greater<int> >::iterator it = map_int.begin();
-	// for (; it != map_int.end(); ++it)
-	// {
-	// 	Logger() << "Key: " << it->first << " Value: " << it->second;
-	// }
-	// Logger() << "End :Key: " << it->first << " Value: " << it->second;
-	// ++it;
-	// Logger() << "++Key: " << it->first << " Value: " << it->second;
-	// ++it;
-	// Logger() << "++Key: " << it->first << " Value: " << it->second;
-	// ++it;
-	// Logger() << "++Key: " << it->first << " Value: " << it->second;
-	// it = map_int.begin();
-	// Logger() << "begin : Key: " << it->first << " Value: " << it->second;
-	// --it;
-	// Logger() << "--Key: " << it->first << " Value: " << it->second;
-	// --it;
-	// Logger() << "--Key: " << it->first << " Value: " << it->second;
-	// --it;
-	// Logger() << "--Key: " << it->first << " Value: " << it->second;
-	// --it;
-	// Logger() << "--Key: " << it->first << " Value: " << it->second;
-	// --it;
-	// Logger() << "--Key: " << it->first << " Value: " << it->second;
-	// --it;
-	// Logger() << "--Key: " << it->first << " Value: " << it->second;
-	// --it;
-	// Logger() << "--Key: " << it->first << " Value: " << it->second;
-	// // ft::map<int, int>::rbtree_type::iterator it = map_int.find(1);
-	
-	// Logger() << "map.find[key|value] | map[] = [" << map_int.find(1)->second << "|" << map_int.find(1)->first << "] | " << map_int[1];
-	for (int i = 0; i < COUNT; ++i)
-	{
-		map_int.insert(ft::make_pair(rand(), rand()));
-	}
-	
-	int sum = 0;
-	for (int i = 0; i < 10000; i++)
-	{
-		int access = rand();
-		sum += map_int[access];
-	}
-	Logger() << "should be constant with the same seed: " << sum;
-	{
-		ft::map<int, int, std::greater<int> > copy = map_int;
-	}
+	map_allocator_test();
+	map_capacity_test();
+	map_element_access_test();
+	map_iterators_test();
+	map_limit_test();
+	map_modifiers_test();
+	map_observers_test();
+	map_operations_test();
+	map_relational_operators_test();
 }
 #endif
 

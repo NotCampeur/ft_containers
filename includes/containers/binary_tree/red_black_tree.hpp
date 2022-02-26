@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/26 02:11:08 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/26 06:53:22 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "../../tools/iterators/red_black_tree_iterator.hpp"
 # include "../../tools/iterators/reverse_iterator.hpp"
 # include "../../tools/comparison/lexicographical_compare.hpp"
+# include "../../tools/comparison/rbtree_node_compare.hpp"
 
 // Will assign a std::size_t to a template value.
 // Used to assign the size of the tree to the limit.
@@ -259,7 +260,7 @@ class rbtree
 		}
 
 		// Get the node with the value.
-		RedBlackTreeNode<T, Compare>*	get(const T& value)
+		RedBlackTreeNode<T, Compare>*	get(const T& value) const
 		{
 			if (_root.base() == NULL)
 				return _limit;
@@ -267,7 +268,7 @@ class rbtree
 		}
 
 		// Operator to get the node with the value.
-		RedBlackTreeNode<T, Compare>*	operator[](const T& value)
+		RedBlackTreeNode<T, Compare>*	operator[](const T& value) const
 		{
 			return get(value);
 		}
@@ -286,9 +287,7 @@ class rbtree
 		iterator	lower_bound(const T& value)
 		{
 			iterator	it = _begin;
-			Compare 	comp;
-			
-			while (it != end() && comp(it->_value, value) == true)
+			while (it != end() && is_inferior(it.base(), value) == true)
 				++it;
 			return it;
 		}
@@ -297,9 +296,7 @@ class rbtree
 		iterator	upper_bound(const T& value)
 		{
 			iterator	it = _begin;
-			Compare 	comp;
-			
-			while (it != end() && comp(it->_value, value) == true)
+			while (it != end() && is_inferior(it.base(), value) == true)
 				++it;
 			if (it != end())
 				++it;
@@ -309,15 +306,13 @@ class rbtree
 		// Operators
 		friend bool	operator==(const rbtree &lhs, const rbtree &rhs)
 		{
-			rbtree::compare	comp;
-			
 			if (lhs.size() != rhs.size())
 				return false;
-			iterator 	lit = lhs.begin();
-			iterator 	rit = rhs.begin();
+			const_iterator 	lit = lhs.begin();
+			const_iterator 	rit = rhs.begin();
 			while (lit != lhs.end() && rit != rhs.end())
 			{
-				if (comp(lit->_value, rit->_value) == true || comp(rit->_value, lit->_value) == true)
+				if (is_inferior(lit.base(), rit.base()) == true || is_inferior(rit.base(), lit.base()) == true)
 					return false;
 				++lit;
 				++rit;
@@ -329,11 +324,22 @@ class rbtree
 
 		friend bool operator<(const rbtree &lhs, const rbtree &rhs)
 		{
-			rbtree::compare	comp;
-			
-			iterator 	lit = lhs.begin();
-			iterator 	rit = rhs.begin();
-			return ft::lexicographical_compare(lit, lhs.end(), rit, rhs.end(), comp);
+			const_iterator 	lit = lhs.begin();
+			const_iterator 	rit = rhs.begin();
+			while (lit != lhs.end() && rit != rhs.end())
+			{
+				if (is_inferior(lit.base(), rit.base()) == true)
+					return true;
+				if (is_inferior(rit.base(), lit.base()) == true)
+					return false;
+				++lit;
+				++rit;
+			}
+			if (lit != lhs.end())
+				return false;
+			if (is_inferior(lit.base(), rit.base()) == false && is_inferior(rit.base(), lit.base()) == false)
+				return false;
+			return true;
 		}
 };
 

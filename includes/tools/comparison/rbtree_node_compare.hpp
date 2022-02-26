@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/25 05:52:48 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/25 06:05:45 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/26 06:40:59 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,17 @@ bool	is_inferior(const RedBlackTreeNode<T, Compare> * node, const T & value)
 	if (node == NULL)
 		throw std::runtime_error("is_inferior: node is NULL");
 	return comp(node->_value, value);
+}
+
+// A specialisation of the above function, if the type is a pair but compare a pair.
+template <typename U, typename V, typename Compare>
+bool	is_inferior(const RedBlackTreeNode<ft::pair<U, V>, Compare> * node1, const RedBlackTreeNode<ft::pair<U, V>, Compare> * node2)
+{
+	Compare comp;
+	
+	if (node1 == NULL || node2 == NULL)
+		throw std::runtime_error("is_inferior: node is NULL");
+	return comp(node1->_value.first, node2->_value.first);
 }
 
 // A specialisation of the above function, if the type is a pair but compare a key.

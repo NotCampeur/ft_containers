@@ -6,38 +6,48 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/02 13:41:59 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/02 17:04:56 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/26 05:37:54 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONTAINERS_PAIR_HPP
 # define CONTAINERS_PAIR_HPP
 
+# include "../tools/remove_const.hpp"
+
 namespace ft
 {
 	template< class T1, class T2 >
 	struct pair
 	{
-		typedef T1 first_type;
-		typedef T2 second_type;
+		public:
+			typedef T1 first_type;
+			typedef T2 second_type;
 
-		T1 first;
-		T2 second;
-
-		pair() : first(), second() {}
-		pair( const T1& x, const T2& y ) : first( x ), second( y ) {}
+		private:
+			typedef typename ft::remove_const<T1>::type non_const_first_type;
+			typedef typename ft::remove_const<T2>::type non_const_second_type;
 		
-		// Copy constructor
-		pair( const pair& p ) : first( p.first ), second( p.second ) {}
-		template< class U1, class U2 >
-		pair( const pair<U1, U2>& p ) : first( p.first ), second( p.second ) {}
+		public:
+			T1 first;
+			T2 second;
 
-		pair& operator=( const pair& other )
-		{
-			first = other.first;
-			second = other.second;
-			return *this;
-		}
+			pair() : first(), second() {}
+			pair( const T1& x, const T2& y ) : first( x ), second( y ) {}
+			
+			// Copy constructor
+			pair( const pair& p ) : first( p.first ), second( p.second ) {}
+			template< class U1, class U2 >
+			pair( const pair<U1, U2>& p ) : first( p.first ), second( p.second ) {}
+
+			pair& operator=( const pair& other )
+			{
+				non_const_first_type *p = const_cast<non_const_first_type *>(&first);
+				*p = other.first;
+				// first = other.first;
+				second = other.second;
+				return *this;
+			}
 	};
 
 	template< class T1, class T2 >

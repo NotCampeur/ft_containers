@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/26 01:39:38 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/26 05:15:49 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,9 +164,9 @@ class RedBlackTreeNode
 		// This function will remove the node with the given value.
 		// If the node doesn't exist, it do nothing.
 		// return the new root of the tree.
-		RedBlackTreeNode * remove(int n, std::allocator<RedBlackTreeNode>& alloc)
+		RedBlackTreeNode * remove(const T& value, std::allocator<RedBlackTreeNode>& alloc)
 		{
-			RedBlackTreeNode *v = node(n);
+			RedBlackTreeNode *v = node(value);
 		
 			if (v == _limit)
 				throw std::runtime_error("RedBlackTreeNode::remove: node doesn't exist.");
@@ -411,9 +411,10 @@ class RedBlackTreeNode
 				return;
 			}
 			// node_to_del has 2 children, swap values with _successor and recurse
-			node_to_del->_value = node_to_del->_value ^ replacement->_value;
-			replacement->_value = node_to_del->_value ^ replacement->_value;
-			node_to_del->_value = node_to_del->_value ^ replacement->_value;
+			std::swap(node_to_del->_value, replacement->_value);
+			// node_to_del->_value = node_to_del->_value ^ replacement->_value;
+			// replacement->_value = node_to_del->_value ^ replacement->_value;
+			// node_to_del->_value = node_to_del->_value ^ replacement->_value;
 			_delete_node(replacement, alloc);
 		}
  

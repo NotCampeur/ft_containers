@@ -46,10 +46,21 @@ STACK_TEST =	stack_modifiers_test.cpp \
 
 PAIR_TEST =		pair_basic_test.cpp
 
+MAP_TEST =		map_allocator_test.cpp \
+				map_capacity_test.cpp \
+				map_element_access_test.cpp \
+				map_iterators_test.cpp \
+				map_limit_test.cpp \
+				map_modifiers_test.cpp \
+				map_observers_test.cpp \
+				map_operations_test.cpp \
+				map_relational_operators_test.cpp
+
 SRC 	=		main.cpp \
 				$(VECTOR_TEST) \
 				$(STACK_TEST) \
-				$(PAIR_TEST)
+				$(PAIR_TEST) \
+				$(MAP_TEST)
 
 VISUALIZER_SRC =	main.cpp \
 					visualizer.cpp \

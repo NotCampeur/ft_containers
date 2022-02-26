@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/25 05:18:03 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/26 04:48:54 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,7 +283,7 @@ namespace ft
 			}
 
 			// Allocator
-			allocator_type get_allocator() const { return _tree.get_allocator(); }
+			allocator_type get_allocator() const { return _alloc; }
 
 			// Operations
 			friend bool operator==(const map<Key, T, Compare, Alloc>& lhs,

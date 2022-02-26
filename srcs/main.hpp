@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:13:05 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/17 19:45:11 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/26 04:37:30 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,15 @@ void	stack_mutant_test(void);
 void	pair_basic_test(void);
 
 void	map_test(void);
+void	map_allocator_test(void);
+void	map_capacity_test(void);
+void	map_element_access_test(void);
+void	map_iterators_test(void);
+void	map_limit_test(void);
+void	map_modifiers_test(void);
+void	map_observers_test(void);
+void	map_operations_test(void);
+void	map_relational_operators_test(void);
 
 # ifdef TREE_VISUALIZER
 void	visualize_b_tree(void);
