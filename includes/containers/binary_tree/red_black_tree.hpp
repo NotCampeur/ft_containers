@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/26 06:53:22 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/27 22:24:58 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,14 +160,14 @@ class rbtree
 		
 		// Iterators
 
-		iterator		root() {return _root;}
-		const_iterator	root() const {return const_iterator(_root);}
+		iterator		root() {return (_root.base() == NULL) ? iterator(_limit) : _root;}
+		const_iterator	root() const {return (_root.base() == NULL) ? const_iterator(_limit) : const_iterator(_root);}
 		
-		iterator		begin() {return _begin;}
-		const_iterator	begin() const {return const_iterator(_begin);}
+		iterator		begin() {return (_begin.base() == NULL) ? iterator(_limit) : _begin;}
+		const_iterator	begin() const {return (_begin.base() == NULL) ? const_iterator(_limit) : const_iterator(_begin);}
 		
-		iterator		last() {return _last;}
-		const_iterator	last() const {return const_iteraotr(_last);}
+		iterator		last() {return (_last.base() == NULL) ? iterator(_limit) : _last;}
+		const_iterator	last() const {return (_last.base() == NULL) ? const_iterator(_limit) : const_iterator(_last);}
 		
 		iterator		end() {return iterator(_limit);}
 		const_iterator	end() const {return const_iterator(_limit);}
@@ -286,7 +286,7 @@ class rbtree
 		// Return the first node not less than the value.
 		iterator	lower_bound(const T& value)
 		{
-			iterator	it = _begin;
+			iterator	it = begin();
 			while (it != end() && is_inferior(it.base(), value) == true)
 				++it;
 			return it;
@@ -295,7 +295,7 @@ class rbtree
 		// Return the first node not less or equal than the value.
 		iterator	upper_bound(const T& value)
 		{
-			iterator	it = _begin;
+			iterator	it = begin();
 			while (it != end() && is_inferior(it.base(), value) == true)
 				++it;
 			if (it != end())

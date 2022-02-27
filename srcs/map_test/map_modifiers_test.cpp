@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 03:05:49 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/26 04:53:16 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/27 22:26:58 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	map_swap_method_test(void)
 
 	Logger() << "bar contains:\n";
 	for (ft::map<char,int, std::greater<int> >::iterator it=bar.begin(); it!=bar.end(); ++it)
-		std::cout << it->first << " => " << it->second;
+		Logger() << it->first << " => " << it->second;
 		
 	gettimeofday(&start_time, NULL);
 	foo.swap(bar);
@@ -69,7 +69,7 @@ void	map_swap_method_test(void)
 
 	Logger() << "bar contains:\n";
 	for (ft::map<char,int, std::greater<int> >::iterator it=bar.begin(); it!=bar.end(); ++it)
-		std::cout << it->first << " => " << it->second;
+		Logger() << it->first << " => " << it->second;
 }
 
 void	map_erase_method_test(void)
@@ -116,7 +116,7 @@ void	map_insert_method_test(void)
 
 void	map_modifiers_test(void)
 {
-	Logger() << "\n----------(map_element_access_test)----------";
+	Logger() << "\n----------(map_modifiers_test)----------";
 	
 	map_insert_method_test();
 	map_erase_method_test();
