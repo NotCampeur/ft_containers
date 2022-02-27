@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/27 22:24:58 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/27 23:32:40 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,18 +326,17 @@ class rbtree
 		{
 			const_iterator 	lit = lhs.begin();
 			const_iterator 	rit = rhs.begin();
-			while (lit != lhs.end() && rit != rhs.end())
+
+			while (lit != lhs.end())
 			{
-				if (is_inferior(lit.base(), rit.base()) == true)
-					return true;
-				if (is_inferior(rit.base(), lit.base()) == true)
+				if (rit == rhs.end() || is_inferior(rit.base(), lit.base()) == true)
 					return false;
+				else if (is_inferior(lit.base(), rit.base()) == true)
+					return true;
 				++lit;
 				++rit;
 			}
-			if (lit != lhs.end())
-				return false;
-			if (is_inferior(lit.base(), rit.base()) == false && is_inferior(rit.base(), lit.base()) == false)
+			if (rit == rhs.end())
 				return false;
 			return true;
 		}

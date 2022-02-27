@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/26 05:15:49 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/27 23:14:55 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ class RedBlackTreeNode
 			// std::cout << "limit int insert : " << limit << std::endl;
 			while (node)
 			{
-				if (is_superior(node, value) == true)
+				if (is_superior_in_key(node, value) == true)
 				{
 					if (node->_left == NULL)
 					{
@@ -104,7 +104,7 @@ class RedBlackTreeNode
 					}
 					node = node->_left;
 				}
-				else if (is_inferior(node, value) == true)
+				else if (is_inferior_in_key(node, value) == true)
 				{
 					if (node->_right == NULL)
 					{
@@ -143,13 +143,13 @@ class RedBlackTreeNode
 			
 			while (current_node)
 			{
-				if (is_superior(current_node, value) == true)
+				if (is_superior_in_key(current_node, value) == true)
 				{
 					if (current_node->_left == NULL)
 						return (_limit);
 					current_node = current_node->_left;
 				}
-				else if (is_inferior(current_node, value) == true)
+				else if (is_inferior_in_key(current_node, value) == true)
 				{
 					if (current_node->_right == NULL)
 						return (_limit);
