@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/27 23:32:40 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 00:56:50 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,35 +51,36 @@ void	assign_size(const T &value, std::size_t size)
 	*p = size;
 }
 
-template< typename T, typename Compare = std::less<T>, typename Alloc = std::allocator<RedBlackTreeNode<T, Compare> > >
+template< typename T, typename Compare = std::less<T>, typename Alloc = std::allocator<T> >
 class rbtree
 {
 	public:
 
-		typedef T 											value_type;
-		typedef RedBlackTreeNode<T, Compare>				node_type;
-		typedef Compare 									compare;
-		typedef Alloc										allocator_type;
+		typedef T 												value_type;
+		typedef RedBlackTreeNode<T, Compare, Alloc>				node_type;
+		typedef Compare 										compare;
+		typedef Alloc											allocator_type;
+		typedef std::allocator<node_type>						node_allocator_type;
 
-		typedef typename allocator_type::reference			reference;
-		typedef typename allocator_type::const_reference	const_reference;
+		typedef typename node_allocator_type::reference			reference;
+		typedef typename node_allocator_type::const_reference	const_reference;
 
-		typedef typename allocator_type::pointer			node_pointer;
-		typedef typename allocator_type::const_pointer		const_pointer;
+		typedef typename node_allocator_type::pointer			node_pointer;
+		typedef typename node_allocator_type::const_pointer		const_pointer;
 
-		typedef red_black_tree_iterator< node_type >		iterator;
-		typedef const_red_black_tree_iterator< node_type >	const_iterator;
+		typedef red_black_tree_iterator< node_type >			iterator;
+		typedef const_red_black_tree_iterator< node_type >		const_iterator;
 
-		typedef rb_reverse_iterator< iterator >				reverse_iterator;
-		typedef rb_reverse_iterator< const_iterator >		const_reverse_iterator;
+		typedef rb_reverse_iterator< iterator >					reverse_iterator;
+		typedef rb_reverse_iterator< const_iterator >			const_reverse_iterator;
 
-		typedef std::ptrdiff_t								difference_type;
+		typedef std::ptrdiff_t									difference_type;
 
-		typedef std::size_t									size_type;
+		typedef std::size_t										size_type;
 
 	private:
 	
-		Alloc					_alloc;
+		node_allocator_type		_alloc;
 		node_pointer			_limit;
 
 		iterator				_root;
@@ -90,9 +91,11 @@ class rbtree
 		
 		void	_destroy_tree(node_pointer node)
 		{
-			if (node && node->_left)
+			if (node == NULL)
+				return ;
+			if (node->_left)
 				_destroy_tree(node->_left);
-			if (node && node->_right)
+			if (node->_right)
 				_destroy_tree(node->_right);
 			_alloc.destroy(node);
 			_alloc.deallocate(node, 1);
@@ -105,7 +108,7 @@ class rbtree
 		, _size(0)
 		{
 			_limit = _alloc.allocate(1);
-			_alloc.construct(_limit, RedBlackTreeNode<T, Compare>());
+			_alloc.construct(_limit, RedBlackTreeNode<T, Compare, Alloc>());
 			_limit->set_limit(_limit);
 		}
 		
@@ -115,7 +118,7 @@ class rbtree
 		, _size(0)
 		{
 			_limit = _alloc.allocate(1);
-			_alloc.construct(_limit, RedBlackTreeNode<T, Compare>());
+			_alloc.construct(_limit, RedBlackTreeNode<T, Compare, Alloc>());
 			_limit->set_limit(_limit);
 			const_iterator it = other.begin();
 			while (it != other.end())
@@ -155,7 +158,7 @@ class rbtree
 			_begin = NULL;
 			_last = NULL;
 			_size = 0;
-			assign_size(_limit->_value, _size);
+			assign_size(*_limit->_value, _size);
 		}
 		
 		// Iterators
@@ -190,22 +193,21 @@ class rbtree
 			if (_root == iterator(NULL))
 			{
 				_root = _alloc.allocate(1);
-				_alloc.construct(_root.base(), RedBlackTreeNode<T, Compare>(value));
+				_alloc.construct(_root.base(), RedBlackTreeNode<T, Compare, Alloc>(value));
 				_root.base()->set_limit(_limit);
 				_begin = _root;
 				_last = _root;
 				_size = 1;
-				assign_size(_limit->_value, _size);
+				assign_size(*_limit->_value, _size);
 				_limit->_parent = _root.base();
 			}
 			else
 			{
-				// std::cout << "limit : " << _limit << std::endl;
 				_root = _root.base()->insert(value, _limit, _alloc);
 				_begin = static_cast<iterator>(leftmost(_root.base()));
 				_last = static_cast<iterator>(rightmost(_root.base()));
 				++_size;
-				assign_size(_limit->_value, _size);
+				assign_size(*_limit->_value, _size);
 				_limit->_parent = _root.base();
 			}
 		}
@@ -216,7 +218,7 @@ class rbtree
 			if (_root == iterator(NULL))
 			{
 				_limit = _alloc.allocate(1);
-				_alloc.construct(_limit, RedBlackTreeNode<T, Compare>());
+				_alloc.construct(_limit, RedBlackTreeNode<T, Compare, Alloc>());
 				_limit->set_limit(_limit);
 				_root = _alloc.allocate(1);
 				_alloc.construct(_root.base(), node._value);
@@ -224,7 +226,7 @@ class rbtree
 				_begin = _root;
 				_last = _root;
 				_size = 1;
-				assign_size(_limit->_value, _size);
+				assign_size(*_limit->_value, _size);
 				_limit->_parent = _root.base();
 			}
 			else
@@ -233,7 +235,7 @@ class rbtree
 				_begin = static_cast<iterator>(leftmost(_root.base()));
 				_last = static_cast<iterator>(rightmost(_root.base()));
 				++_size;
-				assign_size(_limit->_value, _size);
+				assign_size(*_limit->_value, _size);
 				_limit->_parent = _root.base();
 			}
 		}
@@ -249,7 +251,7 @@ class rbtree
 					_begin = static_cast<iterator>(leftmost(_root.base()));
 					_last = static_cast<iterator>(rightmost(_root.base()));
 					--_size;
-					assign_size(_limit->_value, _size);
+					assign_size(*_limit->_value, _size);
 					_limit->_parent = _root.base();
 				}
 				catch(...)

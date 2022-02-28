@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 04:06:43 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/26 04:10:19 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 00:17:53 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	map_allocator_test(void)
 {
 	struct timeval	start_time;
-	Logger() << "\n----------(map_operations_test)----------";
+	Logger() << "\n----------(map_allocator_test)----------";
 
 	Logger() << "__________[map_get_allocator_method_test]__________";
 	ft::map<int, int> mymap;

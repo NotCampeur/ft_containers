@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 04:28:22 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/26 04:30:02 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 01:44:17 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	map_limit_test(void)
 	{
 		map_int.insert(ft::make_pair(rand(), rand()));
 	}
+	
+	Logger() << "map_int.size() = " << map_int.size();
 	
 	int sum = 0;
 	for (int i = 0; i < 10000; i++)
