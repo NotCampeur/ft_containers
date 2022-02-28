@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/25 05:52:48 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/28 04:45:26 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 06:25:27 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,17 @@ namespace ft
 		if (node == NULL)
 			throw std::runtime_error("is_inferior_in_key: node is NULL");
 		return comp(*node->_value, value);
+	}
+
+	// A specialisation of the above function, if the type is classic but compare another node.
+	template <typename T, typename Compare, typename Alloc>
+	bool	is_inferior_in_key(const ft::RedBlackTreeNode<T, Compare, Alloc> * node1, const ft::RedBlackTreeNode<T, Compare, Alloc> * node2)
+	{
+		Compare comp;
+		
+		if (node1 == NULL || node2 == NULL)
+			throw std::runtime_error("is_inferior: node is NULL");
+		return comp(*node1->_value, *node2->_value);
 	}
 
 	// A specialisation of the above function, if the type is a pair but compare a pair.
@@ -76,6 +87,17 @@ namespace ft
 		return comp(value, *node->_value);
 	}
 
+	// A specialisation of the above function, if the type is classic but compare another node.
+	template <typename T, typename Compare, typename Alloc>
+	bool	is_superior_in_key(const ft::RedBlackTreeNode<T, Compare, Alloc> * node1, const ft::RedBlackTreeNode<T, Compare, Alloc> * node2)
+	{
+		Compare comp;
+		
+		if (node1 == NULL || node2 == NULL)
+			throw std::runtime_error("is_inferior: node is NULL");
+		return comp(*node2->_value, *node1->_value);
+	}
+	
 	template <typename U, typename V, typename Compare, typename Alloc>
 	bool	is_superior_in_key(const ft::RedBlackTreeNode<ft::pair<U, V>, Compare, Alloc> * node, const ft::pair<U, V> & value)
 	{
@@ -105,6 +127,17 @@ namespace ft
 		if (node == NULL)
 			throw std::runtime_error("is_inferior: node is NULL");
 		return comp(*node->_value, value);
+	}
+
+	// A specialisation of the above function, if the type is classic but compare another node.
+	template <typename T, typename Compare, typename Alloc>
+	bool	is_inferior(const ft::RedBlackTreeNode<T, Compare, Alloc> * node1, const ft::RedBlackTreeNode<T, Compare, Alloc> * node2)
+	{
+		Compare comp;
+		
+		if (node1 == NULL || node2 == NULL)
+			throw std::runtime_error("is_inferior: node is NULL");
+		return comp(*node1->_value, *node2->_value);
 	}
 
 	// A specialisation of the above function, if the type is a pair but compare a pair. And not only the key.
@@ -148,6 +181,17 @@ namespace ft
 		if (node == NULL)
 			throw std::runtime_error("is_superior: node is NULL");
 		return comp(value, *node->_value);
+	}
+
+	// A specialisation of the above function, if the type is classic but compare another node.
+	template <typename T, typename Compare, typename Alloc>
+	bool	is_superior(const ft::RedBlackTreeNode<T, Compare, Alloc> * node1, const ft::RedBlackTreeNode<T, Compare, Alloc> * node2)
+	{
+		Compare comp;
+		
+		if (node1 == NULL || node2 == NULL)
+			throw std::runtime_error("is_inferior: node is NULL");
+		return comp(*node2->_value, *node1->_value);
 	}
 
 	template <typename U, typename V, typename Compare, typename Alloc>
