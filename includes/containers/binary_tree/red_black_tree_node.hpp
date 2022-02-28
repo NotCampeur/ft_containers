@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/28 10:54:11 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 16:25:45 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,7 @@ namespace ft
 
 			void _resolve_double_black(RedBlackTreeNode *node)
 			{
-				if (node->_parent == NULL)
+				if (node == NULL || node->_parent == NULL)
 					return;
 			
 				RedBlackTreeNode *sibling = node->_sibling();
@@ -243,7 +243,7 @@ namespace ft
 						|| (sibling->_right != NULL && sibling->_right->_color == red))
 						{
 							// at least 1 red children
-							if (sibling->_right == NULL && sibling->_left != NULL && sibling->_left->_color == red)
+							if (sibling->_right == NULL)
 							{
 								if (sibling->_parent->_left == sibling)
 								{
@@ -375,7 +375,7 @@ namespace ft
 						}
 						else
 						{
-							// replacement or node_to_del is red
+							// Node_to_del is red
 							if (node_to_del->_sibling() != NULL)
 								// sibling is not null, make it red"
 								node_to_del->_sibling()->_color = red;
@@ -384,16 +384,15 @@ namespace ft
 						// delete node_to_del from the tree
 						if (node_to_del->_parent->_left == node_to_del)
 						{
-							parent->_left = NULL;
+							node_to_del->_parent->_left = NULL;
 						}
 						else
 						{
-							parent->_right = NULL;
+							node_to_del->_parent->_right = NULL;
 						}
 					}
 					alloc.destroy(node_to_del);
 					alloc.deallocate(node_to_del, 1);
-					// delete node_to_del;
 					return;
 				}
 			
@@ -403,7 +402,7 @@ namespace ft
 					if (node_to_del->_parent == NULL)
 					{
 						// node_to_del is root, assign the value of replacement to node_to_del, and delete replacement
-						node_to_del->_value = replacement->_value;
+						std::swap(node_to_del->_value, replacement->_value);
 						node_to_del->_left = node_to_del->_right = NULL;
 						alloc.destroy(replacement);
 						alloc.deallocate(replacement, 1);
