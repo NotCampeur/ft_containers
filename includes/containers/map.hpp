@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 03:21:52 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 04:30:29 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ namespace ft
 			map& operator=(const map& other)
 			{
 				if (this != &other)
-					_tree = other._tree;
+					*_tree = *other._tree;
 				return *this;
 			}
 

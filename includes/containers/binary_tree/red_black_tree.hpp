@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/28 03:18:05 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 04:30:36 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ class rbtree
 			if (this != &other)
 			{
 				_destroy_tree(_root.base());
+				_root = NULL;
 				const_iterator it = other.begin();
 				while (it != other.end())
 				{
