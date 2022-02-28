@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 01:58:16 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 02:28:39 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,8 @@ namespace ft
 			size_type size() const { return _tree->size(); }
 			size_type max_size() const
 			{
-				return _alloc.max_size();
+				std::allocator<node_type> tree_alloc;
+				return tree_alloc.max_size();
 			}
 
 			// Element access
