@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 08:26:00 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 17:22:59 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <memory>
 # include "pair.hpp"
+# include "vector.hpp"
 # include "../tools/iterators/bidirectional_iterator.hpp"
 # include "binary_tree/red_black_tree.hpp"
 
@@ -138,7 +139,7 @@ namespace ft
 			size_type size() const { return _tree->size(); }
 			size_type max_size() const
 			{
-				std::allocator<node_type> tree_alloc;
+				typename rbtree_type::node_allocator_type tree_alloc;
 				return tree_alloc.max_size();
 			}
 
@@ -220,17 +221,26 @@ namespace ft
 			}
 
 			// Will erase the range of elements.
+			// Taking care to not use invalidate iterators.
 			void erase(iterator first, iterator last)
 			{
-				for (; first != last; ++first)
+				// iterator temp;
+				ft::vector<key_type>						temp;
+				typename ft::vector<key_type>::size_type	i(0);
+
+				if (first == end() && first != last)
+					first++;
+				for (; first != last; first++)
+					temp.push_back(first->first);
+				while (i < temp.size())
 				{
-					try
-					{
-						_tree->remove(*first);
-					}
-					catch(...)
-					{
-					}
+					erase(temp[i]);
+					++i;
+					// std::cerr << "Erasing " << i - 1 << std::endl;
+					// temp = first;
+					// ++temp;
+					// erase(first++);
+					// first = temp;
 				}
 			}
 
