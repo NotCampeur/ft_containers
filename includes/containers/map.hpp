@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 02:28:39 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 03:21:52 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <memory>
 # include "pair.hpp"
 # include "../tools/iterators/bidirectional_iterator.hpp"
-# include "../binary_tree/red_black_tree.hpp"
+# include "binary_tree/red_black_tree.hpp"
 
 namespace ft
 {
@@ -286,17 +286,21 @@ namespace ft
 				return iterator(_tree->upper_bound(value_type(key, mapped_type())));
 			}
 
+			const_iterator upper_bound(const key_type& key) const
+			{
+				return const_iterator(_tree->upper_bound(value_type(key, mapped_type())));
+			}
+			
 			// Return a pair of iterators to the range of elements with the key.
+			// The first refer to the lower bound, the second to the upper bound.
 			ft::pair<iterator, iterator> equal_range(const key_type& key)
 			{
-				iterator	it = find(key);
-				return ft::make_pair(it, it);
+				return ft::make_pair(lower_bound(key), upper_bound(key));
 			}
 
 			ft::pair<const_iterator, const_iterator> equal_range(const key_type& key) const
 			{
-				const_iterator	it = find(key);
-				return ft::make_pair(it, it);
+				return ft::make_pair(lower_bound(key), upper_bound(key));
 			}
 
 			// Allocator

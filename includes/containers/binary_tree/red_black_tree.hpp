@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/28 00:56:50 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 03:18:05 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,7 @@ class rbtree
 		iterator	lower_bound(const T& value)
 		{
 			iterator	it = begin();
-			while (it != end() && is_inferior(it.base(), value) == true)
+			while (it != end() && is_inferior_in_key(it.base(), value) == true)
 				++it;
 			return it;
 		}
@@ -297,10 +297,10 @@ class rbtree
 		// Return the first node not less or equal than the value.
 		iterator	upper_bound(const T& value)
 		{
-			iterator	it = begin();
-			while (it != end() && is_inferior(it.base(), value) == true)
-				++it;
-			if (it != end())
+			iterator	it = lower_bound(value);
+			if (it != end() &&
+				is_inferior_in_key(it.base(), value) == false &&
+				is_superior_in_key(it.base(), value) == false)
 				++it;
 			return it;
 		}
