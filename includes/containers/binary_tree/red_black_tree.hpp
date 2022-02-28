@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/28 04:44:47 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 08:56:50 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,7 +307,7 @@ namespace ft
 					++it;
 				return it;
 			}
-
+			
 			// Operators
 			friend bool	operator==(const rbtree &lhs, const rbtree &rhs)
 			{

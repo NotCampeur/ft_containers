@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 12:05:24 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/28 04:42:10 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 08:55:59 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,14 @@
 # include "iterator.hpp"
 # include "iterator_traits.hpp"
 # include "iterator_tags.hpp"
+# include "bidirectional_iterator.hpp"
 # include "../../containers/binary_tree/red_black_tree_node.hpp"
 
 namespace ft
 {
+	template<class I>
+	struct const_red_black_tree_iterator;
+
 	template<class I>
 	struct red_black_tree_iterator : ft::iterator<ft::bidirectional_iterator_tag, I>
 	{
@@ -59,19 +63,10 @@ namespace ft
 
 		red_black_tree_iterator& operator--() { _ptr = prev_inorder(_ptr); return (*this); }
 		red_black_tree_iterator operator--(int) { red_black_tree_iterator tmp(*this); _ptr = prev_inorder(_ptr); return tmp; }
+		friend bool operator==(const red_black_tree_iterator<I>& lhs, const red_black_tree_iterator<I>& rhs) {	return (lhs._ptr == rhs._ptr); }
+		friend bool operator!=(const red_black_tree_iterator<I>& lhs, const red_black_tree_iterator<I>& rhs) { return (lhs._ptr != rhs._ptr); }
 	};
 
-	template<class I>
-	bool operator==(const red_black_tree_iterator<I>& lhs, const red_black_tree_iterator<I>& rhs)
-	{
-		return (lhs._ptr == rhs._ptr);
-	}
-
-	template<class I>
-	bool operator!=(const red_black_tree_iterator<I>& lhs, const red_black_tree_iterator<I>& rhs)
-	{
-		return (lhs._ptr != rhs._ptr);
-	}
 
 	template<class I>
 	struct const_red_black_tree_iterator : ft::iterator<ft::bidirectional_iterator_tag, I>
@@ -93,10 +88,15 @@ namespace ft
 			const_red_black_tree_iterator() : _ptr(NULL) {};
 			const_red_black_tree_iterator(pointer ptr) : _ptr(ptr) {};
 			const_red_black_tree_iterator(const const_red_black_tree_iterator<I>& other) : _ptr(other._ptr) {};
-			const_red_black_tree_iterator(const red_black_tree_iterator<I>& other) : _ptr(other._ptr) {};
+			const_red_black_tree_iterator(const ft::red_black_tree_iterator<I>& other) : _ptr(other._ptr) {};
 			~const_red_black_tree_iterator() {};
 
-			const_red_black_tree_iterator& operator=(const red_black_tree_iterator<I>& other)
+			// operator ft::red_black_tree_iterator<I>() const
+			// {
+			// 	return (ft::red_black_tree_iterator<I>(_ptr));
+			// }
+
+			const_red_black_tree_iterator& operator=(const ft::red_black_tree_iterator<I>& other)
 			{
 				_ptr = other._ptr;
 				return (*this);
@@ -123,17 +123,10 @@ namespace ft
 			const_red_black_tree_iterator& operator--() { _ptr = prev_inorder(_ptr); return (*this); }
 			const_red_black_tree_iterator operator--(int) { const_red_black_tree_iterator tmp(*this); _ptr = prev_inorder(_ptr); return tmp; }
 			
-			friend bool operator==(const const_red_black_tree_iterator& lhs, const const_red_black_tree_iterator& rhs)
-			{
-				return (lhs._ptr == rhs._ptr);
-			}
+			friend bool operator==(const const_red_black_tree_iterator& lhs, const const_red_black_tree_iterator& rhs) { return (lhs._ptr == rhs._ptr); }
+			friend bool operator!=(const const_red_black_tree_iterator<I>& lhs, const const_red_black_tree_iterator<I>& rhs) { return !(lhs == rhs); }
 	};
 
-	template<class I>
-	bool operator!=(const const_red_black_tree_iterator<I>& lhs, const const_red_black_tree_iterator<I>& rhs)
-	{
-		return !(lhs == rhs);
-	}
 
 	template<class It>
 	class rb_reverse_iterator : public

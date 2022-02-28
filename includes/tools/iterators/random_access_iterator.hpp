@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/07 15:52:16 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/03 15:40:45 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 08:52:34 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,20 +61,17 @@ namespace ft
 		random_access_iterator operator+(difference_type n) const { random_access_iterator tmp(*this); tmp += n; return tmp; }
 		random_access_iterator operator-(difference_type n) const { random_access_iterator tmp(*this); tmp -= n; return tmp; }
 		
-		friend difference_type operator-(const random_access_iterator & lhs, const random_access_iterator & rhs) { return lhs._ptr - rhs._ptr; }
-		friend random_access_iterator operator+(const random_access_iterator::difference_type & lhs, const random_access_iterator & rhs) { return lhs + rhs._ptr; }
-
+		friend difference_type operator-(const random_access_iterator<It> & lhs, const random_access_iterator<It> & rhs) { return lhs._ptr - rhs._ptr; }
+		friend random_access_iterator<It> operator+(const random_access_iterator<It>::difference_type & lhs, const random_access_iterator<It> & rhs) { return lhs + rhs._ptr; }
+		
 		friend bool operator==(const random_access_iterator<It> & lhs, const random_access_iterator<It> & rhs) { return lhs._ptr == rhs._ptr; }
 		friend bool operator<(const random_access_iterator<It> & lhs, const random_access_iterator<It> & rhs) { return lhs._ptr < rhs._ptr; }
+		friend bool operator!=(const random_access_iterator<It> & lhs, const random_access_iterator<It> & rhs) { return !(lhs == rhs); }
+		friend bool operator>(const random_access_iterator<It> & lhs, const random_access_iterator<It> & rhs) { return rhs < lhs; }
+		friend bool operator<=(const random_access_iterator<It> & lhs, const random_access_iterator<It> & rhs) { return !(lhs > rhs); }
+		friend bool operator>=(const random_access_iterator<It> & lhs, const random_access_iterator<It> & rhs) { return !(lhs < rhs); }
 	};
-	template<class It>
-	bool operator!=(const random_access_iterator<It> & lhs, const random_access_iterator<It> & rhs) { return !(lhs == rhs); }
-	template<class It>
-	bool operator>(const random_access_iterator<It> & lhs, const random_access_iterator<It> & rhs) { return rhs < lhs; }
-	template<class It>
-	bool operator<=(const random_access_iterator<It> & lhs, const random_access_iterator<It> & rhs) { return !(lhs > rhs); }
-	template<class It>
-	bool operator>=(const random_access_iterator<It> & lhs, const random_access_iterator<It> & rhs) { return !(lhs < rhs); }
+		
 
 	template<class It>
 	struct const_random_access_iterator : ft::iterator<random_access_iterator_tag, It>
@@ -125,15 +122,11 @@ namespace ft
 
 			friend bool operator==(const const_random_access_iterator<It> & lhs, const const_random_access_iterator<It> & rhs) { return lhs._ptr == rhs._ptr; }
 			friend bool operator<(const const_random_access_iterator<It> & lhs, const const_random_access_iterator<It> & rhs) { return lhs._ptr < rhs._ptr; }
+			friend bool operator!=(const const_random_access_iterator<It> & lhs, const const_random_access_iterator<It> & rhs) { return !(lhs == rhs); }
+			friend bool operator>(const const_random_access_iterator<It> & lhs, const const_random_access_iterator<It> & rhs) { return rhs < lhs; }
+			friend bool operator<=(const const_random_access_iterator<It> & lhs, const const_random_access_iterator<It> & rhs) { return !(lhs > rhs); }
+			friend bool operator>=(const const_random_access_iterator<It> & lhs, const const_random_access_iterator<It> & rhs) { return !(lhs < rhs); }
 	};
-	template<class It>
-	bool operator!=(const const_random_access_iterator<It> & lhs, const const_random_access_iterator<It> & rhs) { return !(lhs == rhs); }
-	template<class It>
-	bool operator>(const const_random_access_iterator<It> & lhs, const const_random_access_iterator<It> & rhs) { return rhs < lhs; }
-	template<class It>
-	bool operator<=(const const_random_access_iterator<It> & lhs, const const_random_access_iterator<It> & rhs) { return !(lhs > rhs); }
-	template<class It>
-	bool operator>=(const const_random_access_iterator<It> & lhs, const const_random_access_iterator<It> & rhs) { return !(lhs < rhs); }
 
 }
 
