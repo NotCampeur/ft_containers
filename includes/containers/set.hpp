@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 06:09:47 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 10:27:22 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,14 +147,14 @@ namespace ft
 				catch(...)
 				{
 				}
-				return ft::make_pair(iterator(_tree->get(value)), was_present);
+				return ft::make_pair(iterator(_tree->get(value)), !was_present);
 			}
 
 			// This insert take a hint, which is an iterator to a position in the set.
 			// It might be used to optimize the insertion.
 			iterator insert(iterator hint, const value_type& value)
 			{
-				if (hint->_value.first == value.first)
+				if (*hint == value)
 					return hint;
 				return insert(value).first;
 			}
@@ -180,7 +180,7 @@ namespace ft
 			{
 				try
 				{
-					_tree->remove(position->_value);
+					_tree->remove(*position);
 				}
 				catch(...)
 				{
