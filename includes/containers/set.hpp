@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 05:31:11 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 06:09:47 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@
 
 namespace ft
 {
-	template < class T, class Compare = std::less<T>,
-		class Alloc = std::allocator<T> >
+	template < class T, class Compare = std::less<T>, class Alloc = std::allocator<T> >
 	class set
 	{
 		public:
@@ -304,35 +303,35 @@ namespace ft
 				return *lhs._tree < *rhs._tree;
 			}
 	};
-	template <class Key, class T, class Compare, class Allocator>
+	template <class T, class Compare, class Allocator>
 	bool operator!=(const set<T, Compare, Allocator>& lhs,
 					const set<T, Compare, Allocator>& rhs)
 	{
 		return !(lhs == rhs);
 	}
 
-	template <class Key, class T, class Compare, class Allocator>
+	template <class T, class Compare, class Allocator>
 	bool operator>(const set<T, Compare, Allocator>& lhs,
 					const set<T, Compare, Allocator>& rhs)
 	{
 		return rhs < lhs;
 	}
 
-	template <class Key, class T, class Compare, class Allocator>
+	template <class T, class Compare, class Allocator>
 	bool operator<=(const set<T, Compare, Allocator>& lhs,
 					const set<T, Compare, Allocator>& rhs)
 	{
 		return !(rhs < lhs);
 	}
 
-	template <class Key, class T, class Compare, class Allocator>
+	template <class T, class Compare, class Allocator>
 	bool operator>=(const set<T, Compare, Allocator>& lhs,
 					const set<T, Compare, Allocator>& rhs)
 	{
 		return !(lhs < rhs);
 	}
 
-	template <class Key, class T, class Compare, class Allocator>
+	template <class T, class Compare, class Allocator>
 	void swap(set<T, Compare, Allocator>& lhs,
 				set<T, Compare, Allocator>& rhs)
 	{
