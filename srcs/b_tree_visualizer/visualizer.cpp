@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 02:29:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/25 00:54:43 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 04:53:34 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	input_manager(lcppgl::Context & context)
 // Will calcul the offset between the root nodes and his children.
 // The offset will be used to space out the nodes.
 // behavior: will return the offset between the root and the leftmost node.
-int		calcul_offset(const RedBlackTreeNode<int> * tree)
+int		calcul_offset(const ft::rbtree<int>::node_type * tree)
 {
 	int		offset(0);
 
@@ -94,7 +94,7 @@ int		to_int(const std::string & str)
 }
 
 // Calcul the how much nodes separate the node from the farthest leave.
-int		deepest(const RedBlackTreeNode<int> * node)
+int		deepest(const ft::rbtree<int>::node_type * node)
 {
 	int		result(0);
 
@@ -107,7 +107,7 @@ int		deepest(const RedBlackTreeNode<int> * node)
 	return (result + 1);
 }
 
-void	draw_node(lcppgl::Context & context, const RedBlackTreeNode<int> *node
+void	draw_node(lcppgl::Context & context, const ft::rbtree<int>::node_type *node
 				, int depth, int offset)
 {
 	// lcppgl::Writer writer(context, "/Users/ldutriez/.brew/Library/Homebrew/vendor/portable-ruby/2.6.8/lib/ruby/2.6.0/rdoc/generator/template/darkfish/fonts/Lato-Regular.ttf", 20);
@@ -121,9 +121,9 @@ void	draw_node(lcppgl::Context & context, const RedBlackTreeNode<int> *node
 								, 50, 25);
 								// , nb_width, 25);
 
-	if (node->_color == red)
+	if (node->_color == ft::red)
 		node_color = lcppgl::tools::Color(255, 0, 0, 255);
-	else if (node->_color == black)
+	else if (node->_color == ft::black)
 		node_color = lcppgl::tools::Color(0, 0, 0, 255);
 	// writer.put_text_and_bg(s_value, pos, writing_color, node_color);
 	drawer.put_filled_rect(pos, node_color);
@@ -134,7 +134,7 @@ void	draw_node(lcppgl::Context & context, const RedBlackTreeNode<int> *node
 //			the offset will be used to space out the nodes.
 //			the tree will be printed from the leftmost to the rightmost node.
 //			the leftmost node will be at x = 0.
-void	draw_tree(lcppgl::Context & context, const RedBlackTreeNode<int> *node, bool first_call)
+void	draw_tree(lcppgl::Context & context, const ft::rbtree<int>::node_type *node, bool first_call)
 {
 	static int	offset(1);
 	static int	depth(1);
@@ -201,7 +201,7 @@ void	welcome_message(lcppgl::Context & context)
 void	tree_rendering(lcppgl::Context & context)
 {
 	lcppgl::Printer render(context);
-	static rbtree<int> test;
+	static ft::rbtree<int> test;
 	static std::vector<std::string> proposition;
 	// static int nb=0;
 	// context.set_fps_limit(1);

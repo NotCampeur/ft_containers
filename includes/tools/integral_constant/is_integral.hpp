@@ -33,11 +33,6 @@ namespace ft
 	struct is_integral<bool> : true_type {};
 	template <>
 	struct is_integral<char> : true_type {};
-	// Thoses seems undefined in the standard
-	// template <>
-	// struct is_integral<char16_t> : true_type {};
-	// template <>
-	// struct is_integral<char32_t> : true_type {};
 	template <>
 	struct is_integral<wchar_t> : true_type {};
 	template <>

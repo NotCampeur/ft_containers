@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 04:30:29 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 04:43:47 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ namespace ft
 			typedef typename allocator_type::pointer				pointer;
 			typedef typename allocator_type::const_pointer			const_pointer;
 
-			typedef rbtree<value_type, key_compare, allocator_type>	rbtree_type;
+			typedef ft::rbtree<value_type, key_compare, allocator_type>	rbtree_type;
 			typedef typename rbtree_type::node_type					node_type;
 			typedef std::allocator<rbtree_type>						rbtree_allocator_type;
 			
@@ -95,7 +95,7 @@ namespace ft
 				}
 			}
 
-			// The copy constructor will call the copy constructor of the rbtree.
+			// The copy constructor will call the copy constructor of the ft::rbtree.
 			// Which will do a deep copy of the tree.
 			map(const map& other)
 			: _tree(NULL)

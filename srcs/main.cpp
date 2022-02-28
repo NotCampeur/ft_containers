@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 02:04:06 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 04:45:58 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void	tree_test(void)
 {
 	Logger() << "======================={Tree test}=======================";
 	#ifdef DIY
-	rbtree<int> tree;
+	ft::rbtree<int> tree;
 	
 	try
 	{
@@ -136,8 +136,8 @@ void	tree_test(void)
 		std::cerr << e.what() << '\n';
 	}
 	
-	rbtree<int>::iterator it = tree.begin();
-	rbtree<int>::iterator ite = tree.end();
+	ft::rbtree<int>::iterator it = tree.begin();
+	ft::rbtree<int>::iterator ite = tree.end();
 	Logger() << "inorder: " << tree.size();
 	// print address of it and ite
 	for (int i(0); it != ite; it++)
@@ -146,8 +146,8 @@ void	tree_test(void)
 		i++;
 	}
 		
-	rbtree<int>::reverse_iterator rit = tree.rbegin();
-	rbtree<int>::reverse_iterator rite = tree.rend();
+	ft::rbtree<int>::reverse_iterator rit = tree.rbegin();
+	ft::rbtree<int>::reverse_iterator rite = tree.rend();
 	Logger() << "reverse inorder: " << tree.size();
 	// print address of rit and rite
 	for (int i(0); rit != rite; rit++)
