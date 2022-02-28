@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/28 16:25:45 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 18:40:07 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -360,7 +360,7 @@ namespace ft
 					return;
 				RedBlackTreeNode*	replacement = _find_replacement(node_to_del);
 				bool				is_r_n_black = _are_both_black(replacement, node_to_del);
-				RedBlackTreeNode*	parent = node_to_del->_parent;
+				// RedBlackTreeNode*	parent = node_to_del->_parent;
 			
 				if (replacement == NULL)
 				{
@@ -412,13 +412,13 @@ namespace ft
 					{
 						// Detach node_to_del from tree and move replacement up
 						if (node_to_del->_parent->_left == node_to_del)
-							parent->_left = replacement;
+							node_to_del->_parent->_left = replacement;
 						else
-							parent->_right = replacement;
+							node_to_del->_parent->_right = replacement;
+						replacement->_parent = node_to_del->_parent;
 						alloc.destroy(node_to_del);
 						alloc.deallocate(node_to_del, 1);
 						// delete node_to_del;
-						replacement->_parent = parent;
 						if (is_r_n_black)
 							// replacement and node_to_del both black, fix double black at replacement
 							_resolve_double_black(replacement);

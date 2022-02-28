@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/28 11:03:01 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/01 00:01:08 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,12 +234,25 @@ namespace ft
 			// Remove a node from the tree by calling the remove function of the root.
 			void	remove(const T& value)
 			{
-				if (_root != iterator(NULL))
+				if (_root.base() != NULL)
 				{
 					try
 					{
-						_root = _root.base()->remove(value, _alloc);
-						_begin = static_cast<iterator>(leftmost(_root.base()));
+						if (_root.base() != _limit && _root.base()->_left == NULL &&
+							_root.base()->_right == NULL && _root.base()->_right == NULL &&
+							is_superior_in_key(_root.base(), value) == false &&
+							is_inferior_in_key(_root.base(), value) == false)
+						{
+							_alloc.destroy(_root.base());
+							_alloc.deallocate(_root.base(), 1);
+							_root = iterator(NULL);
+						}
+						else
+							_root = _root.base()->remove(value, _alloc);
+						if (_root.base() != NULL)
+							_begin = static_cast<iterator>(leftmost(_root.base()));
+						else
+							_begin = iterator(NULL);
 						--_size;
 						assign_size(*_limit->_value, _size);
 						_limit->_parent = _root.base();
