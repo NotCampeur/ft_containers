@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:13:05 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/26 04:37:30 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 05:25:30 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,12 @@ int	input_nbr_box(lcppgl::Context & context, const char *text
 	#  include <map.hpp>
 	#  include <stack.hpp>
 	#  include <vector.hpp>
+	#  include <set.hpp>
 # else
 	#  include <map>
 	#  include <stack>
 	#  include <vector>
+	#  include <set>
 	namespace ft = std;
 # endif
 
