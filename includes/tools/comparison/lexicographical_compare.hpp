@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 19:29:43 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/27 23:32:54 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 10:09:42 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ namespace ft
 	{
 		while (first1 != last1)
 		{
-			if (*first1 > *first2 || first2 == last2)
+			if (first2 == last2 || *first1 > *first2)
 				return false;
 			else if (*first1 < *first2)
 				return true;
