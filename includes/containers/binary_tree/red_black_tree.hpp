@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/28 08:56:50 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 11:03:01 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ namespace ft
 
 			iterator				_root;
 			iterator				_begin;
-			iterator				_last;
 			
 			size_type				_size;
 			
@@ -106,7 +105,7 @@ namespace ft
 		public:
 			rbtree()
 			: _alloc(), _limit(NULL), _root(NULL)
-			, _begin(NULL), _last(NULL)
+			, _begin(NULL)
 			, _size(0)
 			{
 				_limit = _alloc.allocate(1);
@@ -116,7 +115,7 @@ namespace ft
 			
 			rbtree(const rbtree &other)
 			: _alloc(), _limit(NULL), _root(NULL)
-			, _begin(NULL), _last(NULL)
+			, _begin(NULL)
 			, _size(0)
 			{
 				_limit = _alloc.allocate(1);
@@ -159,7 +158,6 @@ namespace ft
 				_destroy_tree(_root.base());
 				_root = NULL;
 				_begin = NULL;
-				_last = NULL;
 				_size = 0;
 				assign_size(*_limit->_value, _size);
 			}
@@ -171,9 +169,6 @@ namespace ft
 			
 			iterator		begin() {return (_begin.base() == NULL) ? iterator(_limit) : _begin;}
 			const_iterator	begin() const {return (_begin.base() == NULL) ? const_iterator(_limit) : const_iterator(_begin);}
-			
-			iterator		last() {return (_last.base() == NULL) ? iterator(_limit) : _last;}
-			const_iterator	last() const {return (_last.base() == NULL) ? const_iterator(_limit) : const_iterator(_last);}
 			
 			iterator		end() {return iterator(_limit);}
 			const_iterator	end() const {return const_iterator(_limit);}
@@ -199,7 +194,6 @@ namespace ft
 					_alloc.construct(_root.base(), ft::RedBlackTreeNode<T, Compare, Alloc>(value));
 					_root.base()->set_limit(_limit);
 					_begin = _root;
-					_last = _root;
 					_size = 1;
 					assign_size(*_limit->_value, _size);
 					_limit->_parent = _root.base();
@@ -208,7 +202,6 @@ namespace ft
 				{
 					_root = _root.base()->insert(value, _limit, _alloc);
 					_begin = static_cast<iterator>(leftmost(_root.base()));
-					_last = static_cast<iterator>(rightmost(_root.base()));
 					++_size;
 					assign_size(*_limit->_value, _size);
 					_limit->_parent = _root.base();
@@ -220,14 +213,10 @@ namespace ft
 			{
 				if (_root == iterator(NULL))
 				{
-					_limit = _alloc.allocate(1);
-					_alloc.construct(_limit, ft::RedBlackTreeNode<T, Compare, Alloc>());
-					_limit->set_limit(_limit);
 					_root = _alloc.allocate(1);
 					_alloc.construct(_root.base(), node._value);
 					_root.base()->set_limit(_limit);
 					_begin = _root;
-					_last = _root;
 					_size = 1;
 					assign_size(*_limit->_value, _size);
 					_limit->_parent = _root.base();
@@ -236,7 +225,6 @@ namespace ft
 				{
 					_root = _root.base()->insert(node._value, _limit, _alloc);
 					_begin = static_cast<iterator>(leftmost(_root.base()));
-					_last = static_cast<iterator>(rightmost(_root.base()));
 					++_size;
 					assign_size(*_limit->_value, _size);
 					_limit->_parent = _root.base();
@@ -252,7 +240,6 @@ namespace ft
 					{
 						_root = _root.base()->remove(value, _alloc);
 						_begin = static_cast<iterator>(leftmost(_root.base()));
-						_last = static_cast<iterator>(rightmost(_root.base()));
 						--_size;
 						assign_size(*_limit->_value, _size);
 						_limit->_parent = _root.base();
@@ -283,7 +270,6 @@ namespace ft
 			{
 				std::swap(_root, other._root);
 				std::swap(_begin, other._begin);
-				std::swap(_last, other._last);
 				std::swap(_limit, other._limit);
 				std::swap(_size, other._size);
 			}

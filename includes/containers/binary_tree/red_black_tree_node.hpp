@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/28 04:41:51 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 10:54:11 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ namespace ft
 
 		private:
 
-			allocator_type				_alloc;
 			node_pointer				_limit;
 
 		public:
@@ -54,30 +53,38 @@ namespace ft
 			: _parent(NULL), _left(NULL), _right(NULL)
 			, _value(NULL), _color(black), _limit(NULL)
 			{
-				_value = _alloc.allocate(1);
-				_alloc.construct(_value, T());
+				allocator_type alloc;
+				
+				_value = alloc.allocate(1);
+				alloc.construct(_value, T());
 			}
 
 			RedBlackTreeNode(const T& value, node_color color = black)
 			: _parent(NULL), _left(NULL), _right(NULL)
 			, _value(NULL), _color(color), _limit(NULL)
 			{
-				_value = _alloc.allocate(1);
-				_alloc.construct(_value, value);
+				allocator_type alloc;
+				
+				_value = alloc.allocate(1);
+				alloc.construct(_value, value);
 			}
 
 			RedBlackTreeNode(const RedBlackTreeNode& other)
 			: _parent(other._parent), _left(other._left), _right(other._right)
 			, _value(NULL), _color(other._color), _limit(NULL)
 			{
-				_value = _alloc.allocate(1);
-				_alloc.construct(_value, *other._value);
+				allocator_type alloc;
+				
+				_value = alloc.allocate(1);
+				alloc.construct(_value, *other._value);
 			}
 
 			~RedBlackTreeNode()
 			{
-				_alloc.destroy(_value);
-				_alloc.deallocate(_value, 1);
+				allocator_type alloc;
+
+				alloc.destroy(_value);
+				alloc.deallocate(_value, 1);
 			}
 
 			RedBlackTreeNode&				operator=(const RedBlackTreeNode& other)
@@ -424,9 +431,6 @@ namespace ft
 				}
 				// node_to_del has 2 children, swap values with _successor and recurse
 				std::swap(node_to_del->_value, replacement->_value);
-				// node_to_del->_value = node_to_del->_value ^ replacement->_value;
-				// replacement->_value = node_to_del->_value ^ replacement->_value;
-				// node_to_del->_value = node_to_del->_value ^ replacement->_value;
 				_delete_node(replacement, alloc);
 			}
 	
