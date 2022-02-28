@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 04:45:58 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/28 06:17:01 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,19 @@ void	map_test(void)
 	map_operations_test();
 	map_relational_operators_test();
 }
+
+void	set_test(void)
+{
+	Logger() << "======================={Set test}=======================";
+	set_allocator_test();
+	set_capacity_test();
+	set_iterators_test();
+	set_limit_test();
+	set_modifiers_test();
+	set_observers_test();
+	set_operations_test();
+	set_relational_operators_test();
+}
 #endif
 
 void	tree_test(void)
@@ -186,6 +199,7 @@ int main(int argc, char** argv)
 		stack_test();
 		pair_test();
 		map_test();
+		set_test();
 	#elif TREE_VISUALIZER
 		tree_test();
 		visualize_b_tree();

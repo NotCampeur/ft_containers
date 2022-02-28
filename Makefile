@@ -56,11 +56,21 @@ MAP_TEST =		map_allocator_test.cpp \
 				map_operations_test.cpp \
 				map_relational_operators_test.cpp
 
+SET_TEST =		set_allocator_test.cpp \
+				set_capacity_test.cpp \
+				set_iterators_test.cpp \
+				set_limit_test.cpp \
+				set_modifiers_test.cpp \
+				set_observers_test.cpp \
+				set_operations_test.cpp \
+				set_relational_operators_test.cpp
+
 SRC 	=		main.cpp \
 				$(VECTOR_TEST) \
 				$(STACK_TEST) \
 				$(PAIR_TEST) \
-				$(MAP_TEST)
+				$(MAP_TEST) \
+				$(SET_TEST)
 
 VISUALIZER_SRC =	main.cpp \
 					visualizer.cpp \
