@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/03 06:52:18 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 07:49:22 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,10 @@ namespace ft
 	
 			void		resize(size_type n, value_type val = value_type())
 			{
-				reserve(n);
+				if (n < _size * 2 && n > _capacity)
+					reserve(_size * 2);
+				else
+					reserve(n);
 				if (n > _size)
 				{
 					for (size_type i = _size; i < n; i++)
