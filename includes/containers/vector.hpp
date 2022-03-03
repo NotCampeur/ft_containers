@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/03 05:53:49 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 06:52:18 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,37 +103,24 @@ namespace ft
 			{
 				size_type	old_size = _size;
 				std::ptrdiff_t n = ft::distance(first, last);
+				std::ptrdiff_t dist = ft::distance(begin(), pos);
 				
 				if (n == 0)
 					return ;
-				if (pos == end())
-				{
-					if (_size +  n > _capacity && _size * 2 > _size + n)
-						reserve(_size * 2);
-					else
-						reserve(_size + n);
-					for (std::ptrdiff_t i = 0; first != last; first++)
-					{
-						_alloc.construct(&_array[old_size + i], *first);
-						i++;
-						_size++;
-					}
-				}
+				if (_size +  n > _capacity && _size * 2 > _size + n)
+					reserve(_size * 2);
 				else
+					reserve(_size + n);			
+				for (std::ptrdiff_t i = old_size - 1; i >= dist; i--)
 				{
-					std::ptrdiff_t dist = ft::distance(begin(), pos);
-					if (_size +  n > _capacity && _size * 2 > _size + n)
-						reserve(_size * 2);
-					else
-						reserve(_size + n);			
-					for (std::ptrdiff_t i = old_size - 1; i >= dist; i--)
-						_alloc.construct(&_array[i + n], _array[i]);
-					for (std::ptrdiff_t i = dist; first != last; first++)
-					{
-						_alloc.construct(&_array[i], *first);
-						i++;
-						_size++;
-					}
+					_alloc.construct(&_array[i + n], _array[i]);
+					_alloc.destroy(&_array[i]);
+				}
+				for (std::ptrdiff_t i = dist; first != last; first++)
+				{
+					_alloc.construct(&_array[i], *first);
+					i++;
+					_size++;
 				}
 			}
 			
@@ -172,7 +159,8 @@ namespace ft
 	
 			vector &operator=(const vector& x)
 			{
-				assign(x.begin(), x.end());
+				if (this != &x)
+					assign(x.begin(), x.end());
 				return *this;
 			}
 		// DESTRUCTOR
