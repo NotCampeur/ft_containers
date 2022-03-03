@@ -12,6 +12,9 @@ git clone git@github.com:NotCampeur/ft_containers.git && cd ./ft_containers/ && 
 ## Content
 * ft::vector, unit tests and tools needed by it. 
 * ft::stack, unit tests and tools needed by it.
+* ft::map, unit tests and tools needed by it.
+* ft::set, unit tests and tools needed by it.  
+* A red black tree visualizer made with SDL2.
 
 ### :zzz: [TODO](./TODO.txt) :zzz:    
 
