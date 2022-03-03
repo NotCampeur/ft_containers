@@ -208,7 +208,7 @@ test:			$(NAME)
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
 				elif [ "$(DEBUG)" = "gdb" ]; then \
-					gdb ./$< $(SEED); \
+					gdb -tui ./$< $(SEED); \
 				else \
 					./$< $(SEED); \
 				fi
@@ -219,7 +219,7 @@ diy_test:		$(DIY_NAME)
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
 				elif [ "$(DEBUG)" = "gdb" ]; then \
-					gdb ./$< $(SEED); \
+					gdb -tui ./$< $(SEED); \
 				else \
 					./$< $(SEED); \
 				fi
@@ -230,7 +230,7 @@ visualizer_test:	$(VISUALIZER_NAME)
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
 				elif [ "$(DEBUG)" = "gdb" ]; then \
-					gdb ./$< $(SEED); \
+					gdb -tui ./$< $(SEED); \
 				else \
 					./$< $(SEED); \
 				fi
@@ -242,8 +242,8 @@ test_both:		$(NAME) $(DIY_NAME)
 					valgrind --leak-check=full --show-leak-kinds=all ./$(NAME) $(SEED); \
 					valgrind --leak-check=full --show-leak-kinds=all ./$(DIY_NAME) $(SEED); \
 				elif [ "$(DEBUG)" = "gdb" ]; then \
-					gdb ./$(NAME) $(SEED); \
-					gdb ./$(DIY_NAME) $(SEED); \
+					gdb -tui ./$(NAME) $(SEED); \
+					gdb -tui ./$(DIY_NAME) $(SEED); \
 				else \
 					./$(NAME) $(SEED); \
 					./$(DIY_NAME) $(SEED); \
