@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 10:27:22 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 22:33:52 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ namespace ft
 	class set
 	{
 		public:
-			typedef T 												key_type;
-			typedef T					 							value_type;
+			typedef T												key_type;
+			typedef T				 								value_type;
 			typedef Compare 										key_compare;
 			typedef Compare 										value_compare;
 			typedef Alloc											allocator_type;
@@ -43,10 +43,10 @@ namespace ft
 			typedef std::allocator<rbtree_type>						rbtree_allocator_type;
 			
 		public:
-			typedef typename rbtree_type::iterator					iterator;
+			typedef typename rbtree_type::const_iterator			iterator;
 			typedef typename rbtree_type::const_iterator			const_iterator;
 
-			typedef rb_reverse_iterator< iterator >					reverse_iterator;
+			typedef rb_reverse_iterator< const_iterator >			reverse_iterator;
 			typedef rb_reverse_iterator< const_iterator >			const_reverse_iterator;
 
 			typedef std::ptrdiff_t									difference_type;
@@ -204,15 +204,17 @@ namespace ft
 			// Will erase the range of elements.
 			void erase(iterator first, iterator last)
 			{
-				for (; first != last; ++first)
+				ft::vector<key_type>						temp;
+				typename ft::vector<key_type>::size_type	i(0);
+
+				if (first == end() && first != last)
+					first++;
+				for (; first != last; first++)
+					temp.push_back(*first);
+				while (i < temp.size())
 				{
-					try
-					{
-						_tree->remove(*first);
-					}
-					catch(...)
-					{
-					}
+					erase(temp[i]);
+					++i;
 				}
 			}
 
@@ -294,13 +296,15 @@ namespace ft
 			friend bool operator==(const set<T, Compare, Alloc>& lhs,
 							const set<T, Compare, Alloc>& rhs)
 			{
-				return *lhs._tree == *rhs._tree;
+				if (lhs.size() != rhs.size())
+					return false;
+				return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
 			}
 
 			friend bool operator<(const set<T, Compare, Alloc>& lhs,
 							const set<T, Compare, Alloc>& rhs)
 			{
-				return *lhs._tree < *rhs._tree;
+				return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 			}
 	};
 	template <class T, class Compare, class Allocator>
