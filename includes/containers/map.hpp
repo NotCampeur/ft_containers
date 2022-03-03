@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 17:22:59 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 09:42:01 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,13 +322,16 @@ namespace ft
 			friend bool operator==(const map<Key, T, Compare, Alloc>& lhs,
 							const map<Key, T, Compare, Alloc>& rhs)
 			{
-				return *lhs._tree == *rhs._tree;
+				if (lhs.size() != rhs.size())
+					return false;
+				return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+				// return *lhs._tree == *rhs._tree;
 			}
 
 			friend bool operator<(const map<Key, T, Compare, Alloc>& lhs,
 							const map<Key, T, Compare, Alloc>& rhs)
 			{
-				return *lhs._tree < *rhs._tree;
+				return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 			}
 	};
 	template <class Key, class T, class Compare, class Allocator>
