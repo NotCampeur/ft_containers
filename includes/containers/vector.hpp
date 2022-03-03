@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/03 07:49:22 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 07:55:23 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ namespace ft
 
 			// Copy constructor
 			vector (const vector& x)
-			: _alloc(x._alloc), _array(NULL), _size(x._size), _capacity(x._capacity)
+			: _alloc(x._alloc), _array(NULL), _size(x._size), _capacity(x._size)
 			{
 				_array = _alloc.allocate(_capacity);
 				for (size_type i = 0; i < _size; i++)
