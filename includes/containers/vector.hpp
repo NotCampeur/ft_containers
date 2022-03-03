@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/03 03:57:50 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 05:53:49 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,28 +84,18 @@ namespace ft
 
 				if (n == 0)
 					return ;
-				if (pos == end())
-				{
-					if (_size +  n > _capacity && _size * 2 > _size + n)
-						reserve(_size * 2);
-					else
-						reserve(_size + n);
-					for (size_type i = 0; i < n; i++)
-						_alloc.construct(&_array[old_size + i], val);
-					_size += n;
-				}
+				if (_size +  n > _capacity && _size * 2 > _size + n)
+					reserve(_size * 2);
 				else
+					reserve(_size + n);
+				for (std::ptrdiff_t i = old_size - 1; i >= pos_n; i--)
 				{
-					if (_size +  n > _capacity && _size * 2 > _size + n)
-						reserve(_size * 2);
-					else
-						reserve(_size + n);
-					for (std::ptrdiff_t i = old_size - 1; i >= pos_n; i--)
-						_alloc.construct(&_array[i + n], _array[i]);
-					for (size_type i = 0; i < n; i++)
-						_alloc.construct(&_array[pos_n + i], val);
-					_size += n;
+					_alloc.construct(&_array[i + n], _array[i]);
+					_alloc.destroy(&_array[i]);
 				}
+				for (size_type i = 0; i < n; i++)
+					_alloc.construct(&_array[pos_n + i], val);
+				_size += n;
 			}
 
 			template <class InputIterator>
