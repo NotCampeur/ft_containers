@@ -1,9 +1,9 @@
-DIY_containers
+ft_containers
 containers
 visualizer
 !includes/containers
 objs/*.o
-diy_objs/*.o
+ft_objs/*.o
 visualizer_objs/*.o
 logs/*.log
 .vscode

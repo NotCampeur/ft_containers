@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/03/03 06:42:57 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 22:56:14 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ void	getting_started(int argc, char *argv[])
 		throw ;
 	}
 	srand(seed);
-	#ifdef DIY
-		Logger() << "DIY testing with seed : " << seed << "\n";
+	#ifdef FT
+		Logger() << "FT testing with seed : " << seed << "\n";
 	#else
 		Logger() << "STL testing with seed : " << seed << "\n";
 	#endif
@@ -97,7 +97,7 @@ void	map_test(void)
 	map_capacity_test();
 	map_element_access_test();
 	map_iterators_test();
-	// map_limit_test();
+	map_limit_test();
 	map_modifiers_test();
 	map_observers_test();
 	map_operations_test();
@@ -110,7 +110,7 @@ void	set_test(void)
 	set_allocator_test();
 	set_capacity_test();
 	set_iterators_test();
-	// set_limit_test();
+	set_limit_test();
 	set_modifiers_test();
 	set_observers_test();
 	set_operations_test();
@@ -121,7 +121,7 @@ void	set_test(void)
 void	tree_test(void)
 {
 	Logger() << "======================={Tree test}=======================";
-	#ifdef DIY
+	#ifdef FT
 	ft::rbtree<int> tree;
 	
 	try

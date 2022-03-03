@@ -6,22 +6,12 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 13:07:06 by hbaudet           #+#    #+#             */
-/*   Updated: 2022/03/03 03:25:16 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 22:42:31 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "test_utils.hpp"
-// #include "VECTOR_UC.HPP"
-// #include <vector>
 #include <main.hpp>
 
-// #ifndef STD
-// # define NAMESPACE ft
-// #else
-// # define NAMESPACE std
-// #endif
-
-// using namespace NAMESPACE;
 #include <sstream>
 
 std::string	to_string(int nb)
@@ -34,6 +24,8 @@ std::string	to_string(int nb)
 
 void vector_string_test()
 {
+	Logger() << "\n----------(mazoise_vector_string_test)----------";
+	
 	ft::vector<std::string> JOHN;
 	ft::vector<std::string> BOB(5, "Hello");
 	Logger() << "BOB(5, 8) : ";

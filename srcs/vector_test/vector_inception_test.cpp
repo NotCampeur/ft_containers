@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 13:07:06 by hbaudet           #+#    #+#             */
-/*   Updated: 2022/03/03 06:44:00 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 22:42:50 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void vector_inception_test()
 {
+	Logger() << "\n----------(mazoise_vector_inception_test)----------";
+	
 	ft::vector<int>			test(3, 3);
 
 	Logger() << "self assignation test\n";

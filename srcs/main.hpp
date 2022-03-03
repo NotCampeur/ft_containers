@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:13:05 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/03/03 06:43:14 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 22:56:14 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	input_nbr_box(lcppgl::Context & context, const char *text
 					, unsigned long max_size_entry);
 # endif
 
-# ifdef DIY
+# ifdef FT
 	#  include <map.hpp>
 	#  include <stack.hpp>
 	#  include <vector.hpp>

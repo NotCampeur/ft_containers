@@ -1,5 +1,5 @@
 NAME	=			containers
-DIY_NAME	=		DIY_containers
+FT_NAME	=			ft_containers
 VISUALIZER_NAME	=	visualizer
 
 CC 		=		c++
@@ -25,7 +25,7 @@ LCPPGL = 		libs/LCPPGL/liblcppgl.a
 
 
 OBJ_DIR = 				objs
-DIY_OBJ_DIR = 			diy_objs
+FT_OBJ_DIR = 			ft_objs
 VISUALIZER_OBJ_DIR = 	visualizer_objs
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
@@ -79,8 +79,7 @@ VISUALIZER_SRC =	main.cpp \
 					input_nbr_box.cpp
 
 OBJ	=				$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
-DIY_OBJ	=			$(addprefix $(DIY_OBJ_DIR)/, $(SRC:%.cpp=%.o))
-# VISUALIZER_OBJ =	$(addprefix $(VISUALIZER_OBJ_DIR)/, $(SRC:%.cpp=%.o))
+FT_OBJ	=			$(addprefix $(FT_OBJ_DIR)/, $(SRC:%.cpp=%.o))
 VISUALIZER_OBJ =	$(addprefix $(VISUALIZER_OBJ_DIR)/, $(VISUALIZER_SRC:%.cpp=%.o))
 
 #Compilation flag
@@ -144,10 +143,10 @@ useless := $(shell echo "_______________________________________________________
 				echo "$(shell date) : \c" >> $(BUILD_LOG); \
 				echo "building with : [$(MAKECMDGOALS)]" >> $(BUILD_LOG))
 
-all:			$(NAME) $(DIY_NAME)
+all:			$(NAME) $(FT_NAME)
 				@echo "$(_PURPLE)Usage:"
 				@echo "Type $(_BLUE)make test SEED=NUMBER$(_PURPLE) to create a binary testing STL containers."
-				@echo "Type $(_BLUE)make diy_test SEED=NUMBER$(_PURPLE) to create a binary testing homemade containers."
+				@echo "Type $(_BLUE)make ft_test SEED=NUMBER$(_PURPLE) to create a binary testing homemade containers."
 				@echo "Type $(_BLUE)make test_both SEED=NUMBER$(_PURPLE) to create a binary testing both containers and a diff.log file."
 				@echo "Add $(_BLUE)DEBUG=fs$(_PURPLE) to compile with fsanitize and debug flags."
 				@echo "Add $(_BLUE)DEBUG=vl$(_PURPLE) to compile with valgrind and debug flags."
@@ -165,10 +164,13 @@ all:			$(NAME) $(DIY_NAME)
 					exit $(ret_status); \
 				fi
 				@echo "\n$(_BLUE)___$(notdir $@) Setting___\n$(_WHITE)"
-				@make --no-print-directory -C $(dir $@)
+				@make --no-print-directory -C $(dir $@) DEBUG=$(DEBUG)
 
 re-install:
-				@$(foreach dir, $(LIB_DIR), make --no-print-directory -C $(dir) re ; )
+				@$(foreach dir, $(LIB_DIR), make --no-print-directory -C $(dir) DEBUG=$(DEBUG) re ; )
+
+visualizer_re-install:
+				@$(foreach dir, $(VISUALIZER_LIB_DIR), make --no-print-directory -C $(dir) DEBUG=$(DEBUG) re ; )
 
 $(NAME):		$(LDLOGGER) $(OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
@@ -181,10 +183,10 @@ $(NAME):		$(LDLOGGER) $(OBJ)
 					exit $(ret_status); \
 				fi
 
-$(DIY_NAME):	$(LDLOGGER) $(DIY_OBJ)
+$(FT_NAME):		$(LDLOGGER) $(FT_OBJ)
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
-				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) $(LFLAGS) -o $@ " >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(DIY_OBJ) $(LFLAGS) -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
+				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ; echo "$(CC) $(CFLAGS) $(IFLAGS) $(FT_OBJ) $(LFLAGS) -o $@ " >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) $(IFLAGS) $(FT_OBJ) $(LFLAGS) -o $@ >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
@@ -214,7 +216,7 @@ test:			$(NAME)
 				fi
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
-diy_test:		$(DIY_NAME)
+ft_test:		$(FT_NAME)
 				@echo "-----\nTesting $(_YELLOW)$<$(_WHITE) ... \c"
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$< $(SEED); \
@@ -236,19 +238,19 @@ visualizer_test:	$(VISUALIZER_NAME)
 				fi
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
-test_both:		$(NAME) $(DIY_NAME)
-				@echo "-----\nTesting $(_YELLOW)$(NAME)$(_WHITE) and $(_YELLOW)$(DIY_NAME)$(_WHITE) ... \c"
+test_both:		$(NAME) $(FT_NAME)
+				@echo "-----\nTesting $(_YELLOW)$(NAME)$(_WHITE) and $(_YELLOW)$(FT_NAME)$(_WHITE) ... \c"
 				@if [ "$(DEBUG)" = "vl" ]; then \
 					valgrind --leak-check=full --show-leak-kinds=all ./$(NAME) $(SEED); \
-					valgrind --leak-check=full --show-leak-kinds=all ./$(DIY_NAME) $(SEED); \
+					valgrind --leak-check=full --show-leak-kinds=all ./$(FT_NAME) $(SEED); \
 				elif [ "$(DEBUG)" = "gdb" ]; then \
 					gdb -tui ./$(NAME) $(SEED); \
-					gdb -tui ./$(DIY_NAME) $(SEED); \
+					gdb -tui ./$(FT_NAME) $(SEED); \
 				else \
 					./$(NAME) $(SEED); \
-					./$(DIY_NAME) $(SEED); \
+					./$(FT_NAME) $(SEED); \
 				fi
-				@diff --expand-tabs --ignore-tab-expansion --side-by-side --left-column logs/DIY_containers.log logs/containers.log > logs/diff.log || true
+				@diff --expand-tabs --ignore-tab-expansion --side-by-side --left-column logs/$(FT_NAME).log logs/$(NAME).log > logs/diff.log || true
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 				@echo "$(_YELLOW)logs/diff.log$(_PURPLE) has been created.$(_WHITE)"
 
@@ -273,12 +275,12 @@ $(OBJ_DIR)/%.o : 	%.cpp
 					exit $(ret_status); \
 				fi
 
-$(DIY_OBJ_DIR)/%.o : 	%.cpp
+$(FT_OBJ_DIR)/%.o : 	%.cpp
 				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
-				$(shell mkdir -p $(DIY_OBJ_DIR))
+				$(shell mkdir -p $(FT_OBJ_DIR))
 				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ;\
-				echo "$(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) -D DIY=true $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
+				echo "$(CC) $(CFLAGS) -D FT=true $(IFLAGS) -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) -D FT=true $(IFLAGS) -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
@@ -290,8 +292,8 @@ $(VISUALIZER_OBJ_DIR)/%.o : 	%.cpp
 				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
 				$(shell mkdir -p $(VISUALIZER_OBJ_DIR))
 				$(shell echo "$(shell date) : \c" >> $(BUILD_LOG) 2>&1 ;\
-				echo "$(CC) $(CFLAGS) -D DIY=true -D TREE_VISUALIZER=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
-				$(eval ret_status := $(shell $(CC) $(CFLAGS) -D DIY=true -D TREE_VISUALIZER=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
+				echo "$(CC) $(CFLAGS) -D FT=true -D TREE_VISUALIZER=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $<" >> $(BUILD_LOG) 2>&1)
+				$(eval ret_status := $(shell $(CC) $(CFLAGS) -D FT=true -D TREE_VISUALIZER=true $(IFLAGS) `sdl2-config --cflags` -o $@ -c $< >> $(BUILD_LOG) 2>&1; echo $$?))
 				@if [ $(ret_status) -eq 0 ]; then \
 					echo "$(_GREEN)DONE$(_WHITE)\n-----"; \
 				else \
@@ -311,12 +313,12 @@ clean_log:
 
 clean:
 				@echo "Deleting Objects Directory $(_YELLOW)$(OBJ_DIR)$(_WHITE) ... \c"
-				@rm -rf $(OBJ_DIR) $(DIY_OBJ_DIR) $(VISUALIZER_OBJ_DIR)
+				@rm -rf $(OBJ_DIR) $(FT_OBJ_DIR) $(VISUALIZER_OBJ_DIR)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 fclean:			clean clean_log
 				@echo "Deleting library File $(_YELLOW)$(NAME)$(_WHITE) ... \c"
-				@rm -f $(NAME) $(DIY_NAME) $(VISUALIZER_NAME)
+				@rm -f $(NAME) $(FT_NAME) $(VISUALIZER_NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
-.PHONY:			all show re clean fclean clean_log norme test diy_test test_both
+.PHONY:			all show re clean fclean clean_log norme test FT_test test_both
