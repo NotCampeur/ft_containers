@@ -36,7 +36,8 @@ VECTOR_TEST =	vector_modifiers_test.cpp \
 				vector_element_access_test.cpp \
 				vector_iterators_test.cpp \
 				vector_allocator_test.cpp \
-				vector_relational_operators_test.cpp
+				vector_relational_operators_test.cpp \
+				vector_string_test.cpp
 
 STACK_TEST =	stack_modifiers_test.cpp \
 				stack_capacity_test.cpp \

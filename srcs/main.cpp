@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:14:44 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 06:17:01 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 03:12:07 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void	vector_test(void)
 	vector_modifiers_test();
 	vector_allocator_test();
 	vector_relational_operators_test();
+	vector_string_test();
 }
 
 void	stack_test(void)
@@ -95,7 +96,7 @@ void	map_test(void)
 	map_capacity_test();
 	map_element_access_test();
 	map_iterators_test();
-	map_limit_test();
+	// map_limit_test();
 	map_modifiers_test();
 	map_observers_test();
 	map_operations_test();
@@ -108,7 +109,7 @@ void	set_test(void)
 	set_allocator_test();
 	set_capacity_test();
 	set_iterators_test();
-	set_limit_test();
+	// set_limit_test();
 	set_modifiers_test();
 	set_observers_test();
 	set_operations_test();

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/01 14:46:52 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 03:57:50 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@
 # include <memory>
 # include <sstream>
 # include <exception>
-# include "../tools/iterators/random_access_iterator.hpp"
-# include "../tools/iterators/reverse_iterator.hpp"
-# include "../tools/integral_constant/is_integral.hpp"
-# include "../tools/distance.hpp"
-# include "../tools/comparison/lexicographical_compare.hpp"
-# include "../tools/comparison/equal.hpp"
+# include "random_access_iterator.hpp"
+# include "reverse_iterator.hpp"
+# include "is_integral.hpp"
+# include "distance.hpp"
+# include "lexicographical_compare.hpp"
+# include "equal.hpp"
 
 namespace ft
 {
@@ -67,15 +67,14 @@ namespace ft
 			void		assign(InputIterator first, InputIterator last, ft::false_type)
 			{
 				size_type n = ft::distance(first, last);
-				for (size_type i(0); i < _size; i++)
-					_alloc.destroy(&_array[i]);
+				
+				clear();
 				reserve(n);
-				for (size_type i(0); first != last; i++)
+				for (; first != last; _size++)
 				{
-					_alloc.construct(&_array[i], *first);
+					_alloc.construct(&_array[_size], *first);
 					first++;
 				}
-				_size = n;
 			}
 
 			void		insert(iterator pos, size_type n, const value_type& val, ft::true_type)
@@ -87,7 +86,9 @@ namespace ft
 					return ;
 				if (pos == end())
 				{
-					if (_size +  n > _capacity)
+					if (_size +  n > _capacity && _size * 2 > _size + n)
+						reserve(_size * 2);
+					else
 						reserve(_size + n);
 					for (size_type i = 0; i < n; i++)
 						_alloc.construct(&_array[old_size + i], val);
@@ -95,12 +96,12 @@ namespace ft
 				}
 				else
 				{
-					if (_size + n > _capacity)
+					if (_size +  n > _capacity && _size * 2 > _size + n)
+						reserve(_size * 2);
+					else
 						reserve(_size + n);
 					for (std::ptrdiff_t i = old_size - 1; i >= pos_n; i--)
-					{
 						_alloc.construct(&_array[i + n], _array[i]);
-					}
 					for (size_type i = 0; i < n; i++)
 						_alloc.construct(&_array[pos_n + i], val);
 					_size += n;
@@ -117,7 +118,9 @@ namespace ft
 					return ;
 				if (pos == end())
 				{
-					if (_size +  n > _capacity)
+					if (_size +  n > _capacity && _size * 2 > _size + n)
+						reserve(_size * 2);
+					else
 						reserve(_size + n);
 					for (std::ptrdiff_t i = 0; first != last; first++)
 					{
@@ -129,8 +132,10 @@ namespace ft
 				else
 				{
 					std::ptrdiff_t dist = ft::distance(begin(), pos);
-					if (_size +  n > _capacity)
-						reserve(_size + n);					
+					if (_size +  n > _capacity && _size * 2 > _size + n)
+						reserve(_size * 2);
+					else
+						reserve(_size + n);			
 					for (std::ptrdiff_t i = old_size - 1; i >= dist; i--)
 						_alloc.construct(&_array[i + n], _array[i]);
 					for (std::ptrdiff_t i = dist; first != last; first++)
@@ -154,12 +159,7 @@ namespace ft
 				const allocator_type& alloc = allocator_type())
 			: _alloc(alloc), _array(NULL), _size(0), _capacity(1)
 			{
-				while (_capacity < n)
-					_capacity = _capacity << 1;
-				_array = _alloc.allocate(_capacity);
-				for (size_type i = 0; i < n; i++)
-					_alloc.construct(&_array[i], val);
-				_size = n;
+				assign(n, val, ft::true_type());
 			}
 
 			// Range constructor
@@ -190,7 +190,7 @@ namespace ft
 			{
 				for (size_type i = 0; i < _size; i++)
 					_alloc.destroy(&_array[i]);
-				_alloc.deallocate(_array, _size);
+				_alloc.deallocate(_array, _capacity);
 			}
 
 		// Iterators
@@ -261,27 +261,20 @@ namespace ft
 	
 			void		reserve(size_type n)
 			{
-				pointer		tmp;
-				size_type	new_capacity(_size);
-				
+				if (n > max_size())
+					throw std::length_error("vector::reserve");
+				if (n == 0)
+					n = 1;
 				if (n > _capacity)
 				{
-					if (_size == 0)
-						new_capacity = n;
-					else
-					{
-						new_capacity = new_capacity << 1;
-						if (new_capacity < n)
-							new_capacity = n;
-					}
-					tmp = _alloc.allocate(new_capacity);
+					pointer tmp = _alloc.allocate(n);
 					for (size_type i = 0; i < _size; i++)
 						_alloc.construct(&tmp[i], _array[i]);
 					for (size_type i = 0; i < _size; i++)
 						_alloc.destroy(&_array[i]);
 					_alloc.deallocate(_array, _capacity);
 					_array = tmp;
-					_capacity = new_capacity;
+					_capacity = n;
 				}
 			}
 			
@@ -333,7 +326,7 @@ namespace ft
 				if (_capacity == 0)
 					reserve(1);
 				else if (_size == _capacity)
-					reserve(_size + 1);
+					reserve(_capacity * 2);
 				_alloc.construct(&_array[_size], val);
 				_size++;
 			}
@@ -351,7 +344,7 @@ namespace ft
 				if (_capacity == 0)
 					reserve(1);
 				else if (_size == _capacity)
-					reserve(_size + 1);
+					reserve(_capacity * 2);
 				for (size_type i = _size; i > n; i--)
 					_alloc.construct(&_array[i], _array[i - 1]);
 				_alloc.construct(&_array[n], val);
@@ -436,7 +429,7 @@ namespace ft
 	{
 		if (lhs.size() != rhs.size())
 			return false;
-		return equal(lhs.begin(), lhs.end(), rhs.begin());
+		return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
 	}
 	
 	template <class T, class Alloc>

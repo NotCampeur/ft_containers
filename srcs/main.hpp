@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 20:13:05 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/02/28 05:44:38 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/03 03:12:35 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	vector_element_access_test(void);
 void	vector_modifiers_test(void);
 void	vector_allocator_test(void);
 void	vector_relational_operators_test(void);
+void	vector_string_test();
 
 void	stack_test(void);
 void	stack_capacity_test(void);
