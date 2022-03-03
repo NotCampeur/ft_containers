@@ -1,3 +1,0 @@
-test if in the true random access iterator you have access to the pointer
-
-add test to break the limits of containers.
