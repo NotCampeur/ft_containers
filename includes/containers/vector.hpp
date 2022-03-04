@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/03 07:55:23 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/04 06:17:00 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@
 # include <memory>
 # include <sstream>
 # include <exception>
-# include "random_access_iterator.hpp"
-# include "reverse_iterator.hpp"
-# include "is_integral.hpp"
-# include "distance.hpp"
-# include "lexicographical_compare.hpp"
-# include "equal.hpp"
+# include "../tools/iterators/random_access_iterator.hpp"
+# include "../tools/iterators/reverse_iterator.hpp"
+# include "../tools/integral_constant/is_integral.hpp"
+# include "../tools/distance.hpp"
+# include "../tools/comparison/lexicographical_compare.hpp"
+# include "../tools/comparison/equal.hpp"
 
 namespace ft
 {
