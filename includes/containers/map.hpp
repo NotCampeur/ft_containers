@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/03/03 09:42:01 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/04 08:04:51 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,8 +173,15 @@ namespace ft
 			// It might be used to optimize the insertion.
 			iterator insert(iterator hint, const value_type& value)
 			{
-				if (hint->first == value.first)
-					return hint;
+				if (hint->first < value.first)
+				{
+					++hint;
+					if (hint != end() && hint->first > value.first)
+					{
+						_tree->insert(hint, value);
+						return ft::make_pair(iterator(_tree->get(value)), true);
+					}
+				}
 				return insert(value).first;
 			}
 
