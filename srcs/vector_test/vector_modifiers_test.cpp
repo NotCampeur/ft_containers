@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 16:38:29 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/01/31 16:28:28 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/04 01:21:33 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,4 +246,20 @@ void	vector_modifiers_test(void)
 	vector_erase_method_test();
 	vector_swap_method_test();
 	vector_clear_method_test();
+	
+	Logger() << "__________[vector_special_leaks_test]__________";
+	
+	ft::vector<std::string *> p_vector;
+	for (int i = 0; i < 10; i++)
+	{
+		std::string *str = new std::string("Hello");
+		p_vector.push_back(str);
+	}
+	std::string *str = new std::string("Bye");
+	p_vector.insert(p_vector.begin() + 2, str);
+	Logger() << "Capacity: " << p_vector.capacity() << " Size: " << int (p_vector.size());
+	for (ft::vector<int>::size_type i = 0; i < p_vector.size(); i++)
+		Logger() << "p_vector[" << i << "] = " << p_vector[i];
+	for (ft::vector<int>::size_type i = 0; i < p_vector.size(); i++)
+		delete p_vector[i];
 }
