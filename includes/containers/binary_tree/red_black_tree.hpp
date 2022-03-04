@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/01 00:01:08 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/04 07:39:11 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -288,23 +288,63 @@ namespace ft
 			}
 
 			// Return the first node not less than the value.
+			// Will not use the iterators increment to allow a log(n) complexity.
 			iterator	lower_bound(const T& value)
 			{
-				iterator	it = begin();
-				while (it != end() && is_inferior_in_key(it.base(), value) == true)
-					++it;
-				return it;
+				if (_root.base() == NULL)
+					return end();
+				iterator	it = _root;
+				iterator	previous(NULL);
+				while (it.base() != NULL)
+				{
+					if (is_superior_in_key(it.base(), value))
+					{
+						previous = it;
+						it = iterator(it.base()->_left);
+						if (it.base() == NULL)
+							return previous;
+					}
+					else if (is_inferior_in_key(it.base(), value))
+					{
+						if (it.base()->_right == NULL)
+							return previous.base() == NULL ? end() : previous;
+						it = iterator(it.base()->_right);
+					}
+					else
+						return it;
+				}
+				return end();
 			}
 
 			// Return the first node not less or equal than the value.
+			// Will not use the iterators increment to allow a log(n) complexity.
 			iterator	upper_bound(const T& value)
 			{
-				iterator	it = lower_bound(value);
-				if (it != end() &&
-					is_inferior_in_key(it.base(), value) == false &&
-					is_superior_in_key(it.base(), value) == false)
-					++it;
-				return it;
+				if (_root.base() == NULL)
+					return end();
+				iterator	it = _root;
+				iterator	previous(NULL);
+				while (it.base() != NULL)
+				{
+					if (is_superior_in_key(it.base(), value))
+					{
+						previous = it;
+						it = iterator(it.base()->_left);
+						if (it.base() == NULL)
+							return previous;
+					}
+					else if (is_inferior_in_key(it.base(), value))
+					{
+						if (it.base()->_right == NULL)
+							return previous.base() == NULL ? end() : previous;
+						it = iterator(it.base()->_right);
+					}
+					else if (previous.base() == NULL)
+						return (it.base()->_right == NULL) ? end() : static_cast<iterator>(it.base()->_right);
+					else
+						return previous;
+				}
+				return end();
 			}
 			
 			// Operators
