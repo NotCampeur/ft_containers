@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/03/03 22:33:52 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/05 04:05:34 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,8 +154,19 @@ namespace ft
 			// It might be used to optimize the insertion.
 			iterator insert(iterator hint, const value_type& value)
 			{
-				if (*hint == value)
-					return hint;
+				if (hint != end())
+				{
+					iterator next = hint;
+					++next;
+					if (*hint < value && (next == end() || *next > value))
+					{
+						if (hint.base()->_parent == next.base() || next == end())
+							_tree->insert(hint, value, 0); // Insert the value to right of hint
+						else
+							_tree->insert(next, value, 1); // Insert the value to left of next
+						return iterator(_tree->get(value));
+					}
+				}
 				return insert(value).first;
 			}
 
