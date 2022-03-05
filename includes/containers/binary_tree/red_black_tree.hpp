@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/04 08:13:06 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/05 02:19:31 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,13 +209,15 @@ namespace ft
 			}
 
 			// Insert a new node in the tree skipping the search thanks to an iterator.
-			void	insert(iterator it, const T& value)
+			// This function take a char to indicate if the value need to be left or right.
+			// If the iterator is null, a classic insert a done.
+			void	insert(iterator it, const T& value, char side)
 			{
 				if (it.base() == NULL)
 					insert(value);
 				else
 				{
-					_root = it.base()->insert(it.base(), value, _limit, _alloc);
+					_root = it.base()->insert(it.base(), side, value, _limit, _alloc);
 					_begin = static_cast<iterator>(leftmost(_root.base()));
 					++_size;
 					assign_size(*_limit->_value, _size);

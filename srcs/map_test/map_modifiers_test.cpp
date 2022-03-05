@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 03:05:49 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/27 22:26:58 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/05 02:35:29 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,21 +96,32 @@ void	map_erase_method_test(void)
 void	map_insert_method_test(void)
 {
 	struct timeval	start_time;
+	ft::map<int, int> mymap;
+	ft::map<int, int> range;
 
 	Logger() << "__________[map_insert_method_test]__________";
-	ft::map<int, int> mymap;
 	gettimeofday(&start_time, NULL);
-	mymap.insert(ft::pair<int, int>(1, 1));
+	mymap.insert(ft::pair<int, int>(0, 42));
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
 
-	for (int i=1; i<=5; i++) mymap.insert(ft::pair<int, int>(i, i));
+	for (int i=2; i<=3; i++) range.insert(ft::pair<int, int>(i, i));
 
+	gettimeofday(&start_time, NULL);
+	mymap.insert(range.begin(), range.end());
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
 	Logger() << "mymap contains:";
 	for (ft::map<int, int>::iterator it = mymap.begin() ; it != mymap.end(); ++it)
 		Logger() << it->first << " => " << it->second;
+
+	ft::map<int, int>::iterator it = mymap.end();
+	--it;
 	gettimeofday(&start_time, NULL);
-	mymap.insert(ft::pair<int, int>(1, 1));
+	mymap.insert(it, ft::make_pair(45, -15));
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+	Logger() << "mymap contains:";
+	for (ft::map<int, int>::iterator it = mymap.begin() ; it != mymap.end(); ++it)
+		Logger() << it->first << " => " << it->second;
+
 	Logger();
 }
 

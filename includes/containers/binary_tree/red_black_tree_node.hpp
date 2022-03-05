@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/04 08:14:29 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/05 02:22:32 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,9 +109,9 @@ namespace ft
 			// This function will insert a new node in the tree after a given node.
 			// And resolve the red-black tree properties.
 			// return the new root of the tree.
-			RedBlackTreeNode*	insert(RedBlackTreeNode* node, const T& value, node_pointer limit, std::allocator<RedBlackTreeNode>& alloc)
+			RedBlackTreeNode*	insert(RedBlackTreeNode* node, char side, const T& value, node_pointer limit, std::allocator<RedBlackTreeNode>& alloc)
 			{
-				if (node->_right == NULL)
+				if (side == 0)
 				{
 					node->_right = alloc.allocate(1);
 					alloc.construct(node->_right, value);
@@ -120,7 +120,16 @@ namespace ft
 					node->_right->_limit = limit;
 					_resolve_insertion(node->_right);
 				}
-				node = node->_right;
+				else if (side == 1)
+				{
+					node->_left = alloc.allocate(1);
+					alloc.construct(node->_left, value);
+					node->_left->_color = red;
+					node->_left->_parent = node;
+					node->_left->_limit = limit;
+					// Resolve the red-black tree properties.
+					_resolve_insertion(node->_left);
+				}
 				return (root());
 			}
 
