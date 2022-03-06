@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 03:05:49 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/05 02:35:29 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/06 04:58:28 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,17 @@ void	map_erase_method_test(void)
 	Logger() << "mymap contains:";
 	for (ft::map<int, int>::iterator it = mymap.begin() ; it != mymap.end(); ++it)
 		Logger() << it->first << " => " << it->second;
+		
 	gettimeofday(&start_time, NULL);
 	mymap.erase(1);
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+	gettimeofday(&start_time, NULL);
+	mymap.erase(--(--(--mymap.end())), mymap.end());
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+	
+	Logger() << "mymap contains:";
+	for (ft::map<int, int>::iterator it = mymap.begin() ; it != mymap.end(); ++it)
+		Logger() << it->first << " => " << it->second;
 	Logger();
 }
 
