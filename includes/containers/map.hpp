@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/03/05 03:52:51 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/06 14:36:06 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "pair.hpp"
 # include "vector.hpp"
 # include "../tools/iterators/bidirectional_iterator.hpp"
-# include "binary_tree/red_black_tree.hpp"
+# include "binary_tree/new_red_black_tree.hpp"
 
 namespace ft
 {
@@ -166,7 +166,7 @@ namespace ft
 				catch(...)
 				{
 				}
-				return ft::make_pair(iterator(_tree->get(value)), !was_present);
+				return ft::make_pair(iterator(_tree->get(value), _tree->limit()), !was_present);
 			}
 
 			// This insert take a hint, which is an iterator to a position in the map.
@@ -183,7 +183,7 @@ namespace ft
 							_tree->insert(hint, value, 0); // Insert the value to right of hint
 						else
 							_tree->insert(next, value, 1); // Insert the value to left of next
-						return iterator(_tree->get(value));
+						return iterator(_tree->get(value), _tree->limit());
 					}
 				}
 				return insert(value).first;
@@ -276,12 +276,12 @@ namespace ft
 			// If the key is not found, the end() iterator is returned.
 			iterator find(const key_type& key)
 			{
-				return iterator(_tree->get(value_type(key, mapped_type())));
+				return iterator(_tree->get(value_type(key, mapped_type())), _tree->limit());
 			}
 
 			const_iterator find(const key_type& key) const
 			{
-				return const_iterator(_tree->get(value_type(key, mapped_type())));
+				return const_iterator(_tree->get(value_type(key, mapped_type())), _tree->limit());
 			}
 
 			// This will return the number of elements with the key.
