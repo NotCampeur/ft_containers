@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/06 14:05:50 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/06 16:29:39 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,13 +212,15 @@ namespace ft
 			// This function take a char to indicate if the value need to be left or right.
 			// If the iterator is null, a classic insert a done.
 			// If side is '1', the value will be inserted in the left of the iterator.
-			void	insert(iterator it, const T& value, char side)
+			void	insert(const_iterator it, const T& value, char side)
 			{
-				if (it.base() == NULL)
+				iterator	tmp(const_cast<node_type *>(it.base()), _limit);
+				
+				if (tmp.base() == NULL)
 					insert(value);
 				else
 				{
-					_root._ptr = _insert(it.base(), side, value, _alloc);
+					_root._ptr = _insert(tmp.base(), side, value, _alloc);
 					_begin._ptr = leftmost(_root.base());
 					++_size;
 					assign_size(*_limit->_value, _size);
@@ -326,7 +328,7 @@ namespace ft
 
 			// Return the first node not less than the value.
 			// Will not use the iterators increment to allow a log(n) complexity.
-			iterator	lower_bound(const T& value)
+			const_iterator	lower_bound(const T& value) const
 			{
 				if (_root.base() == NULL)
 					return end();
@@ -344,7 +346,7 @@ namespace ft
 					else if (is_inferior_in_key(it.base(), value))
 					{
 						if (it.base()->_right == NULL)
-							return previous.base() == NULL ? end() : previous;
+							return (previous.base() == NULL) ? end() : previous;
 						it._ptr = it.base()->_right;
 					}
 					else
@@ -355,7 +357,7 @@ namespace ft
 
 			// Return the first node not less or equal than the value.
 			// Will not use the iterators increment to allow a log(n) complexity.
-			iterator	upper_bound(const T& value)
+			const_iterator	upper_bound(const T& value) const
 			{
 				if (_root.base() == NULL)
 					return end();
