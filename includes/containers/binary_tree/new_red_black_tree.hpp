@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/06 16:29:39 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/06 21:25:09 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ namespace ft
 		public:
 
 			typedef T 												value_type;
-			typedef ft::RedBlackTreeNode<T, Compare, Alloc>			node_type;
+			typedef ft::RedBlackTreeNode<T, Compare>				node_type;
 			typedef Compare 										compare;
 			typedef Alloc											allocator_type;
 			typedef std::allocator<node_type>						node_allocator_type;
@@ -110,7 +110,7 @@ namespace ft
 			, _size(0)
 			{
 				// _limit = _alloc.allocate(1);// TESTING THE USE OF ALLOC IN INITIALIZATION LIST
-				_alloc.construct(_limit, ft::RedBlackTreeNode<T, Compare, Alloc>());
+				_alloc.construct(_limit, ft::RedBlackTreeNode<T, Compare>());
 				_root = iterator(NULL, _limit);
 			}
 			
@@ -120,7 +120,7 @@ namespace ft
 			, _size(0)
 			{
 				// _limit = _alloc.allocate(1);// TESTING THE USE OF ALLOC IN INITIALIZATION LIST
-				_alloc.construct(_limit, ft::RedBlackTreeNode<T, Compare, Alloc>());
+				_alloc.construct(_limit, ft::RedBlackTreeNode<T, Compare>());
 				const_iterator it = other.begin();
 				while (it != other.end())
 				{
@@ -159,7 +159,7 @@ namespace ft
 				_root._ptr = NULL;
 				_begin._ptr = NULL;
 				_size = 0;
-				assign_size(*_limit->_value, _size);
+				assign_size(_limit->_value, _size);
 			}
 			
 			// Iterators
@@ -194,7 +194,7 @@ namespace ft
 					_alloc.construct(_root.base(), ft::RedBlackTreeNode<T, Compare>(value));
 					_begin = _root;
 					_size = 1;
-					assign_size(*_limit->_value, _size);
+					assign_size(_limit->_value, _size);
 					_limit->_parent = _root.base();
 				}
 				else
@@ -202,7 +202,7 @@ namespace ft
 					_root._ptr = _insert(value, _alloc);
 					_begin._ptr = leftmost(_root.base());
 					++_size;
-					assign_size(*_limit->_value, _size);
+					assign_size(_limit->_value, _size);
 					_limit->_parent = _root.base();
 				}
 			}
@@ -223,7 +223,7 @@ namespace ft
 					_root._ptr = _insert(tmp.base(), side, value, _alloc);
 					_begin._ptr = leftmost(_root.base());
 					++_size;
-					assign_size(*_limit->_value, _size);
+					assign_size(_limit->_value, _size);
 					_limit->_parent = _root.base();
 				}
 			}
@@ -237,7 +237,7 @@ namespace ft
 					_alloc.construct(_root.base(), node._value);
 					_begin = _root;
 					_size = 1;
-					assign_size(*_limit->_value, _size);
+					assign_size(_limit->_value, _size);
 					_limit->_parent = _root.base();
 				}
 				else
@@ -245,7 +245,7 @@ namespace ft
 					_root._ptr = _insert(node._value, _alloc);
 					_begin._ptr = leftmost(_root.base());
 					++_size;
-					assign_size(*_limit->_value, _size);
+					assign_size(_limit->_value, _size);
 					_limit->_parent = _root.base();
 				}
 			}
@@ -275,7 +275,7 @@ namespace ft
 							_begin._ptr = NULL; // THIS IS A TEST AND MIGHT NOT WORK PROPERLY.
 							// _begin = iterator(NULL, _limit);
 						--_size;
-						assign_size(*_limit->_value, _size);
+						assign_size(_limit->_value, _size);
 						_limit->_parent = _root.base();
 					}
 					catch(...)
@@ -661,6 +661,82 @@ namespace ft
 					return current_node->_parent->_left;
 				}
 
+				// Swap every links between 2 nodes.
+				// Also swap nodes that hvae links on them.
+				void _swap_links(node_pointer node1, node_pointer node2)
+				{
+					// If node1 and node2 are connected don't swap them both.
+					if (node1->_parent == node2)
+					{
+						node1->_parent = node2->_parent;
+						node2->_parent = node1;
+					}
+					else if (node2->_parent == node1)
+					{
+						node2->_parent = node1->_parent;
+						node1->_parent = node2;
+					}
+					else
+					{
+						std::swap(node1->_parent, node2->_parent);
+						if (node1->_parent != NULL)
+						{
+							if (node1->_parent->_left == node2)
+								node1->_parent->_left = node1;
+							else
+								node1->_parent->_right = node1;
+						}
+						if (node2->_parent != NULL)
+						{
+							if (node2->_parent->_left == node1)
+								node2->_parent->_left = node2;
+							else
+								node2->_parent->_right = node2;
+						}
+					}
+
+					if (node1->_left == node2)
+					{
+						node1->_left = node2->_left;
+						node2->_left = node1;
+					}
+					else if (node2->_left == node1)
+					{
+						node2->_left = node1->_left;
+						node1->_left = node2;
+					}
+					else
+					{
+						std::swap(node1->_left, node2->_left);
+					}
+
+					if (node1->_right == node2)
+					{
+						node1->_right = node2->_right;
+						node2->_right = node1;
+					}
+					else if (node2->_right == node1)
+					{
+						node2->_right = node1->_right;
+						node1->_right = node2;
+					}
+					else
+					{
+						std::swap(node1->_right, node2->_right);
+					}
+					
+					std::swap(node1->_color, node2->_color);
+
+					if (node1->_left != NULL)
+						node1->_left->_parent = node1;
+					if (node1->_right != NULL)
+						node1->_right->_parent = node1;
+					if (node2->_left != NULL)
+						node2->_left->_parent = node2;
+					if (node2->_right != NULL)
+						node2->_right->_parent = node2;
+				}
+
 				// Deletes the given node from the tree
 				// After deletion, the node will be replaced by its successor
 				// or NULL if the node is a leaf.
@@ -670,7 +746,7 @@ namespace ft
 					if (node_to_del == NULL)
 						return;
 					node_pointer	replacement = _find_replacement(node_to_del);
-					bool				is_r_n_black = _are_both_black(replacement, node_to_del);
+					bool			is_r_n_black = _are_both_black(replacement, node_to_del);
 					// node_pointer	parent = node_to_del->_parent;
 				
 					if (replacement == NULL)
@@ -678,6 +754,7 @@ namespace ft
 						// replacement is NULL therefore node_to_del is leaf
 						if (node_to_del->_parent != NULL)
 						{
+							Logger() << "replacement is NULL therefore node_to_del is leaf";
 							if (is_r_n_black)
 							{
 								// replacement and node_to_del both black
@@ -713,11 +790,18 @@ namespace ft
 						if (node_to_del->_parent == NULL)
 						{
 							// node_to_del is root, assign the value of replacement to node_to_del, and delete replacement
-							std::swap(node_to_del->_value, replacement->_value); // NEED TO SWAP POINTERS AND NOT ONLY VALUES.
-							node_to_del->_left = node_to_del->_right = NULL;
-							alloc.destroy(replacement);
-							alloc.deallocate(replacement, 1);
-							// delete replacement;
+							// std::swap(node_to_del->_value, replacement->_value); // NEED TO SWAP POINTERS AND NOT ONLY VALUES.
+							// std::swap(node_to_del->_left, replacement->_left);
+							// std::swap(node_to_del->_right, replacement->_right);
+							// std::swap(node_to_del->_parent, replacement->_parent);
+							// std::swap(node_to_del->_color, replacement->_color);
+							_swap_links(node_to_del, replacement);
+							replacement->_left = replacement->_right = NULL;
+							// node_to_del->_left = node_to_del->_right = NULL;
+							// alloc.destroy(replacement);
+							// alloc.deallocate(replacement, 1);
+							alloc.destroy(node_to_del);
+							alloc.deallocate(node_to_del, 1);
 						}
 						else
 						{
@@ -740,8 +824,14 @@ namespace ft
 						return;
 					}
 					// node_to_del has 2 children, swap values with _successor and recurse
-					std::swap(node_to_del->_value, replacement->_value); // NEED TO SWAP POINTERS AND NOT ONLY VALUES.
-					_delete_node(replacement, alloc);
+					// std::swap(node_to_del->_value, replacement->_value); // NEED TO SWAP POINTERS AND NOT ONLY VALUES.
+					// _delete_node(replacement, alloc);
+					// std::swap(node_to_del->_left, replacement->_left);
+					// std::swap(node_to_del->_right, replacement->_right);
+					// std::swap(node_to_del->_parent, replacement->_parent);
+					// std::swap(node_to_del->_color, replacement->_color);
+					_swap_links(node_to_del, replacement);
+					_delete_node(node_to_del, alloc);
 				}
 					
 				// This function function will rotate the tree to the left from the given node.

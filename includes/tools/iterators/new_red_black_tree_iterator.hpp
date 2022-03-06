@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 12:05:24 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/06 13:55:05 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/06 16:50:56 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ namespace ft
 			return (_ptr);
 		}
 		
-		value_reference operator*() const { return *_ptr->_value; }
-		value_pointer operator->() { return _ptr->_value; }
-		const value_pointer operator->() const { return _ptr->_value; }
+		value_reference operator*() const { return _ptr->_value; }
+		value_pointer operator->() { return &_ptr->_value; }
+		const value_pointer operator->() const { return &_ptr->_value; }
 
 		red_black_tree_iterator& operator++() { _ptr = next_inorder(_ptr, _limit); return (*this); }
 		red_black_tree_iterator operator++(int) { red_black_tree_iterator tmp(*this); _ptr = next_inorder(_ptr, _limit); return tmp; }
@@ -118,9 +118,9 @@ namespace ft
 				return (_ptr);
 			}
 
-			value_reference operator*() const { return *_ptr->_value; }
-			value_pointer operator->() { return _ptr->_value; }
-			const value_pointer operator->() const { return _ptr->_value; }
+			value_reference operator*() const { return _ptr->_value; }
+			value_pointer operator->() { return &_ptr->_value; }
+			const value_pointer operator->() const { return &_ptr->_value; }
 
 			const_red_black_tree_iterator& operator++() { _ptr = next_inorder(_ptr, _limit); return (*this); }
 			const_red_black_tree_iterator operator++(int) { const_red_black_tree_iterator tmp(*this); _ptr = next_inorder(_ptr, _limit); return tmp; }

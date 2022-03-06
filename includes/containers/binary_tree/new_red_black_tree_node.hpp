@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/06 13:57:27 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/06 16:46:56 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,59 +24,38 @@
 
 namespace ft
 {
-	template <typename T, typename Compare = std::less<T>, typename Alloc = std::allocator<T> >
+	template <typename T, typename Compare = std::less<T> >
 	class RedBlackTreeNode
 	{
 		public:
 
 			typedef T 											value_type;
-			typedef Alloc										allocator_type;
-			typedef RedBlackTreeNode<T, Compare, Alloc>			node_type;
-			typedef RedBlackTreeNode<T, Compare, Alloc>*		node_pointer;
+			typedef RedBlackTreeNode<T, Compare>			node_type;
+			typedef node_type*									node_pointer;
 			
 			node_pointer				_parent;
 			node_pointer				_left;
 			node_pointer				_right;
-			T*							_value;
+			T							_value;
 			bool						_color;
 
 			RedBlackTreeNode()
 			: _parent(NULL), _left(NULL), _right(NULL)
-			, _value(NULL), _color(BLACK)
-			{
-				allocator_type alloc;
-				
-				_value = alloc.allocate(1);
-				alloc.construct(_value, T());
-			}
+			, _value(), _color(BLACK)
+			{}
 
 			RedBlackTreeNode(const T& value, bool color = BLACK)
 			: _parent(NULL), _left(NULL), _right(NULL)
-			, _value(NULL), _color(color)
-			{
-				allocator_type alloc;
-				
-				_value = alloc.allocate(1);
-				alloc.construct(_value, value);
-			}
+			, _value(value), _color(color)
+			{}
 
 			RedBlackTreeNode(const RedBlackTreeNode& other)
 			: _parent(other._parent), _left(other._left), _right(other._right)
-			, _value(NULL), _color(other._color)
-			{
-				allocator_type alloc;
-				
-				_value = alloc.allocate(1);
-				alloc.construct(_value, *other._value);
-			}
+			, _value(other._value), _color(other._color)
+			{}
 
 			~RedBlackTreeNode()
-			{
-				allocator_type alloc;
-
-				alloc.destroy(_value);
-				alloc.deallocate(_value, 1);
-			}
+			{}
 
 			RedBlackTreeNode&				operator=(const RedBlackTreeNode& other)
 			{
@@ -94,21 +73,21 @@ namespace ft
 
 	// Get the root node of the tree.
 	// Starting from the given node.
-	template <typename T, typename Compare, typename Alloc>
-	RedBlackTreeNode<T, Compare, Alloc>*	root(const RedBlackTreeNode<T, Compare, Alloc>* node)
+	template <typename T, typename Compare>
+	RedBlackTreeNode<T, Compare>*	root(const RedBlackTreeNode<T, Compare>* node)
 	{
 		if (node == NULL)
 			return NULL;
 		while (node->_parent != NULL)
 			node = node->_parent;
-		return const_cast<RedBlackTreeNode<T, Compare, Alloc> *>(node);
+		return const_cast<RedBlackTreeNode<T, Compare> *>(node);
 	}
 
 	// This function will get the node with the next inorder value.
 	// If the node is the last, it will return the node.
-	template <typename T, typename Compare, typename Alloc>
-	RedBlackTreeNode<T, Compare, Alloc> * next_inorder(const RedBlackTreeNode<T, Compare, Alloc> * node
-													, const RedBlackTreeNode<T, Compare, Alloc> * limit)
+	template <typename T, typename Compare>
+	RedBlackTreeNode<T, Compare> * next_inorder(const RedBlackTreeNode<T, Compare> * node
+													, const RedBlackTreeNode<T, Compare> * limit)
 	{
 		if (node == NULL)
 			throw std::runtime_error("next_inorder: node is NULL");
@@ -116,28 +95,28 @@ namespace ft
 		&& node->_parent != NULL && node->_parent->_left != node && node->_parent->_right != node)
 			return last(node);
 		if (node == last(node))
-			return const_cast<RedBlackTreeNode<T, Compare, Alloc> *>(limit);
+			return const_cast<RedBlackTreeNode<T, Compare> *>(limit);
 		if (node->_right != NULL)
 			return leftmost(node->_right);
 		else
 		{
-			RedBlackTreeNode<T, Compare, Alloc> * parent = node->_parent;
+			RedBlackTreeNode<T, Compare> * parent = node->_parent;
 			while (parent != NULL && parent->_right == node)
 			{
 				node = parent;
 				parent = node->_parent;
 			}
 			if (parent == NULL)
-				return const_cast<RedBlackTreeNode<T, Compare, Alloc> *>(node);
+				return const_cast<RedBlackTreeNode<T, Compare> *>(node);
 			return parent;
 		}
 	}
 
 	// This function will get the node with the previous inorder value.
 	// If the node is the first, it will return the node.
-	template <typename T, typename Compare, typename Alloc>
-	RedBlackTreeNode<T, Compare, Alloc> * prev_inorder(const RedBlackTreeNode<T, Compare, Alloc> * node
-													, const RedBlackTreeNode<T, Compare, Alloc> * limit)
+	template <typename T, typename Compare>
+	RedBlackTreeNode<T, Compare> * prev_inorder(const RedBlackTreeNode<T, Compare> * node
+													, const RedBlackTreeNode<T, Compare> * limit)
 	{
 		if (node == NULL)
 			throw std::runtime_error("prev_inorder: node is NULL");
@@ -145,74 +124,74 @@ namespace ft
 		&& node->_parent != NULL && node->_parent->_left != node && node->_parent->_right != node)
 			return last(node);
 		if (node == begin(node))
-			return const_cast<RedBlackTreeNode<T, Compare, Alloc> *>(limit);
+			return const_cast<RedBlackTreeNode<T, Compare> *>(limit);
 		if (node->_left != NULL)
 			return rightmost(node->_left);
 		else
 		{
-			RedBlackTreeNode<T, Compare, Alloc> * parent = node->_parent;
+			RedBlackTreeNode<T, Compare> * parent = node->_parent;
 			while (parent != NULL && parent->_left == node)
 			{
 				node = parent;
 				parent = node->_parent;
 			}
 			if (parent == NULL)
-				return const_cast<RedBlackTreeNode<T, Compare, Alloc> *>(node);
+				return const_cast<RedBlackTreeNode<T, Compare> *>(node);
 			return parent;
 		}
 	}
 
 	// This function will get the node with the leftmost value.
 	// Start from the node and go to the leftmost node.
-	template <typename T, typename Compare, typename Alloc>
-	RedBlackTreeNode<T, Compare, Alloc> * leftmost(const RedBlackTreeNode<T, Compare, Alloc> * node)
+	template <typename T, typename Compare>
+	RedBlackTreeNode<T, Compare> * leftmost(const RedBlackTreeNode<T, Compare> * node)
 	{
 		if (node == NULL)
 			throw std::runtime_error("leftmost: node is NULL");
 		while (node->_left != NULL)
 			node = node->_left;
-		return const_cast<RedBlackTreeNode<T, Compare, Alloc> *>(node);
+		return const_cast<RedBlackTreeNode<T, Compare> *>(node);
 	}
 
 	// This function will get the node with the rightmost value.
 	// Start from the node and go to the rightmost node.
-	template <typename T, typename Compare, typename Alloc>
-	RedBlackTreeNode<T, Compare, Alloc> * rightmost(const RedBlackTreeNode<T, Compare, Alloc> * node)
+	template <typename T, typename Compare>
+	RedBlackTreeNode<T, Compare> * rightmost(const RedBlackTreeNode<T, Compare> * node)
 	{
 		if (node == NULL)
 			throw std::runtime_error("rightmost: node is NULL");
 		while (node->_right != NULL)
 			node = node->_right;
-		return const_cast<RedBlackTreeNode<T, Compare, Alloc> *>(node);
+		return const_cast<RedBlackTreeNode<T, Compare> *>(node);
 	}
 
 	// This function will get the first node of the tree. (Leftmost node)
-	template <typename T, typename Compare, typename Alloc>
-	RedBlackTreeNode<T, Compare, Alloc> * begin(const RedBlackTreeNode<T, Compare, Alloc> * node)
+	template <typename T, typename Compare>
+	RedBlackTreeNode<T, Compare> * begin(const RedBlackTreeNode<T, Compare> * node)
 	{
 		if (node == NULL)
 			throw std::runtime_error("begin: node is NULL");
 		node = root(node);
 		node = leftmost(node);
-		return const_cast<RedBlackTreeNode<T, Compare, Alloc> *>(node);
+		return const_cast<RedBlackTreeNode<T, Compare> *>(node);
 	}
 
 	// This function will get the last node of the tree. (Rightmost node)
-	template <typename T, typename Compare, typename Alloc>
-	RedBlackTreeNode<T, Compare, Alloc> * last(const RedBlackTreeNode<T, Compare, Alloc> * node)
+	template <typename T, typename Compare>
+	RedBlackTreeNode<T, Compare> * last(const RedBlackTreeNode<T, Compare> * node)
 	{
 		if (node == NULL)
 			throw std::runtime_error("last: node is NULL");
 		node = root(node);
 		node = rightmost(node);
-		return const_cast<RedBlackTreeNode<T, Compare, Alloc> *>(node);
+		return const_cast<RedBlackTreeNode<T, Compare> *>(node);
 	}
 
 	// // This function return the end of the tree (address of last + 1).
 	// // The closing pointer, mainly used by iterator.
 	// // If you don't give the root, it will manually come back to the root to make sure the end is correct.
-	// template <typename T, typename Compare, typename Alloc>
-	// RedBlackTreeNode<T, Compare, Alloc> * end(RedBlackTreeNode<T, Compare, Alloc> * node)
+	// template <typename T, typename Compare>
+	// RedBlackTreeNode<T, Compare> * end(RedBlackTreeNode<T, Compare> * node)
 	// {
 	// 	if (node == NULL)
 	// 		throw std::runtime_error("end: node is NULL");
