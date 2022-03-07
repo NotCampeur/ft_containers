@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 02:29:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/28 04:53:34 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/07 16:10:17 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,9 +121,9 @@ void	draw_node(lcppgl::Context & context, const ft::rbtree<int>::node_type *node
 								, 50, 25);
 								// , nb_width, 25);
 
-	if (node->_color == ft::red)
+	if (node->_color == RED)
 		node_color = lcppgl::tools::Color(255, 0, 0, 255);
-	else if (node->_color == ft::black)
+	else if (node->_color == BLACK)
 		node_color = lcppgl::tools::Color(0, 0, 0, 255);
 	// writer.put_text_and_bg(s_value, pos, writing_color, node_color);
 	drawer.put_filled_rect(pos, node_color);
