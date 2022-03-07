@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/07 12:01:49 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/07 14:52:03 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,23 +266,21 @@ namespace ft
 				{
 					try
 					{
-						if (_root.base() != _limit && _root.base()->_left == NULL &&
-							_root.base()->_right == NULL && _root.base()->_right == NULL &&
+						if (_root._ptr != _limit && _root._ptr->_left == NULL &&
+							_root._ptr->_right == NULL && _root._ptr->_right == NULL &&
 							is_superior_in_key(_root.base(), value) == false &&
 							is_inferior_in_key(_root.base(), value) == false)
 						{
 							_alloc.destroy(_root.base());
 							_alloc.deallocate(_root.base(), 1);
-							_root._ptr = NULL; // THIS IS A TEST AND MIGHT NOT WORK PROPERLY.
-							// _root = iterator(NULL, _limit);
+							_root._ptr = NULL;
+							_begin._ptr = NULL;
 						}
 						else
+						{
 							_root._ptr = _remove(value, _alloc);
-						if (_root.base() != NULL)
 							_begin._ptr = leftmost(_root.base());
-						else
-							_begin._ptr = NULL; // THIS IS A TEST AND MIGHT NOT WORK PROPERLY.
-							// _begin = iterator(NULL, _limit);
+						}
 						--_size;
 						assign_size(_limit->_value, _size);
 						_limit->_parent = _root.base();
@@ -302,18 +300,18 @@ namespace ft
 				
 				while (current_node)
 				{
-					Logger() << "Searching for the node";
+					// Logger() << "Searching for the node";
 					if (is_superior_in_key(current_node, value) == true)
 						current_node = current_node->_left;
 					else if (is_inferior_in_key(current_node, value) == true)
 						current_node = current_node->_right;
 					else
 					{
-						Logger() << "Node found";
+						// Logger() << "Node found";
 						return (current_node);
 					}
 				}
-				Logger() << "Node not found";
+				// Logger() << "Node not found";
 				return (_limit);
 			}
 
@@ -671,30 +669,14 @@ namespace ft
 				}
 
 				// Swap every links between 2 nodes.
-				// Also swap nodes that hvae links on them.
+				// Also redo links of nodes that have links on swaped nodes.
 				void _swap_links(node_pointer node1, node_pointer node2)
 				{
-					// If node1 and node2 are connected don't swap them both.
-					if (node1->_parent == node2)
-					{
-						node1->_parent = node2->_parent;
-						node2->_parent = node1;
-					}
-					else if (node2->_parent == node1)
+					std::swap(node1->_color, node2->_color);
+					if (node2->_parent == node1)
 					{
 						node2->_parent = node1->_parent;
 						node1->_parent = node2;
-					}
-					else
-					{
-						std::swap(node1->_parent, node2->_parent);
-						if (node1->_parent != NULL)
-						{
-							if (node1->_parent->_left == node2)
-								node1->_parent->_left = node1;
-							else
-								node1->_parent->_right = node1;
-						}
 						if (node2->_parent != NULL)
 						{
 							if (node2->_parent->_left == node1)
@@ -702,48 +684,59 @@ namespace ft
 							else
 								node2->_parent->_right = node2;
 						}
-					}
-
-					if (node1->_left == node2)
-					{
-						node1->_left = node2->_left;
-						node2->_left = node1;
-					}
-					else if (node2->_left == node1)
-					{
-						node2->_left = node1->_left;
-						node1->_left = node2;
+						if (node1->_right == node2)
+						{
+							node1->_right = node2->_right;
+							node2->_right = node1;
+							if (node1->_right != NULL)
+								node1->_right->_parent = node1;
+							std::swap(node1->_left, node2->_left);
+							if (node1->_left != NULL)
+								node1->_left->_parent = node1;
+							if (node2->_left != NULL)
+								node2->_left->_parent = node2;
+						}
+						else if (node1->_left == node2)
+						{
+							node1->_left = node2->_left;
+							node2->_left = node1;
+							if (node1->_left != NULL)
+								node1->_left->_parent = node1;
+							std::swap(node1->_right, node2->_right);
+							if (node1->_right != NULL)
+								node1->_right->_parent = node1;
+							if (node2->_right != NULL)
+								node2->_right->_parent = node2;
+						}
 					}
 					else
 					{
+						if (node1->_parent != NULL)
+						{
+							if (node1->_parent->_left == node1)
+								node1->_parent->_left = node2;
+							else
+								node1->_parent->_right = node2;
+						}
+						if (node2->_parent != NULL)
+						{
+							if (node2->_parent->_left == node2)
+								node2->_parent->_left = node1;
+							else
+								node2->_parent->_right = node1;
+						}
+						std::swap(node1->_parent, node2->_parent);
 						std::swap(node1->_left, node2->_left);
-					}
-
-					if (node1->_right == node2)
-					{
-						node1->_right = node2->_right;
-						node2->_right = node1;
-					}
-					else if (node2->_right == node1)
-					{
-						node2->_right = node1->_right;
-						node1->_right = node2;
-					}
-					else
-					{
 						std::swap(node1->_right, node2->_right);
+						if (node1->_left != NULL)
+							node1->_left->_parent = node1;
+						if (node1->_right != NULL)
+							node1->_right->_parent = node1;
+						if (node2->_left != NULL)
+							node2->_left->_parent = node2;
+						if (node2->_right != NULL)
+							node2->_right->_parent = node2;
 					}
-					
-					std::swap(node1->_color, node2->_color);
-
-					if (node1->_left != NULL)
-						node1->_left->_parent = node1;
-					if (node1->_right != NULL)
-						node1->_right->_parent = node1;
-					if (node2->_left != NULL)
-						node2->_left->_parent = node2;
-					if (node2->_right != NULL)
-						node2->_right->_parent = node2;
 					// Set the root and the parent of limit accordingly if a change as been done.
 					if (node1->_parent == NULL)
 						_root._ptr = node1;
@@ -838,6 +831,7 @@ namespace ft
 						}
 						return;
 					}
+					// Logger() << "node_to_del has 2 children";
 					// node_to_del has 2 children, swap values with _successor and recurse
 					// std::swap(node_to_del->_value, replacement->_value); // NEED TO SWAP POINTERS AND NOT ONLY VALUES.
 					// _delete_node(replacement, alloc);
