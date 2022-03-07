@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/06 21:25:09 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/07 12:01:49 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,8 +186,11 @@ namespace ft
 			node_pointer	limit() const {return _limit;}
 			
 			// Insert a new node in the tree by calling the insert function of the root.
-			void	insert(const T& value)
+			// Will return hte pointer of the inserted node.
+			ft::RedBlackTreeNode<T, Compare>*	insert(const T& value)
 			{
+				node_pointer	result;
+				
 				if (_root.base() == NULL)
 				{
 					_root._ptr = _alloc.allocate(1);
@@ -196,15 +199,17 @@ namespace ft
 					_size = 1;
 					assign_size(_limit->_value, _size);
 					_limit->_parent = _root.base();
+					result =  _root.base();
 				}
 				else
 				{
-					_root._ptr = _insert(value, _alloc);
+					result = _insert(value, _alloc);
 					_begin._ptr = leftmost(_root.base());
 					++_size;
 					assign_size(_limit->_value, _size);
 					_limit->_parent = _root.base();
 				}
+				return result;
 			}
 
 			
@@ -229,8 +234,10 @@ namespace ft
 			}
 
 			// Insert a new node in the tree via a node_type reference.
-			void	insert(const node_type &node)
+			ft::RedBlackTreeNode<T, Compare>*	insert(const node_type &node)
 			{
+				node_pointer	result;
+				
 				if (_root.base() == NULL)
 				{
 					_root._ptr = _alloc.allocate(1);
@@ -239,15 +246,17 @@ namespace ft
 					_size = 1;
 					assign_size(_limit->_value, _size);
 					_limit->_parent = _root.base();
+					result =  _root.base();
 				}
 				else
 				{
-					_root._ptr = _insert(node._value, _alloc);
+					result = _insert(node._value, _alloc);
 					_begin._ptr = leftmost(_root.base());
 					++_size;
 					assign_size(_limit->_value, _size);
 					_limit->_parent = _root.base();
 				}
+				return result;
 			}
 
 			// Remove a node from the tree by calling the remove function of the root.
@@ -293,21 +302,18 @@ namespace ft
 				
 				while (current_node)
 				{
+					Logger() << "Searching for the node";
 					if (is_superior_in_key(current_node, value) == true)
-					{
-						if (current_node->_left == NULL)
-							return (_limit);
 						current_node = current_node->_left;
-					}
 					else if (is_inferior_in_key(current_node, value) == true)
-					{
-						if (current_node->_right == NULL)
-							return (_limit);
 						current_node = current_node->_right;
-					}
 					else
+					{
+						Logger() << "Node found";
 						return (current_node);
+					}
 				}
+				Logger() << "Node not found";
 				return (_limit);
 			}
 
@@ -441,8 +447,8 @@ namespace ft
 				node_pointer	_insert(const T& value, std::allocator<node_type>& alloc)
 				{
 					node_pointer			node(_root.base());
+					node_pointer			result(node);
 					
-					// std::cout << "limit int insert : " << limit << std::endl;
 					while (node)
 					{
 						if (is_superior_in_key(node, value) == true)
@@ -453,6 +459,7 @@ namespace ft
 								alloc.construct(node->_left, value); //=============== CAN BE CHANGED TO BE SOOOOO MUCH MORE EFFICIENT AND CLEVER.
 								node->_left->_color = RED;
 								node->_left->_parent = node;
+								result = node->_left;
 								// Resolve the red-black tree properties.
 								_resolve_insertion(node->_left);
 								break ;
@@ -467,6 +474,7 @@ namespace ft
 								alloc.construct(node->_right, value); //=============== CAN BE CHANGED TO BE SOOOOO MUCH MORE EFFICIENT AND CLEVER.
 								node->_right->_color = RED;
 								node->_right->_parent = node;
+								result = node->_right;
 								// Resolve the red-black tree properties.
 								_resolve_insertion(node->_right);
 								break ;
@@ -476,7 +484,8 @@ namespace ft
 						else
 							throw std::runtime_error("RedBlackTreeNode::insert: value already exists.");
 					}
-					return (_update_root());
+					_root._ptr = _update_root();
+					return (result);
 				}
 				
 				// This function will insert a new node in the tree after a given node.
@@ -735,6 +744,12 @@ namespace ft
 						node2->_left->_parent = node2;
 					if (node2->_right != NULL)
 						node2->_right->_parent = node2;
+					// Set the root and the parent of limit accordingly if a change as been done.
+					if (node1->_parent == NULL)
+						_root._ptr = node1;
+					else if (node2->_parent == NULL)
+						_root._ptr = node2;
+					_limit->_parent = _root.base();
 				}
 
 				// Deletes the given node from the tree
@@ -754,7 +769,7 @@ namespace ft
 						// replacement is NULL therefore node_to_del is leaf
 						if (node_to_del->_parent != NULL)
 						{
-							Logger() << "replacement is NULL therefore node_to_del is leaf";
+							// Logger() << "replacement is NULL therefore node_to_del is leaf";
 							if (is_r_n_black)
 							{
 								// replacement and node_to_del both black
