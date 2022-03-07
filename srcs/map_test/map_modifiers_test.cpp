@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 03:05:49 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/06 04:58:28 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/07 19:27:48 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,23 @@ void	map_swap_method_test(void)
 	Logger() << "bar contains:\n";
 	for (ft::map<char,int, std::greater<int> >::iterator it=bar.begin(); it!=bar.end(); ++it)
 		Logger() << it->first << " => " << it->second;
+
+	bar.clear();
+	Logger() << "bar contains:\n";
+	for (ft::map<char,int, std::greater<int> >::iterator it=bar.begin(); it!=bar.end(); ++it)
+		Logger() << it->first << " => " << it->second;
+
+	gettimeofday(&start_time, NULL);
+	ft::swap(foo,bar);
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+
+	Logger() << "foo contains:\n";
+	for (ft::map<char,int, std::greater<int> >::iterator it=foo.begin(); it!=foo.end(); ++it)
+		Logger() << it->first << " => " << it->second;
+
+	Logger() << "bar contains:\n";
+	for (ft::map<char,int, std::greater<int> >::iterator it=bar.begin(); it!=bar.end(); ++it)
+		Logger() << it->first << " => " << it->second;
 }
 
 void	map_erase_method_test(void)
@@ -78,11 +95,12 @@ void	map_erase_method_test(void)
 
 	Logger() << "__________[map_erase_method_test]__________";
 	ft::map<int, int> mymap;
+	
 	gettimeofday(&start_time, NULL);
 	mymap.erase(1);
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
 
-	for (int i=1; i<=5; i++) mymap.insert(ft::pair<int, int>(i, i));
+	for (int i=1; i<=10; i++) mymap.insert(ft::pair<int, int>(i, i));
 
 	Logger() << "mymap contains:";
 	for (ft::map<int, int>::iterator it = mymap.begin() ; it != mymap.end(); ++it)
@@ -91,6 +109,19 @@ void	map_erase_method_test(void)
 	gettimeofday(&start_time, NULL);
 	mymap.erase(1);
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+	
+	Logger() << "mymap contains:";
+	for (ft::map<int, int>::iterator it = mymap.begin() ; it != mymap.end(); ++it)
+		Logger() << it->first << " => " << it->second;
+
+	gettimeofday(&start_time, NULL);
+	mymap.erase(++mymap.begin());
+	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+	
+	Logger() << "mymap contains:";
+	for (ft::map<int, int>::iterator it = mymap.begin() ; it != mymap.end(); ++it)
+		Logger() << it->first << " => " << it->second;
+		
 	gettimeofday(&start_time, NULL);
 	mymap.erase(--(--(--mymap.end())), mymap.end());
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
@@ -124,8 +155,9 @@ void	map_insert_method_test(void)
 	ft::map<int, int>::iterator it = mymap.end();
 	--it;
 	gettimeofday(&start_time, NULL);
-	mymap.insert(it, ft::make_pair(45, -15));
+	it = mymap.insert(it, ft::make_pair(45, -15));
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
+	Logger() << "Returned iterator: " << it->first << " => " << it->second;
 	Logger() << "mymap contains:";
 	for (ft::map<int, int>::iterator it = mymap.begin() ; it != mymap.end(); ++it)
 		Logger() << it->first << " => " << it->second;
