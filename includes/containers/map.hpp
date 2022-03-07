@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/03/07 12:33:04 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/07 15:54:56 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,14 +143,16 @@ namespace ft
 			// The bool is true if the element was inserted, false if it already existed.
 			ft::pair<iterator, bool> insert(const value_type& value)
 			{
-				try
-				{
-					return ft::make_pair(iterator(_tree.insert(value), _tree.limit()), true);
-				}
-				catch(...)
-				{
-				}
-				return ft::make_pair(iterator(_tree.get(value), _tree.limit()), false);
+				// try
+				// {
+				size_type	size_before = _tree.size();
+				
+				return ft::make_pair(iterator(_tree.insert(value), _tree.limit()), size_before != _tree.size());
+				// }
+				// catch(...)
+				// {
+				// }
+				// return ft::make_pair(iterator(_tree.get(value), _tree.limit()), false);
 			}
 
 			// This insert take a hint, which is an iterator to a position in the map.
@@ -219,23 +221,14 @@ namespace ft
 			// Taking care to not use invalidate iterators.
 			void erase(iterator first, iterator last)
 			{
-				// iterator temp;
-				ft::vector<key_type>						temp;
-				typename ft::vector<key_type>::size_type	i(0);
+				iterator temp;
 
-				if (first == end() && first != last)
-					first++;
-				for (; first != last; first++)
-					temp.push_back(first->first);
-				while (i < temp.size())
+				for (; first != last;)
 				{
-					erase(temp[i]);
-					++i;
-					// std::cerr << "Erasing " << i - 1 << std::endl;
-					// temp = first;
-					// ++temp;
-					// erase(first++);
-					// first = temp;
+					temp = first;
+					++temp;
+					erase(first);
+					first = temp;
 				}
 			}
 

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/03/06 16:23:04 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/07 16:04:47 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,16 +125,18 @@ namespace ft
 			// The bool is true if the element was inserted, false if it already existed.
 			ft::pair<iterator, bool> insert(const value_type& value)
 			{
-				bool	was_present = true;
-				try
-				{
-					_tree.insert(value);
-					was_present = false;
-				}
-				catch(...)
-				{
-				}
-				return ft::make_pair(iterator(_tree.get(value), _tree.limit()), !was_present);
+				size_type	size_before = _tree.size();
+				
+				return ft::make_pair(iterator(_tree.insert(value), _tree.limit()), size_before != _tree.size());
+
+				// try
+				// {
+				// 	return ft::make_pair(iterator(_tree.insert(value), _tree.limit()), true);
+				// }
+				// catch(...)
+				// {
+				// }
+				// return ft::make_pair(iterator(_tree.get(value), _tree.limit()), false);
 			}
 
 			// This insert take a hint, which is an iterator to a position in the set.
@@ -151,7 +153,7 @@ namespace ft
 							_tree.insert(hint, value, 0); // Insert the value to right of hint
 						else
 							_tree.insert(next, value, 1); // Insert the value to left of next
-						return iterator(_tree.get(value), _tree.limit());
+						return (--next);
 					}
 				}
 				return insert(value).first;
@@ -202,17 +204,14 @@ namespace ft
 			// Will erase the range of elements.
 			void erase(iterator first, iterator last)
 			{
-				ft::vector<key_type>						temp;
-				typename ft::vector<key_type>::size_type	i(0);
+				iterator temp;
 
-				if (first == end() && first != last)
-					first++;
-				for (; first != last; first++)
-					temp.push_back(*first);
-				while (i < temp.size())
+				for (; first != last;)
 				{
-					erase(temp[i]);
-					++i;
+					temp = first;
+					++temp;
+					erase(first);
+					first = temp;
 				}
 			}
 

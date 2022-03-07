@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/07 14:52:03 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/07 15:51:15 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ namespace ft
 			node_pointer	limit() const {return _limit;}
 			
 			// Insert a new node in the tree by calling the insert function of the root.
-			// Will return hte pointer of the inserted node.
+			// Will return the pointer of the inserted node.
 			ft::RedBlackTreeNode<T, Compare>*	insert(const T& value)
 			{
 				node_pointer	result;
@@ -204,10 +204,10 @@ namespace ft
 				else
 				{
 					result = _insert(value, _alloc);
-					_begin._ptr = leftmost(_root.base());
-					++_size;
-					assign_size(_limit->_value, _size);
-					_limit->_parent = _root.base();
+					// _begin._ptr = leftmost(_root.base());
+					// ++_size;
+					// assign_size(_limit->_value, _size);
+					// _limit->_parent = _root.base();
 				}
 				return result;
 			}
@@ -251,10 +251,10 @@ namespace ft
 				else
 				{
 					result = _insert(node._value, _alloc);
-					_begin._ptr = leftmost(_root.base());
-					++_size;
-					assign_size(_limit->_value, _size);
-					_limit->_parent = _root.base();
+					// _begin._ptr = leftmost(_root.base());
+					// ++_size;
+					// assign_size(_limit->_value, _size);
+					// _limit->_parent = _root.base();
 				}
 				return result;
 			}
@@ -480,9 +480,14 @@ namespace ft
 							node = node->_right;
 						}
 						else
-							throw std::runtime_error("RedBlackTreeNode::insert: value already exists.");
+							return (node);
+							// throw std::runtime_error("RedBlackTreeNode::insert: value already exists.");
 					}
 					_root._ptr = _update_root();
+					_begin._ptr = leftmost(_root.base());
+					++_size;
+					assign_size(_limit->_value, _size);
+					_limit->_parent = _root.base();
 					return (result);
 				}
 				
