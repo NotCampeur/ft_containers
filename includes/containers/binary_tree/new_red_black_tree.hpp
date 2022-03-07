@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/07 15:51:15 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/08 00:20:36 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include <memory>
 # include <exception>
 # include "new_red_black_tree_node.hpp"
-// # include "../../tools/iterators/red_black_tree_iterator.hpp"
 # include "../../tools/iterators/new_red_black_tree_iterator.hpp"
 # include "../../tools/iterators/reverse_iterator.hpp"
 # include "../../tools/comparison/lexicographical_compare.hpp"
@@ -109,48 +108,15 @@ namespace ft
 			, _begin(NULL, _limit)
 			, _size(0)
 			{
-				// _limit = _alloc.allocate(1);// TESTING THE USE OF ALLOC IN INITIALIZATION LIST
 				_alloc.construct(_limit, ft::RedBlackTreeNode<T, Compare>());
-				_root = iterator(NULL, _limit);
 			}
 			
-			rbtree(const rbtree &other)
-			: _alloc(), _limit(_alloc.allocate(1)), _root(NULL, _limit)
-			, _begin(NULL, _limit)
-			, _size(0)
-			{
-				// _limit = _alloc.allocate(1);// TESTING THE USE OF ALLOC IN INITIALIZATION LIST
-				_alloc.construct(_limit, ft::RedBlackTreeNode<T, Compare>());
-				const_iterator it = other.begin();
-				while (it != other.end())
-				{
-					insert(*it);
-					++it;
-				}
-			}
-
 			// While destroy and deallocate every node using iterators.
 			~rbtree()
 			{
 				_destroy_tree(_root.base());
 				_alloc.destroy(_limit);
 				_alloc.deallocate(_limit, 1);
-			}
-
-			rbtree &operator=(const rbtree &other)
-			{
-				if (this != &other)
-				{
-					_destroy_tree(_root.base());
-					_root._ptr = NULL;
-					const_iterator it = other.begin();
-					while (it != other.end())
-					{
-						insert(*it);
-						++it;
-					}
-				}
-				return *this;
 			}
 
 			void	clear()
@@ -204,10 +170,6 @@ namespace ft
 				else
 				{
 					result = _insert(value, _alloc);
-					// _begin._ptr = leftmost(_root.base());
-					// ++_size;
-					// assign_size(_limit->_value, _size);
-					// _limit->_parent = _root.base();
 				}
 				return result;
 			}
@@ -226,7 +188,7 @@ namespace ft
 				else
 				{
 					_root._ptr = _insert(tmp.base(), side, value, _alloc);
-					_begin._ptr = leftmost(_root.base());
+					_begin._ptr = leftmost(_root._ptr);
 					++_size;
 					assign_size(_limit->_value, _size);
 					_limit->_parent = _root.base();
@@ -251,10 +213,6 @@ namespace ft
 				else
 				{
 					result = _insert(node._value, _alloc);
-					// _begin._ptr = leftmost(_root.base());
-					// ++_size;
-					// assign_size(_limit->_value, _size);
-					// _limit->_parent = _root.base();
 				}
 				return result;
 			}
@@ -279,7 +237,7 @@ namespace ft
 						else
 						{
 							_root._ptr = _remove(value, _alloc);
-							_begin._ptr = leftmost(_root.base());
+							_begin._ptr = leftmost(_root._ptr);
 						}
 						--_size;
 						assign_size(_limit->_value, _size);
@@ -294,24 +252,19 @@ namespace ft
 
 			// This function will return the node with the given value.
 			// If the node doesn't exist, it will return the limit.
-			ft::RedBlackTreeNode<T, Compare>*	get(const T& value) const // ======= CAN BE CHANGED TO BE CLEVER.
+			ft::RedBlackTreeNode<T, Compare>*	get(const T& value) const
 			{
 				node_pointer			current_node(_root.base());
 				
 				while (current_node)
 				{
-					// Logger() << "Searching for the node";
 					if (is_superior_in_key(current_node, value) == true)
 						current_node = current_node->_left;
 					else if (is_inferior_in_key(current_node, value) == true)
 						current_node = current_node->_right;
 					else
-					{
-						// Logger() << "Node found";
 						return (current_node);
-					}
 				}
-				// Logger() << "Node not found";
 				return (_limit);
 			}
 
@@ -324,9 +277,9 @@ namespace ft
 			// Swap the tree with another tree.
 			void	swap(rbtree &other)
 			{
+				std::swap(_limit, other._limit);
 				std::swap(_root, other._root);
 				std::swap(_begin, other._begin);
-				std::swap(_limit, other._limit);
 				std::swap(_size, other._size);
 			}
 
@@ -484,7 +437,7 @@ namespace ft
 							// throw std::runtime_error("RedBlackTreeNode::insert: value already exists.");
 					}
 					_root._ptr = _update_root();
-					_begin._ptr = leftmost(_root.base());
+					_begin._ptr = leftmost(_root._ptr);
 					++_size;
 					assign_size(_limit->_value, _size);
 					_limit->_parent = _root.base();
@@ -1079,12 +1032,6 @@ namespace ft
 	bool	operator>=(const rbtree<T, Compare> &lhs, const rbtree<T, Compare> &rhs)
 	{
 		return !(lhs < rhs);
-	}
-
-	template <typename T, typename Compare>
-	void	swap(rbtree<T, Compare> &lhs, rbtree<T, Compare> &rhs)
-	{
-		lhs.swap(rhs);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/03/07 15:54:56 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/08 00:33:57 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,10 @@ namespace ft
 			// The copy constructor will call the copy constructor of the ft::rbtree.
 			// Which will do a deep copy of the tree.
 			map(const map& other)
-			: _tree(other._tree)
-			{}
+			: _tree(), _comp(other._comp), _alloc(other._alloc)
+			{
+				insert(other.begin(), other.end());
+			}
 
 			~map()
 			{}
@@ -103,7 +105,10 @@ namespace ft
 			map& operator=(const map& other)
 			{
 				if (this != &other)
-					_tree = other._tree;
+				{
+					_tree.clear();
+					insert(other.begin(), other.end());
+				}
 				return *this;
 			}
 

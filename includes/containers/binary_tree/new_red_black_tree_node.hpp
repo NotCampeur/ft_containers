@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/06 16:46:56 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/08 00:36:30 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,8 @@ namespace ft
 		if (node == NULL)
 			throw std::runtime_error("begin: node is NULL");
 		node = root(node);
-		node = leftmost(node);
+		if (node != NULL)
+			node = leftmost(node);
 		return const_cast<RedBlackTreeNode<T, Compare> *>(node);
 	}
 
@@ -183,21 +184,10 @@ namespace ft
 		if (node == NULL)
 			throw std::runtime_error("last: node is NULL");
 		node = root(node);
-		node = rightmost(node);
+		if (node != NULL)
+			node = rightmost(node);
 		return const_cast<RedBlackTreeNode<T, Compare> *>(node);
 	}
-
-	// // This function return the end of the tree (address of last + 1).
-	// // The closing pointer, mainly used by iterator.
-	// // If you don't give the root, it will manually come back to the root to make sure the end is correct.
-	// template <typename T, typename Compare>
-	// RedBlackTreeNode<T, Compare> * end(RedBlackTreeNode<T, Compare> * node)
-	// {
-	// 	if (node == NULL)
-	// 		throw std::runtime_error("end: node is NULL");
-	// 	node = last(node);
-	// 	return node->_limit;
-	// }
 }
 
 #endif
