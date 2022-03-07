@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:21:08 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/04 06:17:00 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/07 17:56:06 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <memory>
 # include <sstream>
 # include <exception>
+# include <iostream>
 # include "../tools/iterators/random_access_iterator.hpp"
 # include "../tools/iterators/reverse_iterator.hpp"
 # include "../tools/integral_constant/is_integral.hpp"
@@ -56,8 +57,7 @@ namespace ft
 			// Private modifiers functions used to indicate if the type can be used.
 			void		assign(size_type n, const value_type& val, ft::true_type)
 			{
-				for (size_type i = 0; i < _size; i++)
-					_alloc.destroy(&_array[i]);
+				clear();
 				reserve(n);
 				for (size_type i = 0; i < n; i++)
 					_alloc.construct(&_array[i], val);
@@ -134,7 +134,7 @@ namespace ft
 			// Fill constructor
 			explicit vector (size_type n, const value_type& val = value_type(),
 				const allocator_type& alloc = allocator_type())
-			: _alloc(alloc), _array(NULL), _size(0), _capacity(1)
+			: _alloc(alloc), _array(NULL), _size(0), _capacity(0)
 			{
 				assign(n, val, ft::true_type());
 			}
