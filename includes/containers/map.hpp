@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/03/07 11:50:20 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/07 12:33:04 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ namespace ft
 							_tree.insert(hint, value, 0); // Insert the value to right of hint
 						else
 							_tree.insert(next, value, 1); // Insert the value to left of next
-						return iterator(_tree.get(value), _tree.limit());
+						return (--next);
 					}
 				}
 				return insert(value).first;
