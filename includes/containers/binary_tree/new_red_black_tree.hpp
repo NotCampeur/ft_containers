@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/08 00:20:36 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/08 00:43:48 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -407,7 +407,7 @@ namespace ft
 							if (node->_left == NULL)
 							{
 								node->_left = alloc.allocate(1);
-								alloc.construct(node->_left, value); //=============== CAN BE CHANGED TO BE SOOOOO MUCH MORE EFFICIENT AND CLEVER.
+								alloc.construct(node->_left, value);
 								node->_left->_color = RED;
 								node->_left->_parent = node;
 								result = node->_left;
@@ -422,7 +422,7 @@ namespace ft
 							if (node->_right == NULL)
 							{
 								node->_right = alloc.allocate(1);
-								alloc.construct(node->_right, value); //=============== CAN BE CHANGED TO BE SOOOOO MUCH MORE EFFICIENT AND CLEVER.
+								alloc.construct(node->_right, value);
 								node->_right->_color = RED;
 								node->_right->_parent = node;
 								result = node->_right;
@@ -434,7 +434,6 @@ namespace ft
 						}
 						else
 							return (node);
-							// throw std::runtime_error("RedBlackTreeNode::insert: value already exists.");
 					}
 					_root._ptr = _update_root();
 					_begin._ptr = leftmost(_root._ptr);
@@ -756,16 +755,8 @@ namespace ft
 						if (node_to_del->_parent == NULL)
 						{
 							// node_to_del is root, assign the value of replacement to node_to_del, and delete replacement
-							// std::swap(node_to_del->_value, replacement->_value); // NEED TO SWAP POINTERS AND NOT ONLY VALUES.
-							// std::swap(node_to_del->_left, replacement->_left);
-							// std::swap(node_to_del->_right, replacement->_right);
-							// std::swap(node_to_del->_parent, replacement->_parent);
-							// std::swap(node_to_del->_color, replacement->_color);
 							_swap_links(node_to_del, replacement);
 							replacement->_left = replacement->_right = NULL;
-							// node_to_del->_left = node_to_del->_right = NULL;
-							// alloc.destroy(replacement);
-							// alloc.deallocate(replacement, 1);
 							alloc.destroy(node_to_del);
 							alloc.deallocate(node_to_del, 1);
 						}
@@ -789,14 +780,7 @@ namespace ft
 						}
 						return;
 					}
-					// Logger() << "node_to_del has 2 children";
 					// node_to_del has 2 children, swap values with _successor and recurse
-					// std::swap(node_to_del->_value, replacement->_value); // NEED TO SWAP POINTERS AND NOT ONLY VALUES.
-					// _delete_node(replacement, alloc);
-					// std::swap(node_to_del->_left, replacement->_left);
-					// std::swap(node_to_del->_right, replacement->_right);
-					// std::swap(node_to_del->_parent, replacement->_parent);
-					// std::swap(node_to_del->_color, replacement->_color);
 					_swap_links(node_to_del, replacement);
 					_delete_node(node_to_del, alloc);
 				}

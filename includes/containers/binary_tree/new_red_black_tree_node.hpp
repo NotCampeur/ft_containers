@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 03:45:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/08 00:36:30 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/08 00:40:37 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,15 @@ namespace ft
 	{
 		public:
 
-			typedef T 											value_type;
-			typedef RedBlackTreeNode<T, Compare>			node_type;
-			typedef node_type*									node_pointer;
+			typedef T 								value_type;
+			typedef RedBlackTreeNode<T, Compare>	node_type;
+			typedef node_type*						node_pointer;
 			
-			node_pointer				_parent;
-			node_pointer				_left;
-			node_pointer				_right;
-			T							_value;
-			bool						_color;
+			node_pointer	_parent;
+			node_pointer	_left;
+			node_pointer	_right;
+			T				_value;
+			bool			_color;
 
 			RedBlackTreeNode()
 			: _parent(NULL), _left(NULL), _right(NULL)
