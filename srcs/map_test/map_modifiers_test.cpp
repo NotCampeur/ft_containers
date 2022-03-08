@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 03:05:49 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/07 19:27:48 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/07 23:47:54 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	map_swap_method_test(void)
 		Logger() << it->first << " => " << it->second;
 
 	gettimeofday(&start_time, NULL);
-	ft::swap(foo,bar);
+	std::swap(foo,bar);
 	Logger() << "Time elapsed : " << get_elapsed_time(start_time) << "µs";
 
 	Logger() << "foo contains:\n";
