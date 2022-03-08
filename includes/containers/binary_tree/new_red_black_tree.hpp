@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:55:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/03/08 00:43:48 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/08 01:17:50 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,31 +316,13 @@ namespace ft
 			// Will not use the iterators increment to allow a log(n) complexity.
 			const_iterator	upper_bound(const T& value) const
 			{
-				if (_root.base() == NULL)
-					return end();
-				iterator	it = _root;
-				iterator	previous(NULL, _limit);
-				while (it.base() != NULL)
-				{
-					if (is_superior_in_key(it.base(), value))
-					{
-						previous = it;
-						it._ptr = it.base()->_left;
-						if (it.base() == NULL)
-							return previous;
-					}
-					else if (is_inferior_in_key(it.base(), value))
-					{
-						if (it.base()->_right == NULL)
-							return previous.base() == NULL ? end() : previous;
-						it._ptr = it.base()->_right;
-					}
-					else if (previous.base() == NULL)
-						return (it.base()->_right == NULL) ? end() : iterator(it.base()->_right, _limit);
-					else
-						return previous;
-				}
-				return end();
+				const_iterator	it = lower_bound(value);
+				
+				if (it.base() != _limit
+				&& is_superior_in_key(it.base(), value) == false
+				&& is_inferior_in_key(it.base(), value) == false)
+					++it;
+				return it;
 			}
 			
 			// Operators
