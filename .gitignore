@@ -6,4 +6,9 @@ objs/*.o
 ft_objs/*.o
 visualizer_objs/*.o
 logs/*.log
+libs/LDLogger/*.a
+libs/LDLogger/objs/*.o
+libs/LDLogger/logs/*.log
+libs/LCPPGL/*.a
+libs/LCPPGL/objs/*.o
 .vscode
