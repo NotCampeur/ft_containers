@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/03/07 16:04:47 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/08 03:43:22 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,10 @@ namespace ft
 			// The copy constructor will call the copy constructor of the ft::rbtree.
 			// Which will do a deep copy of the tree.
 			set(const set& other)
-			: _tree(other._tree)
-			{}
+			: _tree(), _comp(other._comp), _alloc(other._alloc)
+			{
+				insert(other.begin(), other.end());
+			}
 
 			~set()
 			{}
@@ -93,7 +95,10 @@ namespace ft
 			set& operator=(const set& other)
 			{
 				if (this != &other)
-					_tree = other._tree;
+				{
+					_tree.clear();
+					insert(other.begin(), other.end());
+				}
 				return *this;
 			}
 
@@ -128,15 +133,6 @@ namespace ft
 				size_type	size_before = _tree.size();
 				
 				return ft::make_pair(iterator(_tree.insert(value), _tree.limit()), size_before != _tree.size());
-
-				// try
-				// {
-				// 	return ft::make_pair(iterator(_tree.insert(value), _tree.limit()), true);
-				// }
-				// catch(...)
-				// {
-				// }
-				// return ft::make_pair(iterator(_tree.get(value), _tree.limit()), false);
 			}
 
 			// This insert take a hint, which is an iterator to a position in the set.
@@ -254,7 +250,7 @@ namespace ft
 			// If the key is not found, the end() iterator is returned.
 			iterator lower_bound(const key_type& key)
 			{
-				return iterator(_tree.lower_bound(key));
+				return iterator(const_cast<typename rbtree_type::node_type *>(_tree.lower_bound(key).base()), _tree.limit());
 			}
 
 			const_iterator lower_bound(const key_type& key) const
@@ -266,7 +262,7 @@ namespace ft
 			// If the key is not found, the end() iterator is returned.
 			iterator upper_bound(const key_type& key)
 			{
-				return iterator(_tree.upper_bound(key));
+				return iterator(const_cast<typename rbtree_type::node_type *>(_tree.upper_bound(key).base()), _tree.limit());
 			}
 
 			const_iterator upper_bound(const key_type& key) const

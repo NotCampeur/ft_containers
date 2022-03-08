@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/03/08 00:33:57 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/08 03:41:00 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,16 +148,9 @@ namespace ft
 			// The bool is true if the element was inserted, false if it already existed.
 			ft::pair<iterator, bool> insert(const value_type& value)
 			{
-				// try
-				// {
 				size_type	size_before = _tree.size();
 				
 				return ft::make_pair(iterator(_tree.insert(value), _tree.limit()), size_before != _tree.size());
-				// }
-				// catch(...)
-				// {
-				// }
-				// return ft::make_pair(iterator(_tree.get(value), _tree.limit()), false);
 			}
 
 			// This insert take a hint, which is an iterator to a position in the map.
