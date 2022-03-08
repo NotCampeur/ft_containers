@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:23:00 by notcampeur        #+#    #+#             */
-/*   Updated: 2022/03/08 03:41:00 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/03/08 04:02:34 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "pair.hpp"
 # include "vector.hpp"
 # include "../tools/iterators/bidirectional_iterator.hpp"
-# include "binary_tree/new_red_black_tree.hpp"
+# include "binary_tree/red_black_tree.hpp"
 
 namespace ft
 {
